@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-import User from "../models/user.js";
+import { Users } from "../models/user.js";
 import sendVerificationMail from "../utils/sendVerificationMail.js";
 
 import { cuteIO, usersStatusManager } from "../index.js";
@@ -15,7 +15,7 @@ export const signin = async (req, res) => {
   const { email, password, browserId } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await Users.findOne({ email });
 
     if (!user) return res.status(404).json({ message: "User doesn't exist" });
 
@@ -61,8 +61,7 @@ export const signup = async (req, res) => {
   const { email, password, firstName, lastName, gender, dob } = req.body;
 
   try {
-    // console.log("email", email);
-    const user = await User.findOne({ email });
+    const user = await Users.findOne({ email });
     if (user) return res.status(409).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -74,7 +73,7 @@ export const signup = async (req, res) => {
       dateOfBirth: dob,
     };
 
-    const result = await User.create({
+    const result = await Users.create({
       email,
       password: hashedPassword,
       name: `${firstName} ${lastName}`,
@@ -91,7 +90,7 @@ export const signup = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
 
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -100,7 +99,7 @@ export const changePassword = async (req, res) => {
   const { password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
-    const result = await User.findByIdAndUpdate(
+    const result = await Users.findByIdAndUpdate(
       userId,
       {
         password: hashedPassword,
@@ -118,7 +117,7 @@ export const changePassword = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
 
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -131,7 +130,7 @@ export const checkPassword = async (req, res) => {
         .status(httpStatusCodes.unauthorized)
         .json({ message: "Unauthenticated" });
     }
-    const user = await User.findById(userId);
+    const user = await Users.findById(userId);
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) return res.status(400).json(false);
     res.status(200).json(true);
@@ -147,10 +146,10 @@ export const verifyToken = async (req, res) => {
       if (error) {
         res.status(410).json(error);
       } else {
-        User.findById(decoded.id).then((user) => {
+        Users.findById(decoded.id).then((user) => {
           if (user.activated === true) res.status(409).json("alreadyActivated");
         });
-        User.findByIdAndUpdate(
+        Users.findByIdAndUpdate(
           decoded.id,
           {
             activated: true,
@@ -192,7 +191,7 @@ export const getFriendsStatus = async (req, res, next) => {
   }
 
   try {
-    const user = await User.findById(userId);
+    const user = await Users.findById(userId);
 
     if (!user)
       return res
@@ -283,7 +282,7 @@ export const countNewUsers = async (req, res) => {
           let temp = time.clone().set("day", i);
           const start = temp.clone().startOf("day");
           const end = temp.clone().endOf("day");
-          const count = await User.find({
+          const count = await Users.find({
             createdAt: { $gt: start, $lte: end },
           }).count();
           data.push(count);
@@ -295,7 +294,7 @@ export const countNewUsers = async (req, res) => {
           let temp = time.clone().set("date", i);
           const start = temp.clone().startOf("day");
           const end = temp.clone().endOf("day");
-          const count = await User.find({
+          const count = await Users.find({
             createdAt: { $gt: start, $lte: end },
           }).count();
           data.push(count);
@@ -307,7 +306,7 @@ export const countNewUsers = async (req, res) => {
           let temp = time.clone().set("month", i);
           const start = temp.clone().startOf("month");
           const end = temp.clone().endOf("month");
-          const count = await User.find({
+          const count = await Users.find({
             createdAt: { $gt: start, $lte: end },
           }).count();
           data.push(count);
@@ -322,12 +321,10 @@ export const countNewUsers = async (req, res) => {
 
 export const checkAdminSystem = async (req, res) => {
   const { userId } = req;
-  console.log("user", userId);
 
   try {
-    const user = await User.findById(userId);
+    const user = await Users.findById(userId);
     const role = user.role;
-    console.log("role", role);
     if (role === "Admin") {
       return res.status(httpStatusCodes.accepted).json({ isAdmin: true });
     }

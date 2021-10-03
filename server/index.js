@@ -9,7 +9,7 @@ import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 
-import { rootRouter, userRouter } from "./routes/index.js";
+import { apiRouter, rootRouter } from "./routes/index.js";
 
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import UsersStatusManager from "./services/userStatus.js";
@@ -47,8 +47,8 @@ app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, "public")));
 
 // router
-app.use("/", rootRouter);
-app.use("/user", userRouter);
+app.use("/", rootRouter)
+app.use("/api", apiRouter);
 
 const SERVER_PORT = process.env.SERVER_PORT || 5000;
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -60,9 +60,9 @@ mongoose
   })
   .then(() => {
     server.listen(SERVER_PORT, () =>
-      console.log(`Server Running on Port: http://localhost:${SERVER_PORT}`)
+      console.info(`Server Running on Port: http://localhost:${SERVER_PORT}`)
     );
   })
-  .catch((error) => console.log(`${error} did not connect`));
+  .catch((error) => console.error(`${error} did not connect`));
 
 // mongoose.set("useFindAndModify", false);

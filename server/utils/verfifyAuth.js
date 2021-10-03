@@ -12,7 +12,7 @@ export const verifyJwt = (token) => {
     try {
       result = jwt.verify(token, JWT_KEY);
     } catch (error) {
-      /* console.log("Jwt verification error:", error); */
+      console.error("Jwt verification error:", error);
     }
   }
   return result;
