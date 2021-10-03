@@ -12,30 +12,24 @@ import {
   getUserStatus,
   checkAdminSystem,
   countNewUsers,
-  redirectGithubCallback,
-  signinWithGithub,
 } from "../controllers/user.js";
 import auth from "../middleware/auth.js";
 
-const router = express.Router();
+export const userRouter = express.Router();
 
-router.get("/newUsers/:range/:timeString", countNewUsers);
-router.get("/password/check/:password", auth, checkPassword);
-router.get("/login/github", signinWithGithub);
-router.get("/login/github/callback", redirectGithubCallback);
-router.get("/checkAdminSystem", auth, checkAdminSystem);
+userRouter.get("/newUsers/:range/:timeString", countNewUsers);
+userRouter.get("/password/check/:password", auth, checkPassword);
+userRouter.get("/checkAdminSystem", auth, checkAdminSystem);
 
-router.post("/signin", signin);
-router.post("/signup", signup);
-router.post("/resend", resendVerificationMail);
-router.post("/signout", signout);
+userRouter.post("/signin", signin);
+userRouter.post("/signup", signup);
+userRouter.post("/resend", resendVerificationMail);
+userRouter.post("/signout", signout);
 
-router.put("/password/change", auth, changePassword);
-router.put("/verify/:token", verifyToken);
+userRouter.put("/password/change", auth, changePassword);
+userRouter.put("/verify/:token", verifyToken);
 
 // user status APIs
-router.get("/list/friendsStatus", auth, getFriendsStatus);
-router.get("/getStatus", auth, getUserStatus);
-router.put("/setStatus/:newStatus", auth, setUserStatus);
-
-export default router;
+userRouter.get("/list/friendsStatus", auth, getFriendsStatus);
+userRouter.get("/getStatus", auth, getUserStatus);
+userRouter.put("/setStatus/:newStatus", auth, setUserStatus);

@@ -1,4 +1,4 @@
-import { extractToken } from "../businessLogics/auth.js";
+import { extractToken } from "../services/auth.js";
 
 const auth = async (req, res, next) => {
   try {
