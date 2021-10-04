@@ -21,14 +21,14 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <TokenProvider>
-          {/* <CurrentUserProvider> */}
-          {/* <GroupsOfUserProvider> */}
-          {/* <ScrollToTop /> */}
-          <App />
-          {/* </GroupsOfUserProvider> */}
-          {/* </CurrentUserProvider> */}
-        </TokenProvider>
+        {/* <TokenProvider> */}
+        {/* <CurrentUserProvider> */}
+        {/* <GroupsOfUserProvider> */}
+        {/* <ScrollToTop /> */}
+        <App />
+        {/* </GroupsOfUserProvider> */}
+        {/* </CurrentUserProvider> */}
+        {/* </TokenProvider> */}
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,

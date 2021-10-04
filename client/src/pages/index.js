@@ -13,7 +13,7 @@
 import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 // import ErrorPage from "./ErrorPage/ErrorPage";
-import HomePage from "./HomePage/HomePage";
+// import HomePage from "./HomePage/HomePage";
 // import FriendManagementPage from "./FriendManagementPage/FriendManagementPage";
 // import MutualFriendPage from "./FriendManagementPage/MutualFriendPage";
 // import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
@@ -23,7 +23,7 @@ import HomePage from "./HomePage/HomePage";
 // import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
 // import StatisticsPage from "./StatisticsPage/StatisticsPage";
 export {
-  HomePage,
+  // HomePage,
   // AboutPage,
   // AuthPage,
   // CreatePostPage,

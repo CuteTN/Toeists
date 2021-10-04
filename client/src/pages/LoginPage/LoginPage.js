@@ -262,7 +262,7 @@ function LoginPage() {
                           style={{ marginBottom: 2.5, marginRight: 12 }}
                         />
                       }
-                      onClick={() => handleLoginGithub()}
+                      // onClick={() => handleLoginGithub()}
                       style={{ width: "100%" }}
                     >
                       Github

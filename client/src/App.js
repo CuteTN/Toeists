@@ -45,17 +45,17 @@ import * as apiAuth from "./api/auth";
 // import { useCurrentUser } from "./context/CurrentUserContext.js";
 // import { useGroupsOfUser } from "./context/GroupsOfUserContext.js";
 
-const loggedIn = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  return user;
-};
+// const loggedIn = () => {
+//   const user = JSON.parse(localStorage.getItem("user"));
+//   return user;
+// };
 
 function App() {
-  const [token, setToken] = useToken();
+  // const [token, setToken] = useToken();
   // const [user] = useLocalStorage("user");
   // const [currentUser, setCurrentUser] = useCurrentUser();
   // const groupsOfUser = useGroupsOfUser();
-  const { updateListGroups } = groupsOfUser;
+  // const { updateListGroups } = groupsOfUser;
 
   // useEffect(() => {
   //   if (user) {
@@ -71,22 +71,25 @@ function App() {
 
   return (
     <div className={styles.App}>
-      <CuteClientIOProvider
+      {/* <CuteClientIOProvider
         serverUri={BACKEND_URL} //TODO: change all localhost to deploy link
-        token={token}
+        // token={token}
         // onNewConnection={handleNewIOConnection}
       >
-        {/* <FriendsStatusProvider userId={user?.result?._id}> */}
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/login">
-            {loggedIn() ? <Redirect to="/" /> : <LoginPage />}
-          </Route>
-          <Route exact path="/register">
-            {loggedIn() ? <Redirect to="/" /> : <RegisterPage />}
-          </Route>
-          {/* <PrivateRoute exact path="/feed" component={FeedPage} /> */}
-          {/* <PrivateRoute
+        <FriendsStatusProvider userId={user?.result?._id}> */}
+      <Switch>
+        {/* <Route exact path="/" component={HomePage} />
+        <Route exact path="/login">
+          {loggedIn() ? <Redirect to="/" /> : <LoginPage />}
+        </Route>
+        <Route exact path="/register">
+          {loggedIn() ? <Redirect to="/" /> : <RegisterPage />}
+        </Route> */}
+        <Route exact path="/register">
+          <RegisterPage />
+        </Route>
+        {/* <PrivateRoute exact path="/feed" component={FeedPage} /> */}
+        {/* <PrivateRoute
             exact
             path="/post/create"
             // component={CreatePostPage}
@@ -94,53 +97,53 @@ function App() {
           <PrivateRoute path="/userinfo/my">
             <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
           </PrivateRoute> */}
-          {/* <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} /> */}
-          {/* <Route exact path="/post/:id" component={SpecificPostPage} />
+        {/* <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} /> */}
+        {/* <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route
               path="/post/:id/:focusedCommentId"
               component={SpecificPostPage}
             /> */}
-          {/* <Route exact path="/search" component={UserResultSearchPage} /> */}
-          {/* <PrivateRoute
+        {/* <Route exact path="/search" component={UserResultSearchPage} /> */}
+        {/* <PrivateRoute
               exact
               path="/group/:id/requests"
               component={GroupPage}
             /> */}
-          {/* <Route path="/userinfo/:id/about" component={AboutPage} /> */}
-          {/* <PrivateRoute
+        {/* <Route path="/userinfo/:id/about" component={AboutPage} /> */}
+        {/* <PrivateRoute
               exact
               path="/friends"
               component={FriendManagementPage}
             /> */}
-          {/* <PrivateRoute
+        {/* <PrivateRoute
               exact
               path="/mutualFriends/:id"
               component={MutualFriendPage}
             /> */}
-          {/* <Route exact path="/groups" component={GroupManagementPage} /> */}
-          {/* <PrivateRoute
+        {/* <Route exact path="/groups" component={GroupManagementPage} /> */}
+        {/* <PrivateRoute
               exact
               path="/group/create"
               component={CreateGroupPage}
             /> */}
-          {/* <Route exact path="/group/:id/:menu" component={GroupPage} /> */}
-          {/* <Route exact path="/group/:id">
+        {/* <Route exact path="/group/:id/:menu" component={GroupPage} /> */}
+        {/* <Route exact path="/group/:id">
             <Redirect to="/group/:id/main" />
           </Route> */}
-          {/* <PrivateRoute exact path="/settings" component={SettingsPage} /> */}
-          {/* <Route exact path="/activate/:token" component={ActivationPage} /> */}
-          {/* <PrivateRoute exact path="/message" component={MessagePage} /> */}
-          {/* <Route path="/group/:id/about" component={GroupPage} />
+        {/* <PrivateRoute exact path="/settings" component={SettingsPage} /> */}
+        {/* <Route exact path="/activate/:token" component={ActivationPage} /> */}
+        {/* <PrivateRoute exact path="/message" component={MessagePage} /> */}
+        {/* <Route path="/group/:id/about" component={GroupPage} />
             <Route path="/group/:id/members" component={GroupPage} /> */}
-          {/* <PrivateRoute exact path="/admin">
+        {/* <PrivateRoute exact path="/admin">
             <Redirect to="/admin/dashboard" />
           </PrivateRoute> */}
-          {/* <PrivateRoute
+        {/* <PrivateRoute
             exact
             path="/admin/:menu"
             component={AdminDashboardPage}
           /> */}
-          {/* <PrivateRoute
+        {/* <PrivateRoute
               exact
               path="/admin/user"
               component={UserAdminManagement}
@@ -150,17 +153,17 @@ function App() {
               path="/admin/group"
               component={GroupAdminManagement}
             /> */}
-          {/* <PrivateRoute exact path="/statistics" component={StatisticsPage} /> */}
-          <Route path="/demoSocketIO" component={DemoSocket} />
-          {/* <Route exact path="/error403">
+        {/* <PrivateRoute exact path="/statistics" component={StatisticsPage} /> */}
+        {/* <Route path="/demoSocketIO" component={DemoSocket} /> */}
+        {/* <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>
             <Route>
               <ErrorPage code="404" />
             </Route> */}
-        </Switch>
-        {/* </FriendsStatusProvider> */}
-      </CuteClientIOProvider>
+      </Switch>
+      {/* </FriendsStatusProvider> */}
+      {/* </CuteClientIOProvider> */}
     </div>
   );
 }
