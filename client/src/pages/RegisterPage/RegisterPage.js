@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import COLOR from "../../constants/colors";
 import { resendVerificationMail } from "../../api/auth";
+import axios from "axios";
 
 const { Title, Text } = Typography;
 
@@ -45,6 +46,12 @@ function RegisterPage() {
   const dispatch = useDispatch();
   const [resend, setResend] = useState(false);
   const disableReg = useRef(false);
+
+  React.useEffect(() => {
+    axios.get("http://localhost:5000/api/users").then((res) => {
+      console.log(res.data);
+    });
+  }, []);
 
   const setDisableReg = (b) => {
     disableReg.current = b;
