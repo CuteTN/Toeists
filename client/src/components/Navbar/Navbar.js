@@ -14,7 +14,7 @@ import {
   Button,
 } from "antd";
 import styles from "./styles";
-import logo from "../../assets/darklogo.png";
+// import logo from "../../assets/darklogo.png";
 import {
   SearchOutlined,
   BellFilled,
@@ -26,7 +26,7 @@ import {
   PicLeftOutlined,
   GlobalOutlined,
 } from "@ant-design/icons";
-import { useMobile } from "../../utils/responsiveQuery";
+// import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
 import { GrStatusGoodSmall } from "react-icons/gr";
 
@@ -34,31 +34,31 @@ import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { signout } from "../../redux/actions/auth";
 import COLOR from "../../constants/colors";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { useToken } from "../../context/TokenContext";
+// import { useLocalStorage } from "../../hooks/useLocalStorage";
+// import { useToken } from "../../context/TokenContext";
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 
-import {
-  addUserNotifications,
-  refreshNotifications,
-  setSeenNotification,
-  getUserNotifications,
-} from "../../redux/actions/notifications";
-import * as apiConversation from "../../api/conversation";
+// import {
+//   addUserNotifications,
+//   refreshNotifications,
+//   setSeenNotification,
+//   getUserNotifications,
+// } from "../../redux/actions/notifications";
+// import * as apiConversation from "../../api/conversation";
 import NotificationList from "./NotificationList/NotificationList";
-import { useMessage } from "../../hooks/useMessage";
+// import { useMessage } from "../../hooks/useMessage";
 import { renderStatus, statusList } from "../../utils/userStatus";
 import { setMyStatus } from "../../api/userStatus";
-import { useFriendsStatus } from "../../context/FriendsStatusContext";
-import { useCurrentUser } from "../../context/CurrentUserContext";
+// import { useFriendsStatus } from "../../context/FriendsStatusContext";
+// import { useCurrentUser } from "../../context/CurrentUserContext";
 
 const { Header } = Layout;
 const { Text } = Typography;
 
 function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
-  const [user, setUser] = useLocalStorage("user");
-  const [currentUser] = useCurrentUser();
-  const [token, setToken] = useToken();
+  // const [user, setUser] = useLocalStorage("user");
+  // const [currentUser] = useCurrentUser();
+  // const [token, setToken] = useToken();
   const inputRef = useRef();
 
   const dispatch = useDispatch();
@@ -78,18 +78,18 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     [notifications]
   );
 
-  const handleClickNotificationItem = (url, notificationId) => {
-    dispatch(setSeenNotification(notificationId, "true", history, url));
+  // const handleClickNotificationItem = (url, notificationId) => {
+  //   dispatch(setSeenNotification(notificationId, "true", history, url));
 
-    // window.location.reload();
-    // setTimeout(location.reload); // fix bug push not route
-  };
+  //   // window.location.reload();
+  //   // setTimeout(location.reload); // fix bug push not route
+  // };
 
-  useEffect(() => {
-    if (user) {
-      dispatch(getUserNotifications());
-    }
-  }, [user, dispatch]);
+  // useEffect(() => {
+  //   if (user) {
+  //     dispatch(getUserNotifications());
+  //   }
+  // }, [user, dispatch]);
 
   const openNotification = (msg) => {
     // alert("abc");
@@ -115,20 +115,20 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     });
   };
 
-  useEffect(() => {
-    const listener = (event, msg) => {
-      if (event.indexOf("Notification") === 0) {
-        dispatch(addUserNotifications(msg)); // add noti to it
-        // console.log("noti", msg);
-        openNotification(msg);
-      }
-    };
-    cuteIO.onReceiveAny(listener);
+  // useEffect(() => {
+  //   const listener = (event, msg) => {
+  //     if (event.indexOf("Notification") === 0) {
+  //       dispatch(addUserNotifications(msg)); // add noti to it
+  //       // console.log("noti", msg);
+  //       openNotification(msg);
+  //     }
+  //   };
+  //   cuteIO.onReceiveAny(listener);
 
-    return () => {
-      cuteIO.stopReceiveAny(listener);
-    };
-  }, [cuteIO]);
+  //   return () => {
+  //     cuteIO.stopReceiveAny(listener);
+  //   };
+  // }, [cuteIO]);
 
   //#endregion
 
@@ -217,35 +217,35 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Tooltip
             title={
               <div className="text-center">
-                <div>{currentUser?.name}</div>
+                {/* <div>{currentUser?.name}</div> */}
                 <Dropdown
                   overlay={menuStatus}
                   trigger={["click"]}
                   placement="bottomRight"
                 >
                   <Tooltip title="Status" placement="right">
-                    <GrStatusGoodSmall
+                    {/* <GrStatusGoodSmall
                       className="icon"
                       style={{
                         color: renderStatus(
                           friendsStatusManager.getStatus(currentUser?._id)
                         ),
                       }}
-                    />
+                    /> */}
                   </Tooltip>
                 </Dropdown>
               </div>
             }
             placement="bottom"
           >
-            <Avatar
+            {/* <Avatar
               size="large"
               alt={currentUser?.name}
               src={currentUser?.avatarUrl}
               onClick={() => history.push(`/userinfo/${currentUser?._id}`)}
             >
               {currentUser?.name}
-            </Avatar>
+            </Avatar> */}
           </Tooltip>
         </Menu.Item>
       </Menu>
@@ -272,7 +272,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/group/create");
   };
 
-  const friendsStatusManager = useFriendsStatus();
+  // const friendsStatusManager = useFriendsStatus();
 
   const handleChangeStatus = (status) => {
     setMyStatus(status);
@@ -346,27 +346,27 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
 
-  const messageHandle = useMessage();
+  // const messageHandle = useMessage();
 
-  const handleFetchListUnseenConversations = () => {
-    apiConversation
-      .fetchUnseenConversationId()
-      .then((res) => setNumberUnseenMessages(res.data.length));
-  };
+  // const handleFetchListUnseenConversations = () => {
+  //   apiConversation
+  //     .fetchUnseenConversationId()
+  //     .then((res) => setNumberUnseenMessages(res.data.length));
+  // };
 
-  useEffect(() => {
-    messageHandle.onReceive((msg) => {
-      handleFetchListUnseenConversations();
-    });
+  // useEffect(() => {
+  //   messageHandle.onReceive((msg) => {
+  //     handleFetchListUnseenConversations();
+  //   });
 
-    messageHandle.onSeen((msg) => {
-      handleFetchListUnseenConversations();
-    });
+  //   messageHandle.onSeen((msg) => {
+  //     handleFetchListUnseenConversations();
+  //   });
 
-    handleFetchListUnseenConversations();
+  //   handleFetchListUnseenConversations();
 
-    return messageHandle.cleanUpAll;
-  }, []);
+  //   return messageHandle.cleanUpAll;
+  // }, []);
 
   // useEffect(() => {
   //   const token = user?.token;
@@ -396,7 +396,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         >
           <div style={styles.logo}>
             <Link to="/">
-              <img src={logo} alt="Logo" height="58" className="mr-2" />
+              {/* <img src={logo} alt="Logo" height="58" className="mr-2" /> */}
             </Link>
           </div>
           <Input

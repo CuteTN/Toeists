@@ -13,7 +13,7 @@ import {
 } from "antd";
 
 // import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
-import logo from "../../assets/lightlogo.png";
+// import logo from "../../assets/lightlogo.png";
 import addUserImage from "../../assets/add-user.png";
 
 import styles from "./styles";
@@ -119,7 +119,7 @@ function RegisterPage() {
             >
               <Row>
                 <Link to="/">
-                  <img src={logo} alt="Logo" height="58" className="mr-2" />
+                  {/* <img src={logo} alt="Logo" height="58" className="mr-2" /> */}
                 </Link>
                 <Title style={{ marginBottom: 8 }}>Register</Title>
               </Row>

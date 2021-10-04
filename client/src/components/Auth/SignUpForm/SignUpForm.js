@@ -4,7 +4,7 @@ import styles from "./styles";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../../../redux/actions/auth";
 import { useHistory } from "react-router-dom";
-import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
+// import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 const { Title } = Typography;
 
@@ -19,7 +19,7 @@ const initialState = {
 
 function SignUpForm({ setIsSignIn }) {
   const [form, setForm] = useState(initialState);
-  const [user, setUser] = useLocalStorage("user");
+  // const [user, setUser] = useLocalStorage("user");
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -34,11 +34,11 @@ function SignUpForm({ setIsSignIn }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (values) => {
-    console.log("form data", form);
-    dispatch(signup(form, history, setUser));
-    console.log("Success:", values);
-  };
+  // const handleSubmit = (values) => {
+  //   console.log("form data", form);
+  //   dispatch(signup(form, history, setUser));
+  //   console.log("Success:", values);
+  // };
 
   const handleFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -53,7 +53,7 @@ function SignUpForm({ setIsSignIn }) {
         noValidate
         name="basic"
         initialValues={{}}
-        onFinish={handleSubmit}
+        // onFinish={handleSubmit}
         onFinishFailed={handleFailed}
       >
         <Form.Item

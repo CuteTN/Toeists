@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { Layout } from "antd";
 import styles from "./styles.js";
-import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
+// import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 import { fetchUserJoinedGroups } from "../../../redux/actions/group";
 import { useSelector, useDispatch } from "react-redux";
 import FeedMenu from "./FeedMenu/FeedMenu.js";
-import { useGroupsOfUser } from "../../../context/GroupsOfUserContext.js";
+// import { useGroupsOfUser } from "../../../context/GroupsOfUserContext.js";
 
 const { Sider } = Layout;
 
 function FeedSidebar() {
-  const [user] = useLocalStorage("user");
+  // const [user] = useLocalStorage("user");
   // const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
 
@@ -20,7 +20,7 @@ function FeedSidebar() {
   // }, []);
 
   // const groups = useSelector((state) => state.groups);
-  const groups = useGroupsOfUser().state.listGroups;
+  // const groups = useGroupsOfUser().state.listGroups;
 
   return (
     <div>
@@ -34,7 +34,8 @@ function FeedSidebar() {
           ...styles.fixedSider,
         }}
       >
-        <FeedMenu user={user} groups={groups} />
+        {/* <FeedMenu user={user} groups={groups} /> */}
+        <FeedMenu />
       </Sider>
     </div>
   );

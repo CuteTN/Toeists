@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Modal, Typography, Menu, Tooltip, Tabs, Button, Avatar } from "antd";
 import moment from "moment";
 import COLOR from "../../../constants/colors";
-import * as api from "../../../api/notification";
+// import * as api from "../../../api/notification";
 import { useDispatch } from "react-redux";
-import { limitNameLength } from "../../../utils/limitNameLength";
-import {
-  refreshNotifications,
-  setSeenNotification,
-} from "../../../redux/actions/notifications";
+// import { limitNameLength } from "../../../utils/limitNameLength";
+// import {
+//   refreshNotifications,
+//   setSeenNotification,
+// } from "../../../redux/actions/notifications";
 
 const { Text } = Typography;
 const { TabPane } = Tabs;
@@ -38,14 +38,14 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
     // });
   }, []);
 
-  const handleMarkAll = () => {
-    unseenNotifications?.forEach((item) => {
-      dispatch(setSeenNotification(item._id, "true"));
-    });
-    dispatch(refreshNotifications());
-    setIsUpdate(true);
-    Modal.destroyAll();
-  };
+  // const handleMarkAll = () => {
+  //   unseenNotifications?.forEach((item) => {
+  //     dispatch(setSeenNotification(item._id, "true"));
+  //   });
+  //   dispatch(refreshNotifications());
+  //   setIsUpdate(true);
+  //   Modal.destroyAll();
+  // };
 
   useEffect(() => {
     handleFetchNoti();
@@ -90,7 +90,7 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
                       placement="bottom"
                     >
                       <Text>
-                        {limitNameLength(item.content?.description, 54)}
+                        {/* {limitNameLength(item.content?.description, 54)} */}
                       </Text>
                     </Tooltip>
 
@@ -123,9 +123,7 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
               <NotiList noti={notifications} />
             </TabPane>
           </Tabs>
-          <Button className="green-button" onClick={handleMarkAll}>
-            Mark all as read
-          </Button>
+          <Button className="green-button">Mark all as read</Button>
         </div>
       ),
       okButtonProps: { style: { display: "none" } },
@@ -158,7 +156,7 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
                 <div className="d-flex ml-1 flex-column">
                   <Tooltip title={item.content?.description} placement="bottom">
                     <Text>
-                      {limitNameLength(item.content?.description, 54)}
+                      {/* {limitNameLength(item.content?.description, 54)} */}
                     </Text>
                   </Tooltip>
 

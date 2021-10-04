@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import styles from "../styles.js";
 import { Link } from "react-router-dom";
-import { limitNameLength } from "../../../../utils/limitNameLength";
+// import { limitNameLength } from "../../../../utils/limitNameLength";
 
 const { SubMenu } = Menu;
 
@@ -50,7 +50,7 @@ function FeedMenu({ user, groups }) {
           <Menu.Item key={group._id} style={styles.item}>
             <Tooltip title={group?.name} placement="right">
               <Link to={`/group/${group?._id}/main`} target="_blank">
-                {limitNameLength(group?.name, 18)}
+                {/* {limitNameLength(group?.name, 18)} */}
               </Link>
             </Tooltip>
           </Menu.Item>

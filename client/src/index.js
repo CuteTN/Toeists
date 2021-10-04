@@ -10,10 +10,10 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
-import { TokenProvider } from "./context/TokenContext";
-import { CurrentUserProvider } from "./context/CurrentUserContext";
-import { GroupsOfUserProvider } from "./context/GroupsOfUserContext";
-import ScrollToTop from "./utils/ScrollTopAuto";
+// import { TokenProvider } from "./context/TokenContext";
+// import { CurrentUserProvider } from "./context/CurrentUserContext";
+// import { GroupsOfUserProvider } from "./context/GroupsOfUserContext";
+// import ScrollToTop from "./utils/ScrollTopAuto";
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
@@ -22,12 +22,12 @@ ReactDOM.render(
     <BrowserRouter>
       <Provider store={store}>
         <TokenProvider>
-          <CurrentUserProvider>
-            <GroupsOfUserProvider>
-              <ScrollToTop />
-              <App />
-            </GroupsOfUserProvider>
-          </CurrentUserProvider>
+          {/* <CurrentUserProvider> */}
+          {/* <GroupsOfUserProvider> */}
+          {/* <ScrollToTop /> */}
+          <App />
+          {/* </GroupsOfUserProvider> */}
+          {/* </CurrentUserProvider> */}
         </TokenProvider>
       </Provider>
     </BrowserRouter>

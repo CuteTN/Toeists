@@ -11,8 +11,8 @@ import {
   message,
 } from "antd";
 
-import logo from "../../assets/lightlogo.png";
-import loginImage from "../../assets/login.png";
+// import logo from "../../assets/lightlogo.png";
+// import loginImage from "../../assets/login.png";
 import { GoogleLogin } from "react-google-login";
 import { GrGoogle, GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
@@ -20,12 +20,12 @@ import { signin } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import COLOR from "../../constants/colors";
-import { useToken } from "../../context/TokenContext";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
+// import { useToken } from "../../context/TokenContext";
+// import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { resendVerificationMail } from "../../api/auth";
-import { AUTH } from "../../redux/actionTypes";
-import * as apiAuth from "../../api/auth";
-import { BACKEND_URL, GITHUB_CLIENT_ID } from "../../constants/config";
+// import { AUTH } from "../../redux/actionTypes";
+// import * as apiAuth from "../../api/auth";
+// import { BACKEND_URL, GITHUB_CLIENT_ID } from "../../constants/config";
 
 const { Title, Text } = Typography;
 
@@ -37,13 +37,13 @@ const initialState = {
 
 function LoginPage() {
   const [form, setForm] = useState(initialState);
-  const [user, setUser] = useLocalStorage("user");
+  // const [user, setUser] = useLocalStorage("user");
   const dispatch = useDispatch();
   const history = useHistory();
   const [resend, setResend] = useState(false);
   const disableLogin = useRef(false);
 
-  const [token, setToken] = useToken();
+  // const [token, setToken] = useToken();
 
   const setDisableLogin = (b) => {
     disableLogin.current = b;
@@ -54,24 +54,24 @@ function LoginPage() {
     if (resend === true) setResend(false);
   };
 
-  const handleFinish = async (values) => {
-    if (disableLogin.current === false) {
-      console.log("handle login");
-      setDisableLogin(true);
-      const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
-      dispatch(
-        signin(
-          { ...form, browserId },
-          history,
-          setUser,
-          token,
-          setToken,
-          setResend,
-          setDisableLogin
-        )
-      );
-    }
-  };
+  // const handleFinish = async (values) => {
+  //   if (disableLogin.current === false) {
+  //     console.log("handle login");
+  //     setDisableLogin(true);
+  //     const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+  //     dispatch(
+  //       signin(
+  //         { ...form, browserId },
+  //         history,
+  //         setUser,
+  //         token,
+  //         setToken,
+  //         setResend,
+  //         setDisableLogin
+  //       )
+  //     );
+  //   }
+  // };
 
   const handleResend = async () => {
     resendVerificationMail(form.email);
@@ -110,13 +110,13 @@ function LoginPage() {
   //#endregion
 
   //#region github
-  const handleLoginGithub = () => {
-    const redirect_uri = `${BACKEND_URL}/user/login/github/callback`;
-    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
-    window.location.replace(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}&browserId=${browserId}`
-    );
-  };
+  // const handleLoginGithub = () => {
+  //   const redirect_uri = `${BACKEND_URL}/user/login/github/callback`;
+  //   const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+  //   window.location.replace(
+  //     `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}&browserId=${browserId}`
+  //   );
+  // };
 
   //#endregion
 
@@ -139,7 +139,7 @@ function LoginPage() {
             >
               <div className="row">
                 <Link to="/">
-                  <img src={logo} alt="Logo" height="58" className="mr-2" />
+                  {/* <img src={logo} alt="Logo" height="58" className="mr-2" /> */}
                 </Link>
                 <Title style={{ marginBottom: 8 }}>Login</Title>
               </div>
@@ -154,8 +154,8 @@ function LoginPage() {
               <Form
                 name="basic"
                 size="large"
-                onFinish={resend ? handleResend : handleFinish}
-                onFinishFailed={handleFinishFailed}
+                // onFinish={resend ? handleResend : handleFinish}
+                // onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
                   name="email"
@@ -276,14 +276,14 @@ function LoginPage() {
               style={{ justifyItems: "center" }}
             >
               <div>
-                <img
+                {/* <img
                   src={loginImage}
                   alt="Register"
                   height="400"
                   // className="object-fit"
                   // height="58"
                   // className="mr-2"
-                />
+                /> */}
               </div>
             </div>
           </Row>

@@ -5,18 +5,18 @@ import RotatingText from "react-rotating-text";
 
 import Navbar from "../../components/Navbar/Navbar";
 
-import Footer from "../../components/Footer/Footer";
+// import Footer from "../../components/Footer/Footer";
 
 import { Link, useHistory } from "react-router-dom";
-import { useLocalStorage } from "../../hooks/useLocalStorage.js";
+// import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import HorizontalScroll from "react-scroll-horizontal";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./styles.css";
-import * as apiHashtag from "../../api/hashtag";
-import * as apiSearch from "../../api/search";
-import FeedPost from "../../components/Posts/FeedPosts/FeedPost/FeedPost";
-import LoadingSearch from "../../components/Loading/LoadingSearch";
+// import * as apiHashtag from "../../api/hashtag";
+// import * as apiSearch from "../../api/search";
+// import FeedPost from "../../components/Posts/FeedPosts/FeedPost/FeedPost";
+// import LoadingSearch from "../../components/Loading/LoadingSearch";
 import { useMobile } from "../../utils/responsiveQuery";
 import COLOR from "../../constants/colors.js";
 
@@ -35,12 +35,12 @@ function HomePage() {
   const fetchAllDataOfTags = async () => {
     let tempData = {};
     let tempTags = [];
-    for (let i = 0; i < hashtags.length; i++) {
-      const { data } = await apiSearch.fetchSearchPostByTag(hashtags[i].name);
-      tempData[hashtags[i].name] = data;
-      if (data.length >= 1)
-        tempTags.push({ name: hashtags[i].name, _id: hashtags[i]._id });
-    }
+    // for (let i = 0; i < hashtags.length; i++) {
+    //   const { data } = await apiSearch.fetchSearchPostByTag(hashtags[i].name);
+    //   tempData[hashtags[i].name] = data;
+    //   if (data.length >= 1)
+    //     tempTags.push({ name: hashtags[i].name, _id: hashtags[i]._id });
+    // }
     setHashtags(tempTags);
     setListPostsOfTags(tempData);
     setLoadingAll(true);
@@ -52,19 +52,19 @@ function HomePage() {
     });
   }, []);
 
-  useEffect(() => {
-    setLoadingTags(false);
-    apiHashtag
-      .fetchHashtagsTop(20)
-      .then((res) => {
-        setHashtags(res.data);
-        setLoadingTags(true);
-      })
-      .catch((error) => {
-        alert("Cannot get hashtags of system");
-        console.log("Error when getting top hashtags", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   setLoadingTags(false);
+  //   apiHashtag
+  //     .fetchHashtagsTop(20)
+  //     .then((res) => {
+  //       setHashtags(res.data);
+  //       setLoadingTags(true);
+  //     })
+  //     .catch((error) => {
+  //       alert("Cannot get hashtags of system");
+  //       console.log("Error when getting top hashtags", error);
+  //     });
+  // }, []);
 
   useEffect(() => {
     if (hashtags.length !== 0 && loadingTags) fetchAllDataOfTags();
@@ -140,9 +140,9 @@ function HomePage() {
               backgroundColor: "white",
             }}
           >
-            {listPostsOfTags[selectedTag]?.map((post, i) => {
+            {/* {listPostsOfTags[selectedTag]?.map((post, i) => {
               return <FeedPost key={post._id} post={post}></FeedPost>;
-            })}
+            })} */}
           </div>
           {/* <Title className="boldhover">Explore this tag</Title> */}
           <div style={{ height: 200 }} />
@@ -182,8 +182,7 @@ function HomePage() {
                   padding: 0,
                   paddingLeft: isMobile ? 64 : 0,
                 }}
-              >
-              </Text>
+              ></Text>
               <br />
               {/* <Text style={{ fontSize: 60, fontWeight: "bolder" }}>
                 programming skills
@@ -199,8 +198,7 @@ function HomePage() {
               />
               <br />
               <div className="mt-4" />
-              <Text style={{ fontSize: 28 }}>
-              </Text>
+              <Text style={{ fontSize: 28 }}></Text>
               <br />
               <div className="row ml-1 mt-5 mb-5">
                 <Button
@@ -368,12 +366,10 @@ function HomePage() {
           {loadingAll ? (
             <HashTagsSelection />
           ) : (
-            <div style={{ marginBottom: 18 }}>
-              <LoadingSearch />
-            </div>
+            <div style={{ marginBottom: 18 }}>{/* <LoadingSearch /> */}</div>
           )}
         </div>
-        {!isMobile ? <Footer /> : null}
+        {/* {!isMobile ? <Footer /> : null} */}
       </Layout>
     </>
   );

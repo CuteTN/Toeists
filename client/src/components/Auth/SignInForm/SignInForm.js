@@ -4,7 +4,7 @@ import styles from "./styles";
 import { useDispatch } from "react-redux";
 import { signin } from "../../../redux/actions/auth";
 import { useHistory } from "react-router-dom";
-import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
+// import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 import { GoogleLogIn } from "react-google-login";
 
@@ -20,12 +20,12 @@ const initialState = {
 
 function SignInForm({ setIsSignIn }) {
   const [form, setForm] = useState(initialState);
-  const [user, setUser] = useLocalStorage("user");
+  // const [user, setUser] = useLocalStorage("user");
 
   const dispatch = useDispatch();
   const history = useHistory();
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   const switchSignup = () => {
     setIsSignIn(false);
