@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 module.exports = {
     "env": {
         "browser": true,
@@ -18,5 +19,6 @@ module.exports = {
         "react"
     ],
     "rules": {
+      "no-unused-vars": "off"
     }
 };

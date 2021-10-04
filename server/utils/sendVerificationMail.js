@@ -1,10 +1,10 @@
 import nodemailer from "nodemailer";
-import User from "../models/user.js";
+import { Users } from "../models/user.js";
 import jwt from "jsonwebtoken";
 const JWT_KEY = "TOEISTS_TEST";
 
 export const sendVerificationMail = async (email) => {
-  const user = await User.findOne({ email: email });
+  const user = await Users.findOne({ email: email });
   const token = jwt.sign({ email: email, id: user._id }, JWT_KEY, {
     expiresIn: "30m",
   });
@@ -33,9 +33,9 @@ export const sendVerificationMail = async (email) => {
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log(error);
+      console.error(error);
     } else {
-      console.log("Email sent: " + info.response);
+      console.info("Email sent: " + info.response);
     }
   });
 };

@@ -2,13 +2,12 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-import User from "../models/user.js";
+import { Users } from "../models/user.js";
 import sendVerificationMail from "../utils/sendVerificationMail.js";
 
 import { cuteIO, usersStatusManager } from "../index.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import moment from "moment";
-import { fetchGitHubUser, getAccessToken } from "../businessLogics/auth.js";
 
 const JWT_KEY = "TOEISTS_TEST";
 
@@ -16,7 +15,7 @@ export const signin = async (req, res) => {
   const { email, password, browserId } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await Users.findOne({ email });
 
     if (!user) return res.status(404).json({ message: "User doesn't exist" });
 
@@ -62,8 +61,7 @@ export const signup = async (req, res) => {
   const { email, password, firstName, lastName, gender, dob } = req.body;
 
   try {
-    // console.log("email", email);
-    const user = await User.findOne({ email });
+    const user = await Users.findOne({ email });
     if (user) return res.status(409).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -75,7 +73,7 @@ export const signup = async (req, res) => {
       dateOfBirth: dob,
     };
 
-    const result = await User.create({
+    const result = await Users.create({
       email,
       password: hashedPassword,
       name: `${firstName} ${lastName}`,
@@ -92,7 +90,7 @@ export const signup = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
 
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -101,7 +99,7 @@ export const changePassword = async (req, res) => {
   const { password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
-    const result = await User.findByIdAndUpdate(
+    const result = await Users.findByIdAndUpdate(
       userId,
       {
         password: hashedPassword,
@@ -119,7 +117,7 @@ export const changePassword = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
 
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -132,7 +130,7 @@ export const checkPassword = async (req, res) => {
         .status(httpStatusCodes.unauthorized)
         .json({ message: "Unauthenticated" });
     }
-    const user = await User.findById(userId);
+    const user = await Users.findById(userId);
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) return res.status(400).json(false);
     res.status(200).json(true);
@@ -148,10 +146,10 @@ export const verifyToken = async (req, res) => {
       if (error) {
         res.status(410).json(error);
       } else {
-        User.findById(decoded.id).then((user) => {
+        Users.findById(decoded.id).then((user) => {
           if (user.activated === true) res.status(409).json("alreadyActivated");
         });
-        User.findByIdAndUpdate(
+        Users.findByIdAndUpdate(
           decoded.id,
           {
             activated: true,
@@ -193,7 +191,7 @@ export const getFriendsStatus = async (req, res, next) => {
   }
 
   try {
-    const user = await User.findById(userId);
+    const user = await Users.findById(userId);
 
     if (!user)
       return res
@@ -284,7 +282,7 @@ export const countNewUsers = async (req, res) => {
           let temp = time.clone().set("day", i);
           const start = temp.clone().startOf("day");
           const end = temp.clone().endOf("day");
-          const count = await User.find({
+          const count = await Users.find({
             createdAt: { $gt: start, $lte: end },
           }).count();
           data.push(count);
@@ -296,7 +294,7 @@ export const countNewUsers = async (req, res) => {
           let temp = time.clone().set("date", i);
           const start = temp.clone().startOf("day");
           const end = temp.clone().endOf("day");
-          const count = await User.find({
+          const count = await Users.find({
             createdAt: { $gt: start, $lte: end },
           }).count();
           data.push(count);
@@ -308,7 +306,7 @@ export const countNewUsers = async (req, res) => {
           let temp = time.clone().set("month", i);
           const start = temp.clone().startOf("month");
           const end = temp.clone().endOf("month");
-          const count = await User.find({
+          const count = await Users.find({
             createdAt: { $gt: start, $lte: end },
           }).count();
           data.push(count);
@@ -321,124 +319,12 @@ export const countNewUsers = async (req, res) => {
   }
 };
 
-export const signinWithGithub = async (req, res) => {
-  const redirect_uri = `${process.env.BACKEND_URL}/user/login/github/callback`;
-  // console.log("yes");
-  res.redirect(
-    `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}`
-  );
-};
-
-export const redirectGithubCallback = async (req, res) => {
-  // console.log("code");
-  const code = req.query.code;
-  console.log({
-    code,
-    client_id: process.env.GITHUB_CLIENT_ID,
-    client_secret: process.env.GITHUB_CLIENT_SECRET,
-  });
-  const access_token = await getAccessToken({
-    code,
-    client_id: process.env.GITHUB_CLIENT_ID,
-    client_secret: process.env.GITHUB_CLIENT_SECRET,
-  });
-
-  const userGithub = await fetchGitHubUser(access_token);
-
-  if (!userGithub) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-
-  console.log(userGithub);
-
-  try {
-    const user = await User.findOne({ email: userGithub.email });
-
-    // user exists
-    if (user) {
-      try {
-        if (!user.activated) {
-          User.findByIdAndUpdate(
-            user._id,
-            {
-              activated: true,
-            },
-            { new: true }
-          ).then(
-            (result) => {
-              // if (browserId) {
-              //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
-              // }
-              res.redirect(
-                `${process.env.FRONTEND_URL}?github=true&token=${access_token}&name=${userGithub.name}&id=${user._id}`
-              );
-            }
-
-            // res.status(200).json({ result, token: access_token })
-          );
-
-          // return res.status(401).json({ message: "Unactivated", result: user });
-        }
-
-        const token = jwt.sign({ email: user.email, id: user._id }, JWT_KEY, {
-          // expiresIn: "24h",
-        });
-
-        //TODO: get from body, browserId with Nghia
-        // if (browserId) {
-        //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
-        // }
-
-        res.redirect(
-          `${process.env.FRONTEND_URL}?github=true&token=${token}&name=${userGithub.name}&id=${user._id}`
-        );
-        // res.status(201).json({ result: user, token: access_token });
-      } catch (error) {
-        return res.status(500).json({ message: error });
-      }
-    } else {
-      // user new login
-      const hashedPassword = await bcrypt.hash("password", 12);
-
-      const result = await User.create({
-        email: userGithub.email,
-        password: hashedPassword,
-        name: userGithub.name,
-        activated: true,
-        avatarUrl: userGithub.avatar_url,
-      });
-
-      const token = jwt.sign({ email: result.email, id: result._id }, JWT_KEY, {
-        // expiresIn: "24h",
-      });
-
-      //TODO: get from body, browserId with Nghia
-      // if (browserId) {
-      //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
-      // }
-
-      // sendVerificationMail(email);
-
-      res.redirect(
-        `${process.env.FRONTEND_URL}?github=true&token=${token}&name=${userGithub.name}&id=${result._id}`
-      );
-      // res.status(201).json({ result, token: access_token });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error });
-
-    console.log(error);
-  }
-};
-
 export const checkAdminSystem = async (req, res) => {
   const { userId } = req;
-  console.log("user", userId);
 
   try {
-    const user = await User.findById(userId);
+    const user = await Users.findById(userId);
     const role = user.role;
-    console.log("role", role);
     if (role === "Admin") {
       return res.status(httpStatusCodes.accepted).json({ isAdmin: true });
     }

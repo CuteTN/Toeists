@@ -1,4 +1,4 @@
-import { extractToken } from "../businessLogics/auth.js";
+import { extractToken } from "../services/auth.js";
 
 const auth = async (req, res, next) => {
   try {
@@ -13,7 +13,7 @@ const auth = async (req, res, next) => {
     // get req userId to use when come next auth
     next();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(401).json({ message: error.message });
   }
 };
