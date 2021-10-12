@@ -22,8 +22,8 @@ export const findUserByIdentifier = (identifier, users) => {
 }
 
 export const generateUserTokens = (user) => {
-  const accessToken = signJwt({ userId: user._id, username: user.username, email: user.email }, { expiresIn: "1m" });
-  const refreshToken = signJwt({ userId: user._id });
+  const accessToken = signJwt({ type: "a", userId: user._id, username: user.username, email: user.email }, { expiresIn: "1m" });
+  const refreshToken = signJwt({ type: "r", userId: user._id });
 
   return { accessToken, refreshToken };
 }
