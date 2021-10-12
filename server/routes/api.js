@@ -13,5 +13,5 @@ apiRouter.get("/", function (req, res, next) {
   `)
 });
 
-apiRouter.use('/auth', authenticationRouter);
+apiRouter.use('/authentication', authenticationRouter);
 apiRouter.use('/users', usersRouter);

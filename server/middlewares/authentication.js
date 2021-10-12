@@ -1,21 +1,25 @@
-import { extractToken } from "../services/auth.js";
+import { httpStatusCodes } from '../utils/httpStatusCode.js'
+import { verifyJwt } from "../services/jwtHelper.js";
 
-const auth = async (req, res, next) => {
+const authorize = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = req.headers.authorization?.split?.(" ")?.[1];
 
     if (!token)
-      return res.status(401).json({ message: "No authorization" });
+      return res.status(httpStatusCodes.unauthorized).json({ message: "No authorization." });
 
-    const decodedData = extractToken(token);
-    req.userId = decodedData.userId;
+    const verification = verifyJwt(token);
 
-    // get req userId to use when come next auth
-    next();
+    if (!verification.valid)
+      return res.status(httpStatusCodes.unauthorized).json({ message: `Invalid token: `, detail: verification.error });
+
+    req.userId = verification.payload.userId;
+
+    next?.();
   } catch (error) {
     console.error(error);
-    return res.status(401).json({ message: error.message });
+    return res.status(httpStatusCodes.internalServerError).json({ message: error.message });
   }
 };
 
-export default auth;
+export default authorize;
