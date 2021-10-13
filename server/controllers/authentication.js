@@ -52,7 +52,7 @@ export const signIn = async (req, res, next) => {
 
   const isPasswordCorrect = await bcrypt.compare(password, user.hashedPassword);
   if (!isPasswordCorrect)
-    return res.status(httpStatusCodes.unauthorized).json({ message: "Wrong password." });
+    return res.status(httpStatusCodes.badRequest).json({ message: "Wrong password." });
 
   const tokens = generateUserTokens(user);
 
@@ -78,17 +78,17 @@ export const refreshToken = async (req, res, next) => {
 
   let userId = null;
   try { userId = verifyJwt(refreshToken).payload.userId; }
-  catch { return res.status(httpStatusCodes.unauthorized).json({ message: "Invalid token" }) }
+  catch { return res.status(httpStatusCodes.badRequest).json({ message: "Invalid token" }) }
 
   if (!userId)
-    return res.status(httpStatusCodes.unauthorized).json({ message: "Invalid token (no user ID in payload)" })
+    return res.status(httpStatusCodes.badRequest).json({ message: "Invalid token (no user ID in payload)" })
 
   const user = await User.findById(userId);
   if (!user)
     return res.status(httpStatusCodes.notFound).json({ message: "The owner of the token doesn't exist." })
 
   if (!refreshTokenDoc)
-    return res.status(httpStatusCodes.unauthorized).json({ message: "Invalid token (not in white-list)" });
+    return res.status(httpStatusCodes.badRequest).json({ message: "Invalid token (not in white-list)" });
 
   const tokens = generateUserTokens(user);
   await RefreshToken.findByIdAndUpdate(refreshTokenDoc._id, { token: tokens.refreshToken });

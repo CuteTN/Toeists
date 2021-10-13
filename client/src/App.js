@@ -38,7 +38,6 @@ import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
-import * as apiAuth from "./api/auth";
 // import * as apiUser from "./api/user_info";
 // import * as apiGroup from "./api/group";
 

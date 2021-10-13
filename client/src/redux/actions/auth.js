@@ -1,5 +1,6 @@
+// NOTE: We may no longer need this. But let's just keep it here at this moment
+
 import { AUTH, LOGOUT } from "../actionTypes";
-import * as api from "../../api/auth";
 import { message } from "antd";
 
 export const signin =
@@ -15,8 +16,8 @@ export const signin =
   async (dispatch) => {
     try {
       console.log("signin");
-      const { data } = await api.signIn(formData);
-      dispatch({ type: AUTH, data, setLocalStorageUser });
+      // const { data } = await api.signIn(formData);
+      // dispatch({ type: AUTH, data, setLocalStorageUser });
       // dirty code to force sign in
       // setTimeout(() => {
       //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
@@ -49,7 +50,7 @@ export const signup =
   (formData, setResend, setDisableReg) => async (dispatch) => {
     try {
       console.log("signup");
-      await api.signUp(formData);
+      // await api.signUp(formData);
       // dispatch({ type: AUTH, data });
       setResend(true);
       message.success("Please check your email to verify.");
@@ -69,7 +70,7 @@ export const signup =
   };
 
 export const signout = (browserId) => async (dispatch) => {
-  api.signOut(browserId);
+  // api.signOut(browserId);
 };
 // (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
 // dispatch({ type: LOGOUT, setLocalStorageUser });

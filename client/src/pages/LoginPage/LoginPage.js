@@ -22,9 +22,7 @@ import { Link, useHistory } from "react-router-dom";
 import COLOR from "../../constants/colors";
 // import { useToken } from "../../context/TokenContext";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { resendVerificationMail } from "../../api/auth";
 // import { AUTH } from "../../redux/actionTypes";
-// import * as apiAuth from "../../api/auth";
 // import { BACKEND_URL, GITHUB_CLIENT_ID } from "../../constants/config";
 
 const { Title, Text } = Typography;
@@ -74,8 +72,8 @@ function LoginPage() {
   // };
 
   const handleResend = async () => {
-    resendVerificationMail(form.email);
-    message.success("Verification mail sent!");
+    // resendVerificationMail(form.email);
+    // message.success("Verification mail sent!");
   };
 
   const handleFinishFailed = (errorInfo) => {
