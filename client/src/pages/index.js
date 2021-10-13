@@ -4,7 +4,7 @@
 // import FeedPage from "./FeedPage/FeedPage";
 // import TestPage from "./TestPage/TestPage";
 // import SpecificPostPage from "./SpecificPostPage/SpecificPostPage";
-// import UserInfoPage from "./UserInfoPage/UserInfoPage";
+import UserInfoPage from "./UserInfoPage/UserInfoPage";
 // import UserResultSearchPage from "./UserResultSearch/UserResultSearchPage";
 // import GroupPage from "./GroupPage/GroupPage";
 // import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
@@ -30,7 +30,7 @@ export {
   // FeedPage,
   // TestPage,
   // SpecificPostPage,
-  // UserInfoPage,
+  UserInfoPage,
   // UserResultSearchPage,
   // GroupPage,
   // GroupAboutPage,

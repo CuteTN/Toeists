@@ -17,7 +17,7 @@ const initialState = {
   confirmPassword: "",
 };
 
-function SignUpForm({ setIsSignIn }) {
+function SignUpForm() {
   const [form, setForm] = useState(initialState);
   // const [user, setUser] = useLocalStorage("user");
 
@@ -26,9 +26,9 @@ function SignUpForm({ setIsSignIn }) {
 
   useEffect(() => {}, []);
 
-  const switchSignin = () => {
-    setIsSignIn(true);
-  };
+  // const switchSignin = () => {
+  //   setIsSignIn(true);
+  // };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -120,9 +120,7 @@ function SignUpForm({ setIsSignIn }) {
           <Button type="primary" htmlType="submit">
             Sign up
           </Button>
-          <Button htmlType="button" onClick={switchSignin}>
-            Go to signin
-          </Button>
+          <Button htmlType="button">Go to signin</Button>
         </Form.Item>
       </Form>
     </>
