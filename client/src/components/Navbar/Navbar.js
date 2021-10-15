@@ -196,12 +196,7 @@ function Navbar() {
           <Text>Settings</Text>
         </Row>
       </Menu.Item>
-      <Menu.Item key="createGroup">
-        <Row align="middle">
-          <PicLeftOutlined className="mr-lg-2" />
-          <Text>Add group</Text>
-        </Row>
-      </Menu.Item>
+
       {/* <Dropdown
         overlay={menuStatus}
         trigger={["click"]}
@@ -261,7 +256,7 @@ function Navbar() {
             }
             // ref={inputRef}
             bordered={false}
-            style={{ backgroundColor: COLOR.lightGreen }}
+            style={{ backgroundColor: COLOR.lightOrange }}
             // defaultValue={txtInitSearch}
           />
         </div>
@@ -276,7 +271,13 @@ function Navbar() {
               trigger={["click"]}
               placement="bottomCenter"
             >
-              <EllipsisOutlined style={{ fontSize: 24, color: COLOR.white }} />
+              <EllipsisOutlined
+                style={{
+                  fontSize: 24,
+                  color: COLOR.white,
+                  marginTop: 20,
+                }}
+              />
             </Dropdown>
           </Menu>
         </div>

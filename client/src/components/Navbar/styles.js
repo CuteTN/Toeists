@@ -26,7 +26,7 @@ const styles = {
     width: "100%",
   },
   greenBackground: {
-    background: COLOR.green,
+    background: COLOR.orange,
   },
 };
 

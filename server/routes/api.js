@@ -1,6 +1,7 @@
 import express from "express";
 import { usersRouter } from "./users.js";
-import { authenticationRouter} from './authentication.js'
+import { authenticationRouter } from './authentication.js'
+import { authorizationRouter } from "./authorization.js";
 
 export const apiRouter = express.Router();
 
@@ -13,5 +14,6 @@ apiRouter.get("/", function (req, res, next) {
   `)
 });
 
-apiRouter.use('/auth', authenticationRouter);
+apiRouter.use('/authentication', authenticationRouter);
+apiRouter.use('/authorization', authorizationRouter);
 apiRouter.use('/users', usersRouter);

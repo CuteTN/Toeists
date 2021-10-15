@@ -1,4 +1,4 @@
-import { Users } from "../models/user.js"
+import { User } from "../models/user.js"
 import express from 'express'
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
@@ -8,7 +8,7 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
  * @param {express.NextFunction} next
  */
 export const getAllUsers = async (req, res, next) => {
-  const users = await Users.find();
+  const users = await User.find();
   return res.status(httpStatusCodes.ok).send(users);
 }
 
@@ -19,7 +19,7 @@ export const getAllUsers = async (req, res, next) => {
  */
 export const getUserById = async (req, res, next) => {
   const { id } = req.params;
-  const user = await Users.findById(id);
+  const user = await User.findById(id);
 
   if(!user)
     return res.status(httpStatusCodes.notFound).send("User not found");

@@ -1,10 +1,10 @@
 import CuteServerIO from "../socket/CuteServerIO.js";
 import event from "events";
-import { Users } from "../models/user.js";
+import { User } from "../models/user.js";
 
 export default class UsersStatusManager {
   constructor() {
-    Users.find().then((users) => {
+    User.find().then((users) => {
       users.forEach((item) => {
         this.setLockedStatus(item._id, item.onlineStatus ?? "online");
       });
@@ -94,7 +94,7 @@ export default class UsersStatusManager {
 
       this.#statusInfoOfUsers[userId].lockedStatus = newStatus;
 
-      Users.findByIdAndUpdate(userId, { onlineStatus: newStatus });
+      User.findByIdAndUpdate(userId, { onlineStatus: newStatus });
 
       if (oldStatus !== newStatus)
         this.#userStatusChangeEventEmitter.emit("", userId, newStatus);

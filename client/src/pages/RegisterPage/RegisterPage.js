@@ -22,7 +22,9 @@ import { signup } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import COLOR from "../../constants/colors";
-import { resendVerificationMail } from "../../api/auth";
+// import axios from "axios";
+import { apiService } from "../../services/api";
+import { AuthenticationService } from "../../services/AuthenticationService";
 import axios from "axios";
 
 const { Title, Text } = Typography;
@@ -47,10 +49,16 @@ function RegisterPage() {
   const [resend, setResend] = useState(false);
   const disableReg = useRef(false);
 
+  // DIRTY: refresh token test
   React.useEffect(() => {
-    axios.get("http://localhost:5000/api/users").then((res) => {
-      console.log(res.data);
-    });
+    // AuthenticationService.signIn('CuteTN', 'Test.123');
+
+    // setInterval(() => {
+    //   apiService.get('api/authorization').then(
+    //     () => console.log("Ok"),
+    //     () => console.log("401")
+    //   )
+    // }, 10000);
   }, []);
 
   const setDisableReg = (b) => {
@@ -96,8 +104,8 @@ function RegisterPage() {
   };
 
   const handleResend = () => {
-    resendVerificationMail(form.newEmail);
-    message.success("Verification mail sent!");
+    // resendVerificationMail(form.newEmail);
+    // message.success("Verification mail sent!");
   };
 
   const handleFinishFailed = (errorInfo) => {
@@ -341,9 +349,9 @@ function RegisterPage() {
                   src={addUserImage}
                   alt="Register"
                   height="450"
-                  // className="object-fit"
-                  // height="58"
-                  // className="mr-2"
+                // className="object-fit"
+                // height="58"
+                // className="mr-2"
                 />
               </div>
             </div>

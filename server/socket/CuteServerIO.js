@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { verifyJwt } from "../utils/verfifyAuth.js";
+import { verifyJwt } from "../services/jwtHelper.js";
 import event from 'events'
 
 /**

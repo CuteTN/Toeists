@@ -96,7 +96,7 @@ const AvatarView = () => {
   const EditImageButton = () => {
     return (
       <div>
-        <Button className="green-button mr-2" style={styles.editImageBtn}>
+        <Button className="orange-button mr-2" style={styles.editImageBtn}>
           Edit
         </Button>
         <input

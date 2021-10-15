@@ -7,7 +7,20 @@ import styles from "./styles.js";
 const { TextArea } = Input;
 
 const ListButtons = () => {
-  const [isModalReport, setIsModalReport] = useState(false);
+  const getDefaultSelectedItem = () => {
+    switch (location.pathname) {
+      case `/userinfo`:
+        return "post";
+      case `/userinfo/about`:
+        return "about";
+      default:
+        break;
+    }
+  };
+
+  const defaultSelectedKey = getDefaultSelectedItem();
+
+  const [selectedMenu, setSelectedMenu] = useState(defaultSelectedKey);
   const [contentReport, setContentReport] = useState("");
   const FriendButtons = () => {
     return (
@@ -20,21 +33,10 @@ const ListButtons = () => {
   };
 
   // refactor this
-  const AddFriendButton = () => {
-    // console.log(matchingFriendRequest);
-
-    // if not my profile and have no friend request, display add friend button
-    //console.log("have no request");
-    return (
-      <Button className="green-button" style={styles.button}>
-        Add friend
-      </Button>
-    );
-  };
 
   const FollowButton = () => {
     return (
-      <Button className="green-button" style={styles.button}>
+      <Button className="orange-button" style={styles.button}>
         Follow
       </Button>
     );
@@ -43,10 +45,10 @@ const ListButtons = () => {
   const ReportButton = () => {
     return (
       <Button
-        className="green-button"
+        className="red-button"
         style={{ ...styles.button, backgroundColor: "red", color: "white" }}
         onClick={() => {
-          setIsModalReport(true);
+          // setIsModalReport(true);
           console.log("hello");
         }}
       >
@@ -61,7 +63,7 @@ const ListButtons = () => {
     return (
       <Modal
         title="Why do you think this user should be reported?"
-        visible={isModalReport}
+        // visible={isModalReport}
         onOk={() => {}}
         onCancel={() => {}}
       >
@@ -87,8 +89,8 @@ const ListButtons = () => {
         }}
       >
         <ModalReport></ModalReport>
-        <div style={{ marginBottom: 32, maxWidth: "50vw" }}>
-          <Menu mode="horizontal">
+        <div style={{ marginBottom: 32, maxWidth: "60vw" }}>
+          <Menu mode="horizontal" selectedKeys={[selectedMenu]}>
             <Menu.Item key="post">
               <Link style={styles.linkView}>Post</Link>
             </Menu.Item>
@@ -99,7 +101,6 @@ const ListButtons = () => {
           </Menu>
         </div>
         <Row style={{ marginTop: 16 }}>
-          <AddFriendButton />
           {FollowButton()}
           <ReportButton></ReportButton>
         </Row>
