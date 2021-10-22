@@ -4,14 +4,10 @@ import { User } from '../models/user.js';
 import mongoose from 'mongoose';
 import { httpStatusCodes } from '../utils/httpStatusCode.js'
 import { findUserByIdentifier, generateUserTokens } from '../services/users.js';
-import { signJwt, verifyJwt } from '../services/jwtHelper.js'
+import { verifyJwt } from '../services/jwtHelper.js'
 import { RefreshToken } from '../models/refreshToken.js';
 
-/**
- * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
+/** @type {express.RequestHandler} */
 export const signUp = async (req, res, next) => {
   const newUserDto = { ...req.body };
   if (!newUserDto.password)
@@ -31,11 +27,7 @@ export const signUp = async (req, res, next) => {
   return res.status(httpStatusCodes.ok).json(newUser);
 }
 
-/**
- * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
+/** @type {express.RequestHandler} */
 export const signIn = async (req, res, next) => {
   const { identifier, password } = req.body;
 
@@ -63,11 +55,7 @@ export const signIn = async (req, res, next) => {
   return res.status(httpStatusCodes.ok).json(tokens);
 }
 
-/**
- * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
+/** @type {express.RequestHandler} */
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
 
@@ -96,11 +84,7 @@ export const refreshToken = async (req, res, next) => {
   return res.status(httpStatusCodes.ok).json(tokens);
 }
 
-/**
- * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
+/** @type {express.RequestHandler} */
 export const invalidateRefreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
 

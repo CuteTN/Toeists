@@ -2,21 +2,13 @@ import { User } from "../models/user.js"
 import express from 'express'
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
-/**
- * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
+/** @type {express.RequestHandler} */
 export const getAllUsers = async (req, res, next) => {
   const users = await User.find();
   return res.status(httpStatusCodes.ok).send(users);
 }
 
-/**
- * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
+/** @type {express.RequestHandler} */
 export const getUserById = async (req, res, next) => {
   const { id } = req.params;
   const user = await User.findById(id);

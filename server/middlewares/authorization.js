@@ -20,7 +20,8 @@ export const authorize = async (req, res, next) => {
     if (verification.payload.type !== 'a')
       return res.status(httpStatusCodes.unauthorized).json({ message: `Invalid token. (Only access tokens are accepted)` });
 
-    req.decodedToken = verification.payload;
+    req.attached ??= {};
+    req.attached.decodedToken = verification.payload
     next?.();
   } catch (error) {
     console.error(error);

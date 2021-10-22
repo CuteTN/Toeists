@@ -1,6 +1,5 @@
 import express from "express";
 import * as controllers from "../controllers/authentication.js";
-// import authorize from "../middlewares/authentication.js";
 
 export const authenticationRouter = express.Router();
 
