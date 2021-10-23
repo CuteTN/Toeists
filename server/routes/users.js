@@ -1,14 +1,15 @@
 import express from "express";
 import * as controller from "../controllers/users.js";
-import { autoTransformToUserIdsFn } from '../middlewares/autoTransformToUserIds.js'
-import { authorize } from '../middlewares/authorization.js'
+import { autoTransformToUserIdsMdwFn } from '../middlewares/autoTransformToUserIds.js'
+import { authorizeMdw } from '../middlewares/authorization.js'
 
 export const usersRouter = express.Router();
 
-const reqParamsToUserId = autoTransformToUserIdsFn(
+const reqParamsToUserId = autoTransformToUserIdsMdwFn(
   [req => req.params, 'id']
 )
 
 usersRouter.get('/', controller.getAllUsers);
 usersRouter.get('/:id', reqParamsToUserId, controller.getUserById);
-usersRouter.put('/:id', authorize, reqParamsToUserId, controller.updateUser);
+usersRouter.get('/:id/connections', reqParamsToUserId, controller.getUserConnections);
+usersRouter.put('/:id', authorizeMdw, reqParamsToUserId, controller.updateUser);

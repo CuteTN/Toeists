@@ -1,15 +1,15 @@
 import express from "express";
 import * as controllers from "../controllers/userConnection.js";
-import { authorize } from "../middlewares/authorization.js";
-import { autoTransformToUserIdsFn } from "../middlewares/autoTransformToUserIds.js";
+import { authorizeMdw } from "../middlewares/authorization.js";
+import { autoTransformToUserIdsMdwFn } from "../middlewares/autoTransformToUserIds.js";
 
 export const userConnectionRouter = express.Router();
 
-const reqToUserIds = autoTransformToUserIdsFn(
+const reqToUserIds = autoTransformToUserIdsMdwFn(
   [req => req.body, "toUserId"]
 );
 
-userConnectionRouter.post("/follow", authorize, reqToUserIds, controllers.follow);
-userConnectionRouter.post("/block", authorize, reqToUserIds, controllers.block);
-userConnectionRouter.delete("/unfollow", authorize, reqToUserIds, controllers.unfollow);
-userConnectionRouter.delete("/unblock", authorize, reqToUserIds, controllers.unblock);
+userConnectionRouter.post("/follow", authorizeMdw, reqToUserIds, controllers.follow);
+userConnectionRouter.post("/block", authorizeMdw, reqToUserIds, controllers.block);
+userConnectionRouter.delete("/unfollow", authorizeMdw, reqToUserIds, controllers.unfollow);
+userConnectionRouter.delete("/unblock", authorizeMdw, reqToUserIds, controllers.unblock);

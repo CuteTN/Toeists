@@ -7,7 +7,7 @@ import express from 'express';
  * @param {express.Response<any, Record<string, any>, number>} res
  * @param {express.NextFunction} next
  */
-export const authorize = async (req, res, next) => {
+export const authorizeMdw = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split?.(" ")?.[1];
     if (!token)

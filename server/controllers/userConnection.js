@@ -14,6 +14,9 @@ const setUserConnectionFn = (status) => async (req, res, next) => {
   if (!toUserId)
     return res.status(httpStatusCodes.badRequest).json({ message: "toUserId is required." });
 
+  if (fromUserId === toUserId)
+    return res.status(httpStatusCodes.badRequest).json({ message: "fromUserId and toUserId must be difference."});
+
   try {
     var existingUserConnection = await UserConnection.findOne({ fromUserId, toUserId });
   }

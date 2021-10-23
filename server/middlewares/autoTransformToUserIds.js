@@ -5,7 +5,7 @@ import { User } from '../models/user.js'
 import { findUserByIdentifier } from '../services/users.js'
 
 /** @type {(...selectors: Selector[]) => express.RequestHandler} */
-export const autoTransformToUserIdsFn = (...selectors) => async (req, res, next) => {
+export const autoTransformToUserIdsMdwFn = (...selectors) => async (req, res, next) => {
   let targetedParent = null;
   const users = await User.find();
 

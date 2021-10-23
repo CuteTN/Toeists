@@ -3,6 +3,8 @@ import { User } from "../models/user.js"
 import express from 'express'
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import mongoose from 'mongoose'
+import { UserConnection } from '../models/userConnection.js';
+import { getAllConnectionsOfUser } from '../services/userConnection.js';
 
 /** @type {express.RequestHandler} */
 export const getAllUsers = async (req, res, next) => {
@@ -20,6 +22,21 @@ export const getUserById = async (req, res, next) => {
 
   return res.status(httpStatusCodes.ok).send(user);
 }
+
+/** @type {express.RequestHandler} */
+export const getUserConnections = async (req, res, next) => {
+  const userId = req.params.id;
+
+  const existingUser = await User.findById(userId);
+  if(!existingUser)
+    return res.sendStatus(httpStatusCodes.notFound);
+
+  const userConnections = await UserConnection.find();
+
+  const result = getAllConnectionsOfUser(userId, userConnections);
+  return res.status(httpStatusCodes.ok).json(result);
+}
+
 
 /** @type {express.RequestHandler} */
 export const updateUser = async (req, res, next) => {
