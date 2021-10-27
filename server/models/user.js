@@ -24,6 +24,12 @@ const userSchema = mongoose.Schema(
             return !emailValidator.validate(username);
           },
           message: props => `Emails cannot be used as usernames`
+        },
+        {
+          validator: function (username) {
+            return !mongoose.isValidObjectId(username)
+          },
+          message: props => `Username is confusing to server as it can be casted to an ID.`
         }
 
       ],
@@ -78,8 +84,8 @@ const userSchema = mongoose.Schema(
 
     /*
      rating: { type: Number },
-     certificates
-     hashtags
+     certificateIds
+     hashtagIds
      */
   },
   { timestamps: true }

@@ -52,12 +52,13 @@ function RegisterPage() {
   // DIRTY: refresh token test
   React.useEffect(() => {
     // AuthenticationService.signIn('CuteTN', 'Test.123');
-    // setInterval(() => {
-    //   apiService.get('api/authorization').then(
-    //     () => console.log("Ok"),
-    //     () => console.log("401")
-    //   )
-    // }, 10000);
+
+    setInterval(() => {
+      apiService.get('api/authorization').then(
+        () => console.log("Ok"),
+        () => console.log("401")
+      )
+    }, 10000);
   }, []);
 
   const setDisableReg = (b) => {
@@ -87,7 +88,6 @@ function RegisterPage() {
 
   const handleFinish = (values) => {
     if (disableReg.current === false) {
-      console.log("fuckfuck");
       const data = {
         email: form.newEmail,
         password: form.newPassword,
