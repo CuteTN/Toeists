@@ -13,6 +13,7 @@ import { Row, Typography } from "antd";
 import styles from "./styles.js";
 import { Layout, Button } from "antd";
 import { Link } from "react-router-dom";
+import { isLoginUser } from "../../../utils/user";
 import moment from "moment";
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -22,8 +23,10 @@ const { Header, Footer, Sider, Content } = Layout;
 const { Text } = Typography;
 const IntroCard = () => {
   //TODO: bug prone like user avatar when get from this so-called user redux
-  //   const user = useSelector((state) => state.user);
-  //   const isMyProfile = isLoginUser(user);
+  const user = useSelector((state) => state.user);
+  console.log("Thy", user);
+  const isMyProfile = isLoginUser(user);
+  if (isMyProfile) console.log("Thyyy");
 
   //   const dateOfBirth = moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY");
   //   const address = user?.userInfo?.address;

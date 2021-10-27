@@ -13,6 +13,7 @@ const COLOR = {
   orange: "#F89823",
   lightOrange: "#FAC380",
   darkOrange: "#C56F06",
+  orangeSmoke: "#F4E2C9",
 };
 
 export default COLOR;

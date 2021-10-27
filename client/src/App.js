@@ -26,10 +26,10 @@ import {
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
-// import { useLocalStorage } from "./hooks/useLocalStorage.js";
+import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 // import { useToken } from "./context/TokenContext.js";
-// import PrivateRoute from "./utils/PrivateRoute.js";
+import PrivateRoute from "./utils/PrivateRoute.js";
 // import { handleNewIOConnection } from "./notifications/index.js";
 // import SettingsPage from "./pages/SettingsPage/SettingsPage.js";
 // import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
@@ -49,14 +49,14 @@ import { getUser } from "./redux/actions/user.js";
 // import { useCurrentUser } from "./context/CurrentUserContext.js";
 // import { useGroupsOfUser } from "./context/GroupsOfUserContext.js";
 
-// const loggedIn = () => {
-//   const user = JSON.parse(localStorage.getItem("user"));
-//   return user;
-// };
+const loggedIn = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user;
+};
 
 function App() {
   // const [token, setToken] = useToken();
-  // const [user] = useLocalStorage("user");
+  const [user] = useLocalStorage("user");
   // const [currentUser, setCurrentUser] = useCurrentUser();
   // const groupsOfUser = useGroupsOfUser();
   // const { updateListGroups } = groupsOfUser;
@@ -92,19 +92,19 @@ function App() {
         <Route exact path="/register">
           <RegisterPage />
         </Route>
-        <Route exact path="/userinfo">
+        {/* <Route exact path="/userinfo">
           <UserInfoPage />
-        </Route>
+        </Route> */}
         {/* <PrivateRoute exact path="/feed" component={FeedPage} /> */}
         {/* <PrivateRoute
             exact
             path="/post/create"
             // component={CreatePostPage}
-          />
-          <PrivateRoute path="/userinfo/my">
-            <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
-          </PrivateRoute> */}
-        {/* <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} /> */}
+          />*/}
+        <PrivateRoute path="/userinfo/my">
+          <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
+        </PrivateRoute>
+        <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} />
         {/* <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route
               path="/post/:id/:focusedCommentId"
