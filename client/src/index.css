@@ -13,6 +13,9 @@ body {
   --black: #333333;
   --gray: #828282;
   --red: #eb5757;
+  --orange: #F89823;
+  --dark-orange: #C56F06;
+  
 
   /* overflow: auto; */
   /* height: 100vh;
@@ -46,6 +49,19 @@ body {
 .dark-green {
   color: var(--dark-green);
 }
+
+.orange {
+  color: var(--orange);
+}
+
+.dark-orange {
+  color: var(--dark-orange);
+}
+
+.orange-green {
+  color: var(--dark-orange);
+}
+
 
 .bg-green-smoke {
   background-color: var(--green-smoke);
@@ -164,6 +180,12 @@ body {
   background-color: var(--green-smoke);
   border-color: var(--green-smoke);
   color: var(--dark-green);
+}
+
+.orange-button {
+  background-color: var(--orange);
+  border-color: var(--orange);
+  color: black;
 }
 
 .full {

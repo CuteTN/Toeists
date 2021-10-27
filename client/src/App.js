@@ -5,7 +5,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import {
   CreatePostPage,
   // FeedPage,
-  // UserInfoPage,
+  UserInfoPage,
   // SpecificPostPage,
   UserResultSearchPage,
   // AboutPage,
@@ -38,6 +38,11 @@ import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
+
+// import * as apiAuth from "./api/auth";
+
+// import UserInfoPage from "./pages/UserInfoPage/UserInfoPage.js";
+
 // import * as apiUser from "./api/user_info";
 // import * as apiGroup from "./api/group";
 
@@ -86,6 +91,9 @@ function App() {
         </Route> */}
         <Route exact path="/register">
           <RegisterPage />
+        </Route>
+        <Route exact path="/userinfo">
+          <UserInfoPage />
         </Route>
         {/* <PrivateRoute exact path="/feed" component={FeedPage} /> */}
         {/* <PrivateRoute

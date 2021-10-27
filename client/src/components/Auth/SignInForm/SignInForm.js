@@ -18,7 +18,7 @@ const initialState = {
   // confirmPassword: "",
 };
 
-function SignInForm({ setIsSignIn }) {
+function SignInForm() {
   const [form, setForm] = useState(initialState);
   // const [user, setUser] = useLocalStorage("user");
 
@@ -27,9 +27,9 @@ function SignInForm({ setIsSignIn }) {
 
   useEffect(() => {}, []);
 
-  const switchSignup = () => {
-    setIsSignIn(false);
-  };
+  // const switchSignup = () => {
+  //   setIsSignIn(false);
+  // };
 
   // const googleSuccess = async (res) => {
   //   const result = res?.userObj;
@@ -100,9 +100,7 @@ function SignInForm({ setIsSignIn }) {
           <Button type="primary" htmlType="submit">
             Login
           </Button>
-          <Button htmlType="button" onClick={switchSignup}>
-            Go to signup
-          </Button>
+          <Button htmlType="button">Go to signup</Button>
         </Form.Item>
 
         {/* <Form.Item {...styles.tailLayout}>
