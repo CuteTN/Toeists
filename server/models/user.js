@@ -84,8 +84,8 @@ const userSchema = mongoose.Schema(
 
     /*
      rating: { type: Number },
-     certificates
-     hashtags
+     certificateIds
+     hashtagIds
      */
   },
   { timestamps: true }
