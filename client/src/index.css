@@ -24,7 +24,7 @@ body {
 
 .clickable:hover {
   text-decoration: underline;
-  color: var(--green);
+  color: var(--orange);
   cursor: pointer;
 }
 

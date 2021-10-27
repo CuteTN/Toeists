@@ -14,7 +14,7 @@ import {
 
 // import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
 // import logo from "../../assets/lightlogo.png";
-import addUserImage from "../../assets/add-user.png";
+import addUserImage from "../../assets/signup.jpg";
 
 import styles from "./styles";
 import { Link } from "react-router-dom";
@@ -120,7 +120,7 @@ function SignUpPage() {
   return (
     <div
       className="full d-flex align-items-center justify-content-center"
-      style={{ backgroundColor: COLOR.greenSmoke }}
+      style={{ backgroundColor: COLOR.orangeSmoke }}
     >
       <div
         style={{
@@ -129,23 +129,21 @@ function SignUpPage() {
         }}
       >
         <Row style={{ justifyContent: "center" }}> </Row>
-        <Card className="shadow-lg rounded" bordered={false}>
+        <Card className="shadow-lg p-3 mb-5 bg-body rounded" bordered={false}>
           <Row style={{ alignItems: "center" }}>
             <div
               className="col-md-6"
               style={{ paddingRight: 24, marginBottom: 0 }}
             >
               <Row>
-                <Link to="/">
-                  {/* <img src={logo} alt="Logo" height="58" className="mr-2" /> */}
-                </Link>
+                <Link to="/"></Link>
                 <Title style={{ marginBottom: 8 }}>Register</Title>
               </Row>
               <div style={{ marginBottom: 16 }}>
                 <Text>
                   Already have an account?{" "}
                   <Link to="/login">
-                    <Text className="clickable green bold">Log in</Text>
+                    <Text className="clickable orange bold">Log in</Text>
                   </Link>
                 </Text>
               </div>
@@ -318,7 +316,7 @@ function SignUpPage() {
                 <Form.Item style={{}}>
                   <Button
                     style={{ width: "100%" }}
-                    className="green-button"
+                    className="orange-button"
                     htmlType="submit"
                   >
                     {resend ? "Resend verification mail" : "Create account"}
@@ -335,9 +333,9 @@ function SignUpPage() {
                   src={addUserImage}
                   alt="Register"
                   height="450"
-                // className="object-fit"
-                // height="58"
-                // className="mr-2"
+                  // className="object-fit"
+                  // height="58"
+                  // className="mr-2"
                 />
               </div>
             </div>

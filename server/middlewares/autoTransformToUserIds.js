@@ -4,37 +4,38 @@ import { User } from '../models/user.js'
 import { findUserByIdentifier } from '../services/users.js'
 
 /** @type {(...selectors: Selector[]) => express.RequestHandler} */
-export const autoTransformToUserIdsMdwFn = (...selectors) => async (req, res, next) => {
-  let targetedParent = null;
-  const users = await User.find();
+export const autoTransformToUserIdsMdwFn =
+  (...selectors) =>
+    async (req, res, next) => {
+      let targetedParent = null;
+      const users = await User.find();
 
-  selectors.forEach(selector => {
-    try { targetedParent = selector[0](req, res); }
-    catch { targetedParent = null }
+      selectors.forEach((selector) => {
+        try {
+          targetedParent = selector[0](req, res);
+        } catch {
+          targetedParent = null;
+        }
 
-    if (!targetedParent)
-      return;
+        if (!targetedParent) return;
 
-    const strToConvert = targetedParent[selector[1]];
+        const strToConvert = targetedParent[selector[1]];
 
-    // null
-    if (!strToConvert)
-      return;
+        // null
+        if (!strToConvert) return;
 
-    // already an object Id
-    if (mongoose.isValidObjectId(strToConvert))
-      return;
+        // already an object Id
+        if (mongoose.isValidObjectId(strToConvert)) return;
 
-    // username or email
-    const user = findUserByIdentifier(strToConvert, users);
-    if (!user?.id)
-      return;
+        // username or email
+        const user = findUserByIdentifier(strToConvert, users);
+        if (!user?.id) return;
 
-    targetedParent[selector[1]] = user.id;
-  })
+        targetedParent[selector[1]] = user.id;
+      });
 
-  next?.();
-}
+      next?.();
+    };
 
 /**
  * @typedef {"id" | "username" | "email"} UserTransform
