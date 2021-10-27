@@ -144,7 +144,7 @@ function LoginPage() {
               <div style={{ marginBottom: 16 }}>
                 <Text>
                   No account?{" "}
-                  <Link to="/register">
+                  <Link to="/signup">
                     <Text className="clickable green bold">Create one!</Text>
                   </Link>
                 </Text>

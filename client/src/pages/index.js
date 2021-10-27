@@ -11,7 +11,7 @@ import UserInfoPage from "./UserInfoPage/UserInfoPage";
 // import CreateGroupPage from "./CreateGroupPage/CreateGroupPage";
 // import MessagePage from "./ChatPage/ChatPage";
 import LoginPage from "./LoginPage/LoginPage";
-import RegisterPage from "./RegisterPage/RegisterPage";
+import SignUpPage from "./SignUpPage/SignUpPage";
 // import ErrorPage from "./ErrorPage/ErrorPage";
 // import HomePage from "./HomePage/HomePage";
 // import FriendManagementPage from "./FriendManagementPage/FriendManagementPage";
@@ -36,7 +36,7 @@ export {
   // GroupAboutPage,
   // CreateGroupPage,
   LoginPage,
-  RegisterPage,
+  SignUpPage,
   // ErrorPage,
   // MessagePage,
   // FriendManagementPage,

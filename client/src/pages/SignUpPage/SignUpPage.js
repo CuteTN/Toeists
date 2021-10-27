@@ -24,8 +24,8 @@ import moment from "moment";
 import COLOR from "../../constants/colors";
 // import axios from "axios";
 import { apiService } from "../../services/api";
-import { AuthenticationService } from "../../services/AuthenticationService";
 import axios from "axios";
+import { signUp as apiSignUp } from "../../services/api/authentication";
 
 const { Title, Text } = Typography;
 
@@ -34,52 +34,44 @@ const { Option } = Select;
 const dateFormat = "DD/MM/YYYY";
 
 const initialState = {
-  newEmail: "",
-  newPassword: "",
+  name: "",
+  username: "",
+  email: "",
+  password: "",
   confirmPassword: "",
-  firstName: "",
-  lastName: "",
   gender: "",
-  dob: "",
+  birthday: "",
 };
 
-function RegisterPage() {
+function SignUpPage() {
   const [form, setForm] = useState(initialState);
-  const dispatch = useDispatch();
   const [resend, setResend] = useState(false);
   const disableReg = useRef(false);
 
   // DIRTY: refresh token test
-  React.useEffect(() => {
-    // AuthenticationService.signIn('CuteTN', 'Test.123');
+  // React.useEffect(() => {
+  // AuthenticationService.signIn('CuteTN', 'Test.123');
 
-    setInterval(() => {
-      apiService.get('api/authorization').then(
-        () => console.log("Ok"),
-        () => console.log("401")
-      )
-    }, 10000);
-  }, []);
+  // setInterval(() => {
+  //   apiService.get('api/authorization').then(
+  //     () => console.log("Ok"),
+  //     () => console.log("401")
+  //   )
+  // }, 10000);
+  // }, []);
 
   const setDisableReg = (b) => {
     disableReg.current = b;
   };
 
   const handleChange = (e) => {
+    if (!e) return;
     setForm({ ...form, [e?.target.name]: e?.target.value });
     if (resend) setResend(false);
   };
 
-  const handleChangeDob = (date) => {
-    // var now = moment();
-    // var input = moment(date);
-    // if (now.diff(input, "years") < 18) {
-    //   setDobError("You must be 18 or older.");
-    // } else {
-    //   setDobError(null);
-    //   setForm({ ...form, dob: date });
-    // }
-    setForm({ ...form, dob: date });
+  const handleChangeBirthday = (date) => {
+    setForm({ ...form, birthday: date });
   };
 
   const handleChangeGender = (value) => {
@@ -88,28 +80,40 @@ function RegisterPage() {
 
   const handleFinish = (values) => {
     if (disableReg.current === false) {
-      const data = {
-        email: form.newEmail,
-        password: form.newPassword,
-        firstName: form.firstName,
-        lastName: form.lastName,
-        gender: form.gender,
-        dob: form.dob,
-      };
+      const userData = { ...form }
+      delete userData.confirmPassword;
+
       setDisableReg(true);
-      //TODO: unable to register for demo
-      dispatch(signup(data, setResend, setDisableReg));
+      apiSignUp(userData)
+        .then(() => {
+          message.success(`User ${userData.username} has successfully registered`);
+        })
+        .catch(err => {
+          const errors = [];
+
+          Object.values(err?.response?.data?.errors ?? {}).forEach(error => {
+            if (error.message)
+              errors.push(error.message);
+          });
+
+          handleFinishFailed(errors)
+        })
+        .finally(() => setDisableReg(false))
+        ;
     }
   };
 
   const handleResend = () => {
-    // resendVerificationMail(form.newEmail);
+    // resendVerificationMail(form.email);
     // message.success("Verification mail sent!");
   };
 
-  const handleFinishFailed = (errorInfo) => {
-    errorInfo.errorFields.map((err) => {
-      message.error(err.errors[0]);
+  const handleFinishFailed = (errors) => {
+    if (!errors)
+      return;
+
+    errors?.forEach?.((err) => {
+      message.error(err);
     });
   };
 
@@ -152,7 +156,39 @@ function RegisterPage() {
                 onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
-                  name="newEmail"
+                  name="name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Your name is required.",
+                    },
+                  ]}
+                >
+                  <Input
+                    name="name"
+                    placeholder="Name"
+                    onChange={handleChange}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="username"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Username is required.",
+                    },
+                  ]}
+                >
+                  <Input
+                    name="username"
+                    placeholder="Username"
+                    onChange={handleChange}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="email"
                   rules={[
                     {
                       type: "email",
@@ -162,28 +198,17 @@ function RegisterPage() {
                       required: true,
                       message: "Email is required.",
                     },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        // console.log("value", value.length);
-                        if (value.length >= 6) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error("Password must be at least 6 characters.")
-                        );
-                      },
-                    }),
                   ]}
                 >
                   <Input
-                    name="newEmail"
+                    name="email"
                     placeholder="Email"
                     onChange={handleChange}
                   />
                 </Form.Item>
 
                 <Form.Item
-                  name="newPassword"
+                  name="password"
                   rules={[
                     {
                       required: true,
@@ -191,7 +216,6 @@ function RegisterPage() {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        // console.log("value", value.length);
                         if (value.length >= 6) {
                           return Promise.resolve();
                         }
@@ -203,8 +227,7 @@ function RegisterPage() {
                   ]}
                 >
                   <Input.Password
-                    name="newPassword"
-                    autoComplete="newPassword"
+                    name="password"
                     placeholder="Password"
                     onChange={handleChange}
                   />
@@ -212,7 +235,7 @@ function RegisterPage() {
 
                 <Form.Item
                   name="confirmPassword"
-                  dependencies={["newPassword"]}
+                  dependencies={["password"]}
                   rules={[
                     {
                       required: true,
@@ -220,7 +243,7 @@ function RegisterPage() {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        if (!value || getFieldValue("newPassword") === value) {
+                        if (!value || getFieldValue("password") === value) {
                           return Promise.resolve();
                         }
                         return Promise.reject(
@@ -235,42 +258,7 @@ function RegisterPage() {
                     suffix={null}
                   />
                 </Form.Item>
-                <Row gutter={8}>
-                  <Col span={12}>
-                    <Form.Item
-                      name="firstName"
-                      rules={[
-                        {
-                          required: true,
-                          message: "First name is required.",
-                        },
-                      ]}
-                    >
-                      <Input
-                        name="firstName"
-                        placeholder="First name"
-                        onChange={handleChange}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item
-                      name="lastName"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Last name is required.",
-                        },
-                      ]}
-                    >
-                      <Input
-                        name="lastName"
-                        placeholder="Last name"
-                        onChange={handleChange}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
+
                 <Row gutter={8}>
                   <Col span={10}>
                     <Form.Item
@@ -296,7 +284,7 @@ function RegisterPage() {
                   </Col>
                   <Col span={14}>
                     <Form.Item
-                      name="dob"
+                      name="birthday"
                       rules={[
                         {
                           required: true,
@@ -306,21 +294,20 @@ function RegisterPage() {
                           validator(_, value) {
                             var now = moment();
                             var input = moment(value);
-                            // console.log("dob valid", now.diff(input, "years"));
-                            if (!value || now.diff(input, "years") >= 13) {
+                            if (!value || now.diff(input, "years") >= 5) {
                               return Promise.resolve();
                             }
                             return Promise.reject(
-                              new Error("You must be at least 13 years old.")
+                              new Error("You must be at least 5 years old.")
                             );
                           },
                         }),
                       ]}
                     >
                       <DatePicker
-                        name="dob"
+                        name="birthday"
                         placeholder="Date of birth"
-                        onChange={handleChangeDob}
+                        onChange={handleChangeBirthday}
                         style={{ width: "100%" }}
                         format={dateFormat}
                       />
@@ -361,4 +348,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default SignUpPage;

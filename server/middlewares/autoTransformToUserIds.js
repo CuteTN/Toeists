@@ -1,6 +1,5 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import { validate as validateEmail } from 'email-validator'
 import { User } from '../models/user.js'
 import { findUserByIdentifier } from '../services/users.js'
 

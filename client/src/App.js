@@ -12,7 +12,7 @@ import {
   // GroupPage,
   // CreateGroupPage,
   LoginPage,
-  RegisterPage,
+  SignUpPage,
   // ErrorPage,
   HomePage,
   // MessagePage,
@@ -82,15 +82,12 @@ function App() {
       >
         <FriendsStatusProvider userId={user?.result?._id}> */}
       <Switch>
-        {/* <Route exact path="/" component={HomePage} />
+        {/* <Route exact path="/" component={HomePage} /> */}
         <Route exact path="/login">
-          {loggedIn() ? <Redirect to="/" /> : <LoginPage />}
+          <LoginPage/>
         </Route>
-        <Route exact path="/register">
-          {loggedIn() ? <Redirect to="/" /> : <RegisterPage />}
-        </Route> */}
-        <Route exact path="/register">
-          <RegisterPage />
+        <Route exact path="/signup">
+          <SignUpPage />
         </Route>
         <Route exact path="/userinfo">
           <UserInfoPage />

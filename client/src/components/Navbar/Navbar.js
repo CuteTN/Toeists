@@ -224,7 +224,7 @@ function Navbar() {
         </Link>
       </Menu.Item>
       <Menu.Item key="signup" className="text-center">
-        <Link to="/register">
+        <Link to="/signup">
           <Text>Register</Text>
         </Link>
       </Menu.Item>

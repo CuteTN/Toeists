@@ -47,7 +47,7 @@ const userSchema = mongoose.Schema(
               return this._id.equals(user._id);
             return true;
           },
-          message: props => `The email ${props.value} address is already in use.`
+          message: props => `The email address ${props.value} is already in use.`
         },
         {
           validator: function (email) {
@@ -77,7 +77,7 @@ const userSchema = mongoose.Schema(
       ]
     },
     hashedPassword: { type: String, required: true },
-    gender: { type: String, enum: ['male', 'female', 'other'], required: true },
+    gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
     birthday: { type: Date },
     avatarUrl: { type: String },
     description: { type: String },
