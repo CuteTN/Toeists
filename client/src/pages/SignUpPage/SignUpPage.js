@@ -78,7 +78,7 @@ function SignUpPage() {
     setForm({ ...form, gender: value });
   };
 
-  const handleFinish = (values) => {
+  const handleFinish = () => {
     if (disableReg.current === false) {
       const userData = { ...form }
       delete userData.confirmPassword;
@@ -142,8 +142,8 @@ function SignUpPage() {
               <div style={{ marginBottom: 16 }}>
                 <Text>
                   Already have an account?{" "}
-                  <Link to="/login">
-                    <Text className="clickable orange bold">Log in</Text>
+                  <Link to="/signin">
+                    <Text className="clickable orange bold">Sign in</Text>
                   </Link>
                 </Text>
               </div>

@@ -218,9 +218,9 @@ function Navbar() {
 
   const menuAuth = (
     <Menu className="bg-green-smoke">
-      <Menu.Item key="login" className="text-center">
-        <Link to="/login">
-          <Text>Login</Text>
+      <Menu.Item key="signin" className="text-center">
+        <Link to="/signin">
+          <Text>Sign in</Text>
         </Link>
       </Menu.Item>
       <Menu.Item key="signup" className="text-center">

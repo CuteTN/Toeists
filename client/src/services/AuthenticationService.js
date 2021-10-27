@@ -7,6 +7,7 @@ export class AuthenticationService {
     try {
       response = await signIn(identifier, password);
       this.saveTokens(response.data ?? {});
+      return response;
     }
     catch (error) { 
       console.error("Sign in error:", error); 

@@ -10,7 +10,7 @@ import UserInfoPage from "./UserInfoPage/UserInfoPage";
 // import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
 // import CreateGroupPage from "./CreateGroupPage/CreateGroupPage";
 // import MessagePage from "./ChatPage/ChatPage";
-import LoginPage from "./LoginPage/LoginPage";
+import SignInPage from "./SignInPage/SignInPage";
 import SignUpPage from "./SignUpPage/SignUpPage";
 // import ErrorPage from "./ErrorPage/ErrorPage";
 // import HomePage from "./HomePage/HomePage";
@@ -35,7 +35,7 @@ export {
   // GroupPage,
   // GroupAboutPage,
   // CreateGroupPage,
-  LoginPage,
+  SignInPage,
   SignUpPage,
   // ErrorPage,
   // MessagePage,

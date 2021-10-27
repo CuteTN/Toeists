@@ -6,8 +6,6 @@ import { signin } from "../../../redux/actions/auth";
 import { useHistory } from "react-router-dom";
 // import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
-import { GoogleLogIn } from "react-google-login";
-
 const { Title } = Typography;
 
 const initialState = {
@@ -103,22 +101,6 @@ function SignInForm() {
           <Button htmlType="button">Go to signup</Button>
         </Form.Item>
 
-        {/* <Form.Item {...styles.tailLayout}>
-          <GoogleLogIn
-            clientId="GOOGLE id"
-            render={(renderProps) => (
-              <Button
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                Google Sign In
-              </Button>
-            )}
-            onSuccess={googleSuccess}
-            onFailure={googleError}
-            cookiePolicy="single_host_origin"
-          />
-        </Form.Item> */}
       </Form>
     </>
   );

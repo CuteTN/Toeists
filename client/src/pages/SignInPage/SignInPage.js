@@ -12,7 +12,6 @@ import {
 } from "antd";
 
 // import logo from "../../assets/lightlogo.png";
-// import loginImage from "../../assets/login.png";
 import { GoogleLogin } from "react-google-login";
 import { GrGoogle, GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
@@ -20,6 +19,7 @@ import { signin } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import COLOR from "../../constants/colors";
+import { AuthenticationService } from "../../services/AuthenticationService";
 // import { useToken } from "../../context/TokenContext";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
 // import { AUTH } from "../../redux/actionTypes";
@@ -28,23 +28,22 @@ import COLOR from "../../constants/colors";
 const { Title, Text } = Typography;
 
 const initialState = {
-  email: "",
+  identifier: "",
   password: "",
   remember: "",
 };
 
-function LoginPage() {
+function SignInPage() {
   const [form, setForm] = useState(initialState);
   // const [user, setUser] = useLocalStorage("user");
-  const dispatch = useDispatch();
   const history = useHistory();
   const [resend, setResend] = useState(false);
-  const disableLogin = useRef(false);
+  const disableSignIn = useRef(false);
 
   // const [token, setToken] = useToken();
 
-  const setDisableLogin = (b) => {
-    disableLogin.current = b;
+  const setDisableSignIn = (b) => {
+    disableSignIn.current = b;
   };
 
   const handleChange = (e) => {
@@ -52,71 +51,34 @@ function LoginPage() {
     if (resend === true) setResend(false);
   };
 
-  // const handleFinish = async (values) => {
-  //   if (disableLogin.current === false) {
-  //     console.log("handle login");
-  //     setDisableLogin(true);
-  //     const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
-  //     dispatch(
-  //       signin(
-  //         { ...form, browserId },
-  //         history,
-  //         setUser,
-  //         token,
-  //         setToken,
-  //         setResend,
-  //         setDisableLogin
-  //       )
-  //     );
-  //   }
-  // };
+  const handleFinish = async (values) => {
+    if (disableSignIn.current === false) {
+      setDisableSignIn(true);
+      // const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+
+      AuthenticationService.signIn(form.identifier, form.password)
+        .then(res => {
+          message.success(`Welcome, ${res.data.username}!`);
+
+          // CuteTN TODO: need to route to the previous link
+          history.push('/');
+        })
+        .catch(error => {
+          handleFinishFailed(error?.response?.data?.message);
+        })
+        .finally(() => setDisableSignIn(false))
+      ;
+    }
+  };
 
   const handleResend = async () => {
     // resendVerificationMail(form.email);
     // message.success("Verification mail sent!");
   };
 
-  const handleFinishFailed = (errorInfo) => {
-    errorInfo.errorFields.forEach((err) => {
-      message.error(err.errors[0]);
-    });
+  const handleFinishFailed = (error) => {
+    message.error(error || "Something went wrong!");
   };
-
-  //#region google sign in
-
-  const googleSuccess = async (res) => {
-    console.log("google signin", res);
-    const result = res?.profileObj;
-    const token = res?.tokenId;
-
-    try {
-      //TODO: handle google sign in with Nghia, for browser token bla bla
-      // dispatch({ type: AUTH, data: { result, token, setUser } });
-
-      history.push("/");
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const googleError = (error) => {
-    // message.error("Google Sign In was unsuccessful. Try again later");
-    console.log("error google login", error);
-  };
-
-  //#endregion
-
-  //#region github
-  // const handleLoginGithub = () => {
-  //   const redirect_uri = `${BACKEND_URL}/user/login/github/callback`;
-  //   const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
-  //   window.location.replace(
-  //     `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}&browserId=${browserId}`
-  //   );
-  // };
-
-  //#endregion
 
   return (
     <div
@@ -139,7 +101,7 @@ function LoginPage() {
                 <Link to="/">
                   {/* <img src={logo} alt="Logo" height="58" className="mr-2" /> */}
                 </Link>
-                <Title style={{ marginBottom: 8 }}>Login</Title>
+                <Title style={{ marginBottom: 8 }}>Sign in</Title>
               </div>
               <div style={{ marginBottom: 16 }}>
                 <Text>
@@ -152,25 +114,20 @@ function LoginPage() {
               <Form
                 name="basic"
                 size="large"
-                // onFinish={resend ? handleResend : handleFinish}
-                // onFinishFailed={handleFinishFailed}
+                onFinish={handleFinish}
               >
                 <Form.Item
-                  name="email"
+                  name="identifier"
                   rules={[
                     {
-                      type: "email",
-                      message: "Invalid email.",
-                    },
-                    {
                       required: true,
-                      message: "Email is required.",
+                      message: "User identifier is required.",
                     },
                   ]}
                 >
                   <Input
-                    name="email"
-                    placeholder="Email"
+                    name="identifier"
+                    placeholder="Username or email"
                     onChange={handleChange}
                   />
                 </Form.Item>
@@ -210,10 +167,10 @@ function LoginPage() {
                   className="d-flex justify-content-center"
                   style={{ marginBottom: 16 }}
                 >
-                  <Text>Or login with</Text>
+                  <Text>Or sign in with</Text>
                 </div>
                 <Row>
-                  <Col xs={24} lg={12} style={{ padding: 4 }}>
+                  <Col xs={24} lg={24} style={{ padding: 4 }}>
                     <GoogleLogin
                       clientId="870911963949-uhovihqpkloivbqnk2c5vgchedih3ej5.apps.googleusercontent.com"
                       render={(renderProps) => (
@@ -232,8 +189,8 @@ function LoginPage() {
                           Google
                         </Button>
                       )}
-                      onSuccess={googleSuccess}
-                      onFailure={googleError}
+                      // onSuccess={googleSuccess}
+                      // onFailure={googleError}
                       cookiePolicy="single_host_origin"
                     />
                   </Col>
@@ -251,21 +208,6 @@ function LoginPage() {
                       Facebook
                     </Button>
                   </Col> */}
-                  <Col xs={24} lg={12} style={{ padding: 4 }}>
-                    <Button
-                      className="github-container"
-                      // htmlType="submit"
-                      icon={
-                        <SiGithub
-                          style={{ marginBottom: 2.5, marginRight: 12 }}
-                        />
-                      }
-                      // onClick={() => handleLoginGithub()}
-                      style={{ width: "100%" }}
-                    >
-                      Github
-                    </Button>
-                  </Col>
                 </Row>
               </Form>
             </div>
@@ -274,14 +216,7 @@ function LoginPage() {
               style={{ justifyItems: "center" }}
             >
               <div>
-                {/* <img
-                  src={loginImage}
-                  alt="Register"
-                  height="400"
-                  // className="object-fit"
-                  // height="58"
-                  // className="mr-2"
-                /> */}
+
               </div>
             </div>
           </Row>
@@ -291,4 +226,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default SignInPage;

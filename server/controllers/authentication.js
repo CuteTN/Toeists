@@ -52,7 +52,7 @@ export const signIn = async (req, res, next) => {
     token: tokens.refreshToken,
   }))
 
-  return res.status(httpStatusCodes.ok).json(tokens);
+  return res.status(httpStatusCodes.ok).json({ ...tokens, username: user.username, userId: user._id });
 }
 
 /** @type {express.RequestHandler} */
