@@ -32,8 +32,8 @@ import { GrStatusGoodSmall } from "react-icons/gr";
 
 import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { signout } from "../../redux/actions/auth";
 import COLOR from "../../constants/colors";
+import { AuthenticationService } from "../../services/AuthenticationService";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
 // import { useToken } from "../../context/TokenContext";
 // import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
@@ -70,6 +70,10 @@ function Navbar() {
   const handleMessage = () => {
     history.push("/message");
   };
+
+  const handleSignOutClick = () => {
+    AuthenticationService.signOut();
+  }
 
   const MainMenuItems = () => {
     return (
@@ -207,7 +211,7 @@ function Navbar() {
         </Tooltip>
       </Dropdown> */}
 
-      <Menu.Item key="logout">
+      <Menu.Item key="logout" onClick={handleSignOutClick}>
         <Row align="middle">
           <LogoutOutlined className=" red mr-2" />
           <Text>Logout</Text>

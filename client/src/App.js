@@ -101,7 +101,7 @@ function App() {
         <PrivateRoute path="/userinfo/my">
           <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
         </PrivateRoute>
-        <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} />
+        <Route path="/userinfo/:id" exact component={UserInfoPage} />
         {/* <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route
               path="/post/:id/:focusedCommentId"

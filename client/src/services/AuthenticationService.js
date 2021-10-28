@@ -15,7 +15,9 @@ export class AuthenticationService {
     }
   }
 
-  static async signOut(refreshToken) {
+  static async signOut() {
+    const refreshToken = TokenService.refreshToken;
+
     if (refreshToken) {
       try {
         await invalidateRefreshToken(refreshToken);
@@ -28,14 +30,16 @@ export class AuthenticationService {
     }
   }
 
-  static async refreshToken(token) {
+  static async refreshToken() {
+    const currentRefreshToken = TokenService.refreshToken;
+
     let response = null;
     try {
-      response = await refreshToken(token);
+      response = await refreshToken(currentRefreshToken);
       this.saveTokens(response.data ?? {});
     }
     catch (error) { 
-      this.signOut(token);
+      this.signOut(currentRefreshToken);
       throw error;
     }
   }

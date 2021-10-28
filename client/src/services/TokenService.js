@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode'
+
 export class TokenService {
   static get ACCESS_TOKEN_NAME() { return 'access-token' }
   static get REFRESH_TOKEN_NAME() { return 'refresh-token' }
@@ -24,5 +26,12 @@ export class TokenService {
       localStorage.removeItem(this.REFRESH_TOKEN_NAME);
     else
       localStorage.setItem(this.REFRESH_TOKEN_NAME, token);
+  }
+
+  /**
+   * @returns throw an error if the token is invalid
+   */
+  static decodeAccessToken() {
+    return jwtDecode(this.accessToken);
   }
 }
