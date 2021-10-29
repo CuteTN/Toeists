@@ -58,6 +58,7 @@ const { Text } = Typography;
 function Navbar() {
   // const isMobile = useMobile();
   const isSmallScreen = useMediaQuery({ query: "(max-width: 1042px)" }); // return true if right size
+  const history = useHistory();
 
   const handlePost = () => {
     history.push("/post/create");
@@ -74,6 +75,10 @@ function Navbar() {
   const handleSignOutClick = () => {
     AuthenticationService.signOut();
   }
+  
+  const handleSettings = async () => {
+    history.push("/settings");
+  };
 
   const MainMenuItems = () => {
     return (
@@ -194,7 +199,7 @@ function Navbar() {
   const menuMore = (
     <Menu>
       {isSmallScreen && <MainMenuItems />}
-      <Menu.Item key="settings">
+      <Menu.Item key="settings" onClick={() => handleSettings()}>
         <Row align="middle">
           <SettingOutlined className="mr-lg-2" />
           <Text>Settings</Text>

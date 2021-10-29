@@ -14,9 +14,10 @@ import {
 // import logo from "../../assets/lightlogo.png";
 import { GoogleLogin } from "react-google-login";
 import { GrGoogle, GrFacebook } from "react-icons/gr";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
+import { useAuth } from "../../contexts/authenticationContext";
 // import { useToken } from "../../context/TokenContext";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
 // import { AUTH } from "../../redux/actionTypes";
@@ -34,10 +35,16 @@ function SignInPage() {
   const [form, setForm] = useState(initialState);
   // const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
+  const location = useLocation();
   const [resend, setResend] = useState(false);
   const disableSignIn = useRef(false);
+  const { signedInUser } = useAuth();
+  const backUrl = new URLSearchParams(location.search).get('url');
 
-  // const [token, setToken] = useToken();
+  React.useEffect(() => {
+    if(signedInUser)
+      routeBack()
+  }, [signedInUser]);
 
   const setDisableSignIn = (b) => {
     disableSignIn.current = b;
@@ -48,6 +55,13 @@ function SignInPage() {
     if (resend === true) setResend(false);
   };
 
+  const routeBack = () => {
+    if (backUrl)
+      history.replace('/settings');
+    else
+      history.replace('/');
+  }
+
   const handleFinish = async (values) => {
     if (disableSignIn.current === false) {
       setDisableSignIn(true);
@@ -56,13 +70,10 @@ function SignInPage() {
       AuthenticationService.signIn(form.identifier, form.password)
         .then(res => {
           message.success(`Welcome, ${res.data.username}!`);
-
-          // CuteTN TODO: need to route to the previous link
-          history.push('/');
         })
         .catch(error => {
           const responseMessage = error?.response?.data?.message
-          if(responseMessage)
+          if (responseMessage)
             handleFinishFailed(responseMessage);
           else {
             console.error(error);
@@ -70,7 +81,7 @@ function SignInPage() {
           }
         })
         .finally(() => setDisableSignIn(false))
-      ;
+        ;
     }
   };
 

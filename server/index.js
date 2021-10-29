@@ -5,14 +5,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
-
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import { apiRouter, rootRouter } from "./routes/index.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import UsersStatusManager from "./services/userStatus.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
-
 dotenv.config();
 
 const app = express();
@@ -47,7 +45,7 @@ app.use(cookieParser());
 // router
 app.use("/", rootRouter);
 app.use("/api", apiRouter);
-// app.use("/userInfo", userRouter);
+
 const SERVER_PORT = process.env.SERVER_PORT || 5000;
 const DATABASE_URL = process.env.DATABASE_URL;
 

@@ -4,12 +4,14 @@ import { useSelector } from "react-redux";
 
 import {
   IoSchoolSharp,
+  MdEmail,
   IoHome,
   FaMale,
   FaBirthdayCake,
   MdWork,
+  FaPhoneSquareAlt,
 } from "react-icons/all";
-import { Row, Typography } from "antd";
+import { Row, Typography, Divider } from "antd";
 import styles from "./styles.js";
 import { Layout, Button } from "antd";
 import { Link } from "react-router-dom";
@@ -24,13 +26,15 @@ const { Text } = Typography;
 const IntroCard = () => {
   //TODO: bug prone like user avatar when get from this so-called user redux
   const user = useSelector((state) => state.user);
-  console.log("Thy", user);
-  const isMyProfile = isLoginUser(user);
-  if (isMyProfile) console.log("Thyyy");
+  // console.log("Thy", user);
+  // const isMyProfile = isLoginUser(user);
 
-  //   const dateOfBirth = moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY");
+  const dateOfBirth = moment(user?.birthday).format("DD/MM/YYYY");
+  console.log(" sinh", user?.birthday);
   //   const address = user?.userInfo?.address;
-  //   const gender = user?.userInfo?.gender;
+  const gender = user?.gender;
+  const phoneNumber = user?.phoneNumber;
+  const email = user?.email;
   //   // educations la array, coi lai
   //   const educations = user?.userInfo?.educations;
   //   const works = user?.userInfo?.works;
@@ -53,35 +57,42 @@ const IntroCard = () => {
       <Row className="container">
         <Text style={styles.header}>Intro</Text>
       </Row>
+      <Row
+        className="row justify-content-center align-items-center"
+        style={styles.bio}
+      >
+        <Text>Nắng bỏ đi nắng k về nữa </Text>
+      </Row>
+      <Divider style={{ justifySelf: "start" }}></Divider>
       <div className="row" style={styles.lineinfo}>
         <OverviewRow
-          firstIcon={<MdWork style={styles.icon} />}
-          text="Leader at KMS"
+          firstIcon={<FaPhoneSquareAlt style={styles.icon} />}
+          text={phoneNumber}
         />
 
-        <OverviewRow
-          firstIcon={<IoSchoolSharp style={styles.icon} />}
-          text="Student at UIT - HCM"
-        />
+        <OverviewRow firstIcon={<MdEmail style={styles.icon} />} text={email} />
 
-        <OverviewRow
-          firstIcon={<IoHome style={styles.icon} />}
-          text="Tam Ky, Quang Nam"
-        />
+        {gender && (
+          <OverviewRow
+            firstIcon={<FaMale style={styles.icon} />}
+            text={gender}
+          />
+        )}
 
-        <OverviewRow firstIcon={<FaMale style={styles.icon} />} text="Male" />
-
-        {/* {dateOfBirth && (
+        {dateOfBirth && (
           <OverviewRow
             firstIcon={<FaBirthdayCake style={styles.icon} />}
             text={dateOfBirth}
           />
-        )} */}
+        )}
       </div>
 
       <Row style={{ width: "100%", justifyContent: "center" }}>
         <Button className="orange-button" type="primary" style={styles.editBtn}>
-          <Link>Edit</Link>
+          <Link>
+            {/* {isMyProfile ? "Edit" : "Show"} */}
+            Show
+          </Link>
         </Button>
       </Row>
 

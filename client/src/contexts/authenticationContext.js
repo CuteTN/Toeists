@@ -3,7 +3,6 @@ import { getUserById } from '../services/api/user';
 import { AuthenticationService } from '../services/AuthenticationService';
 import { TokenService } from '../services/TokenService';
 import { AxiosResponse } from 'axios'
-import { checkAuthorization } from '../services/api/authorization';
 
 const AuthenticationContext = React.createContext();
 
@@ -34,11 +33,6 @@ export const AuthenticationProvider = ({ children }) => {
       AuthenticationService.offSignedOut(signedOutListener);
     }
   }, []);
-
-  // TEST
-  React.useEffect(() => {
-    console.log('signedInUser', signedInUser);
-  }, [signedInUser])
 
   const signIn = React.useCallback((identifier, password) => {
     return AuthenticationService.signIn(identifier, password);

@@ -23,6 +23,7 @@ import {
   // StatisticsPage,
   // UserAdminManagement,
   // GroupAdminManagement,
+  SettingsPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -31,14 +32,13 @@ import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 // import { useToken } from "./context/TokenContext.js";
 import PrivateRoute from "./utils/PrivateRoute.js";
 // import { handleNewIOConnection } from "./notifications/index.js";
-// import SettingsPage from "./pages/SettingsPage/SettingsPage.js";
 // import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 // import AdminDashboardPage from "./pages/SystemAdmin/AdminDashboardPage/AdminDashboardPage.js";
 // import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
-import { AuthenticationProvider } from "./context/authenticationContext.js";
+import { AuthenticationProvider } from "./contexts/authenticationContext.js";
 
 // import * as apiAuth from "./api/auth";
 
@@ -57,7 +57,7 @@ const loggedIn = () => {
 
 function App() {
   // const [token, setToken] = useToken();
-  const [user] = useLocalStorage("user");
+  // const [user] = useLocalStorage("user");
   // const [currentUser, setCurrentUser] = useCurrentUser();
   // const groupsOfUser = useGroupsOfUser();
   // const { updateListGroups } = groupsOfUser;
@@ -100,11 +100,11 @@ function App() {
             path="/post/create"
             // component={CreatePostPage}
           />*/}
-          <PrivateRoute path="/userinfo/my">
-            <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
-          </PrivateRoute>
-          <Route path="/userinfo/:id" exact component={UserInfoPage} />
-          {/* <Route exact path="/post/:id" component={SpecificPostPage} />
+        <PrivateRoute path="/userinfo/my">
+          <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
+        </PrivateRoute>
+        <Route path="/userinfo/:id" exact component={UserInfoPage} />
+        {/* <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route
               path="/post/:id/:focusedCommentId"
               component={SpecificPostPage}
@@ -136,7 +136,7 @@ function App() {
           {/* <Route exact path="/group/:id">
             <Redirect to="/group/:id/main" />
           </Route> */}
-          {/* <PrivateRoute exact path="/settings" component={SettingsPage} /> */}
+          <PrivateRoute exact path="/settings" component={SettingsPage} />
           {/* <Route exact path="/activate/:token" component={ActivationPage} /> */}
           {/* <PrivateRoute exact path="/message" component={MessagePage} /> */}
           {/* <Route path="/group/:id/about" component={GroupPage} />

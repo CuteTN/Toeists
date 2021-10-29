@@ -19,7 +19,7 @@ import SignUpPage from "./SignUpPage/SignUpPage";
 // import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
 // import UserAdminManagement from "./SystemAdmin/UserAdminManagement/UserAdminManagement";
 // import GroupAdminManagement from "./SystemAdmin/GroupAdminManagement/GroupAdminManagement";
-
+import SettingsPage from "./SettingPage/SettingPage";
 // import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
 // import StatisticsPage from "./StatisticsPage/StatisticsPage";
 export {
@@ -46,4 +46,5 @@ export {
   // AuthAdminPage,
   // StatisticsPage,
   // GroupAdminManagement,
+  SettingsPage,
 };

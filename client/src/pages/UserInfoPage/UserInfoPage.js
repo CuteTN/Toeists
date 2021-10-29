@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, createContext, useState } from "react";
 import { Layout, Row } from "antd";
 import { AvatarView, ListButtons, IntroCard } from "../../components/index";
 
@@ -12,19 +12,12 @@ const { Content } = Layout;
 
 function UserInfoPage() {
   let { id } = useParams();
-
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const history = useHistory();
-
   useEffect(() => {
-    console.log("ạndhajsdhajsd");
     dispatch(getUser(id, history));
-    // setTimeout(() => {
-    //   if (!user) history.push("/error404");
-    // }, 2000);
-    console.log("abc", user);
   }, [id]);
 
   const handleFollowUserClick = () => {
@@ -34,6 +27,19 @@ function UserInfoPage() {
   const handleBlockUserClick = () => {
 
   }
+  // useEffect(() => {
+  //   async function getUserInfo() {
+  //     await api
+  //       .getUserById(id)
+  //       .then((res) => {
+  //         console.info(res.data);
+  //         ////////////////////
+  //       })
+  //       .catch((error) => {
+  //         if (error.response?.status === 404) history.push("/error404");
+  //       });
+  //   }
+  // });
 
   return (
     <Layout>

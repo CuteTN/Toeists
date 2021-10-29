@@ -25,6 +25,15 @@ export class AuthenticationService {
   }
 
   /**
+   * @param {SignedInEventListener} listener 
+   * @returns the listener itself for convenience
+   */
+  static onceSignedIn = (listener) => {
+    this.#onSignedInEvent.once("", listener);
+    return listener;
+  }
+
+  /**
    * @param {SignedOutEventListener} listener 
    * @returns the listener itself for convenience
    */
@@ -42,6 +51,15 @@ export class AuthenticationService {
     return listener;
   }
 
+  /**
+   * @param {SignedOutEventListener} listener 
+   * @returns the listener itself for convenience
+   */
+  static onceSignedOut = (listener) => {
+    this.#onSignedOutEvent.once("", listener);
+    return listener;
+  }
+
   static async signIn(identifier, password) {
     let response = null;
     try {
@@ -51,7 +69,7 @@ export class AuthenticationService {
 
       try { var payload = TokenService.decodeAccessToken() }
       catch { return null }
-      
+
       this.#onSignedInEvent.emit("", payload);
       return response;
     }

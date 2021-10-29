@@ -1,16 +1,16 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-
+import { Route, Redirect, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/authenticationContext";
 
 export default function PrivateRoute({ component: Component, ...rest }) {
-  const [user] = useLocalStorage("user");
+  const { signedInUser } = useAuth();
+  const { pathname } = useLocation();
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        return user ? <Component {...props} /> : <Redirect to="/signin" />;
+        return signedInUser ? <Component {...props} /> : <Redirect to={`/signin?url=${encodeURIComponent(pathname)}`}/>;
       }}
     ></Route>
   );
