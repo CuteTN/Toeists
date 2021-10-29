@@ -21,8 +21,12 @@ const styles = {
     fontWeight: 700,
     marginLeft: 8,
   },
+  bio: {
+    fontSize: 18,
+    marginTop: 5,
+  },
   lineinfo: {
-    marginTop: 15,
+    marginBottom: 15,
   },
   backgroundheader: {
     background: "white",

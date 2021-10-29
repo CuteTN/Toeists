@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Image, Typography, message, Row } from "antd";
-
+import { useSelector } from "react-redux";
 import styles from "./styles.js";
 
 const { Title } = Typography;
 
 const AvatarView = () => {
-  //   const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
   //   const isMyProfile = isLoginUser(user);
 
   //   const [avatar, setAvatar] = useState(user?.avatarUrl);
@@ -15,7 +15,7 @@ const AvatarView = () => {
   //   const [backgroundImage, setBackgroundImage] = useState(user?.backgroundUrl);
   //   const [loadingBackground, setLoadingBackground] = useState(false);
 
-  //   const displayName = user?.name ?? "";
+  const displayName = user?.name ?? "";
 
   //   const hiddenAvatarFileInput = React.useRef(null);
   const hiddenBackgroundFileInput = React.useRef(null);
@@ -168,7 +168,7 @@ const AvatarView = () => {
             </div>
           </div>
 
-          <Title style={styles.displayName}>Hoàng Bảo Ngọc</Title>
+          <Title style={styles.displayName}>{displayName}</Title>
         </div>
       </Row>
     </div>

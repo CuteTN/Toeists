@@ -14,10 +14,8 @@ export const getAllUsers = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const getUserById = async (req, res, next) => {
-  console.log("Thycute");
   const { id } = req.params;
   const user = await User.findById(id);
-
   if (!user) return res.status(httpStatusCodes.notFound).send("User not found");
 
   return res.status(httpStatusCodes.ok).send(user);
