@@ -7,7 +7,7 @@ import {
   FOLLOW_USER,
   UNFOLLOW_USER,
 } from "../actionTypes";
-import * as api from "../../api/user";
+import * as api from "../../services/api/user";
 
 export const getUser = (uid, history) => async (dispatch) => {
   try {

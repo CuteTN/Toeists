@@ -14,9 +14,6 @@ import {
 // import logo from "../../assets/lightlogo.png";
 import { GoogleLogin } from "react-google-login";
 import { GrGoogle, GrFacebook } from "react-icons/gr";
-import { SiGithub } from "react-icons/si";
-import { signin } from "../../redux/actions/auth";
-import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
@@ -64,7 +61,13 @@ function SignInPage() {
           history.push('/');
         })
         .catch(error => {
-          handleFinishFailed(error?.response?.data?.message);
+          const responseMessage = error?.response?.data?.message
+          if(responseMessage)
+            handleFinishFailed(responseMessage);
+          else {
+            console.error(error);
+            handleFinishFailed("Something went wrong!");
+          }
         })
         .finally(() => setDisableSignIn(false))
       ;
@@ -76,8 +79,8 @@ function SignInPage() {
     // message.success("Verification mail sent!");
   };
 
-  const handleFinishFailed = (error) => {
-    message.error(error || "Something went wrong!");
+  const handleFinishFailed = (errorMsg) => {
+    message.error(errorMsg);
   };
 
   return (
