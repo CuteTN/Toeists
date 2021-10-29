@@ -26,6 +26,15 @@ function UserInfoPage() {
     // }, 2000);
     console.log("abc", user);
   }, [id]);
+
+  const handleFollowUserClick = () => {
+    
+  }
+
+  const handleBlockUserClick = () => {
+
+  }
+
   return (
     <Layout>
       <Navbar />
