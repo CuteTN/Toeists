@@ -8,6 +8,7 @@ import { isValidUser } from "../../services/users.js"
 export const setUpCuteIO = (cuteIO) => {
   // setupDemoOnReceive(cuteIO);
   // setUpOnReceiveMessages(cuteIO);
+  // cuteIO.queueReceiveHandler("testping", ({msg}) => console.log(msg));
 
   cuteIO.verifyUser = isValidUser;
 };

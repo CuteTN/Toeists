@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { AuthenticationService } from '../services/AuthenticationService';
 import CuteClientIO from './CuteClientIO'
 
 const CuteClientIOContext = React.createContext();
@@ -11,9 +12,14 @@ export const useCuteClientIO = () => {
   return useContext(CuteClientIOContext)
 }
 
+const CuteClientIOInstance = new CuteClientIO();
+CuteClientIOInstance.onRejectedDueToTokenExpired(
+  () => AuthenticationService.refreshToken()
+);
+
 export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnection }) => {
   /** @type [CuteClientIO, any] */
-  const [cuteIO, setCuteIO] = useState(() => new CuteClientIO());
+  const [cuteIO, setCuteIO] = useState(() => CuteClientIOInstance);
 
   useEffect(() => {
     setCuteIO(
@@ -21,7 +27,8 @@ export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnecti
        * @param {CuteClientIO} cuteIO
        */
       cuteIO => {
-        cuteIO.connect(serverUri, token)
+        cuteIO.connect(serverUri, token);
+
         onNewConnection?.(cuteIO);
         return cuteIO;
       }
