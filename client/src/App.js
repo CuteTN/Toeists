@@ -38,7 +38,7 @@ import PrivateRoute from "./utils/PrivateRoute.js";
 import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
-import { AuthenticationProvider } from "./contexts/authenticationContext.js";
+import { useAuth } from "./contexts/authenticationContext.js";
 
 // import * as apiAuth from "./api/auth";
 
@@ -56,33 +56,16 @@ const loggedIn = () => {
 };
 
 function App() {
-  // const [token, setToken] = useToken();
-  // const [user] = useLocalStorage("user");
-  // const [currentUser, setCurrentUser] = useCurrentUser();
-  // const groupsOfUser = useGroupsOfUser();
-  // const { updateListGroups } = groupsOfUser;
-
-  // useEffect(() => {
-  //   if (user) {
-  //     apiUser.fetchUserInfo(user?.result?._id).then((res) => {
-  //       setCurrentUser(res.data);
-  //     });
-  //     apiGroup
-  //       .fetchUserJoinedGroups()
-  //       .then((res) => updateListGroups(res.data));
-  //   }
-  //   // console.log("user", currentUser);
-  // }, [user]);
+  const { accessToken } = useAuth();
 
   return (
     <div className={styles.App}>
-      <AuthenticationProvider>
-        {/* <CuteClientIOProvider
+      <CuteClientIOProvider
         serverUri={BACKEND_URL} //TODO: change all localhost to deploy link
-        // token={token}
-        // onNewConnection={handleNewIOConnection}
+        token={accessToken}
+      // onNewConnection={handleNewIOConnection}
       >
-        <FriendsStatusProvider userId={user?.result?._id}> */}
+        {/*<FriendsStatusProvider userId={user?.result?._id}> */}
         <Switch>
           {/* <Route exact path="/" component={HomePage} /> */}
           <Route exact path="/signin">
@@ -100,11 +83,11 @@ function App() {
             path="/post/create"
             // component={CreatePostPage}
           />*/}
-        <PrivateRoute path="/userinfo/my">
-          <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
-        </PrivateRoute>
-        <Route path="/userinfo/:id" exact component={UserInfoPage} />
-        {/* <Route exact path="/post/:id" component={SpecificPostPage} />
+          <PrivateRoute path="/userinfo/my">
+            <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
+          </PrivateRoute>
+          <Route path="/userinfo/:id" exact component={UserInfoPage} />
+          {/* <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route
               path="/post/:id/:focusedCommentId"
               component={SpecificPostPage}
@@ -169,9 +152,7 @@ function App() {
             </Route> */}
         </Switch>
         {/* </FriendsStatusProvider> */}
-        {/* </CuteClientIOProvider> */}
-      </AuthenticationProvider>
-
+      </CuteClientIOProvider>
     </div>
   );
 }

@@ -18,5 +18,6 @@ module.exports = {
     "no-unused-vars": "off",
     "no-empty": "off",
     "react/prop-types": "off",
+    "no-empty-pattern": "off",
   },
 };

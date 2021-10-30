@@ -16,9 +16,11 @@ export const useAuth = () => {
 
 export const AuthenticationProvider = ({ children }) => {
   const [signedInUser, setSignedInUser] = React.useState(null);
+  const [accessToken, setAccessToken] = React.useState(null);
 
   React.useEffect(() => {
     refreshSignedInUser();
+    setAccessToken(TokenService.accessToken);
 
     const signedInListener = AuthenticationService.onSignedIn(() => {
       refreshSignedInUser();
@@ -28,9 +30,14 @@ export const AuthenticationProvider = ({ children }) => {
       setSignedInUser(null);
     });
 
+    const accessTokenChangeListener = TokenService.onAccessTokenChange(
+      (newAccessToken) => setAccessToken(newAccessToken)
+    )
+
     return () => {
       AuthenticationService.offSignedIn(signedInListener);
       AuthenticationService.offSignedOut(signedOutListener);
+      TokenService.offAccessTokenChange(accessTokenChangeListener);
     }
   }, []);
 
@@ -59,6 +66,7 @@ export const AuthenticationProvider = ({ children }) => {
       signOut,
       refreshSignedInUser,
       signedInUser,
+      accessToken,
     }}>
       {children}
     </AuthenticationContext.Provider>
@@ -70,5 +78,6 @@ export const AuthenticationProvider = ({ children }) => {
  * @property {(identifier: string, password: string) => Promise<AxiosResponse<any>>} signIn
  * @property {() => Promise<AxiosResponse<any>>} signOut
  * @property {() => void } refreshSignedInUser
- * @property { object } signedInUser
+ * @property { object? } signedInUser
+ * @property { string? } accessToken
  */

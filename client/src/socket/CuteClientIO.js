@@ -49,9 +49,10 @@ export default class CuteClientIO {
 
     this.close();
 
-    const query = {
-      token: this.#token
-    };
+    const query = {};
+    if (this.#token)
+      query.token = this.#token;
+
     if (this.#browserId)
       query.browserId = this.#browserId;
 
@@ -59,9 +60,9 @@ export default class CuteClientIO {
 
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
-      console.info(
-        `[IO] Connected to ${this.#socketId} at ${this.#uri}`
-      );
+      // console.info(
+      //   `[IO] Connected to socket ${this.#socketId}`
+      // );
 
       this.socket.once("System-AcceptBrowserId", (msg) => {
         // DANGER: async accross tabs here

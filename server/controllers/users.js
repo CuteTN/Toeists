@@ -39,7 +39,9 @@ export const updateUser = async (req, res, next) => {
   const { id } = req.params;
   const updatingData = req.body;
 
-  if (updatingData.hashedPassword) delete updatingData.hashedPassword;
+  delete updatingData.hashedPassword;
+  delete updatingData.username;
+  delete updatingData.email;
 
   if (updatingData.password) {
     const hashedPassword = await bcrypt.hash(updatingData.password, 12);

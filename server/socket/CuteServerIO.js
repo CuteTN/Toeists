@@ -41,15 +41,18 @@ export default class CuteServerIO {
   /**
    * extract token and userId from a socket.
    * @param {Socket} socket
-   * @returns {{socket: string, token: string, userId: string, browserId: string}}
+   * @returns {{socket: string, token: string, userId: string, username: string, browserId: string}}
    */
   #extractInfoSocket = (socket) => {
     // user must provide a token in order to connect to this server.
     const token = socket.handshake.query.token;
     const browserId = socket.handshake.query.browserId;
-    const userId = verifyJwt(token)?.id;
 
-    return { socket, token, userId, browserId };
+    const tokenPayload = verifyJwt(token).payload ?? {};
+    const userId = tokenPayload.id;
+    const { username } = tokenPayload;
+
+    return { socket, token, userId, username, browserId };
   };
 
   /** @param {string} id */
@@ -109,7 +112,7 @@ export default class CuteServerIO {
    */
   start = () => {
     this.#io.on("connection", async (socket) => {
-      let { token, userId, browserId } = this.#extractInfoSocket(socket);
+      let { token, userId, browserId, username } = this.#extractInfoSocket(socket);
       let logOutTask;
 
       if (!browserId) {
@@ -119,7 +122,7 @@ export default class CuteServerIO {
       this.sendToSocket(socket, "System-AcceptBrowserId", { browserId });
 
       // force user to log out if the token is not valid
-      if (token && token !== "undefined" && token !== "null")
+      if (token)
         this.verifyUser?.(userId).then(res => {
           if (!res)
             this.sendToSocket(socket, "System-InvalidToken", {
@@ -170,9 +173,9 @@ export default class CuteServerIO {
           this.#connectionEventEmitter.emit("disconnection", this.#createCuteParameter(socket, {}));
         });
 
-        if (userId)
-          console.info(`[IO] Connected to ${socket.id}: User ${userId}.`);
-        else console.info(`[IO] Connected to ${socket.id}: Anonymous`);
+        if (username)
+          console.info(`[IO] Connected to ${socket.id}: User ${username}.`);
+        else console.info(`[IO] Connected to ${socket.id}: Anonymous.`);
 
         this.#connectionEventEmitter.emit("connection", this.#createCuteParameter(socket, {}));
       } catch (error) {
