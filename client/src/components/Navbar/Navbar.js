@@ -34,6 +34,7 @@ import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
+import { useAuth } from "../../contexts/authenticationContext";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
 // import { useToken } from "../../context/TokenContext";
 // import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
@@ -56,6 +57,7 @@ const { Header } = Layout;
 const { Text } = Typography;
 
 function Navbar() {
+  const { signedInUser } = useAuth();
   // const isMobile = useMobile();
   const isSmallScreen = useMediaQuery({ query: "(max-width: 1042px)" }); // return true if right size
   const history = useHistory();
@@ -74,8 +76,8 @@ function Navbar() {
 
   const handleSignOutClick = () => {
     AuthenticationService.signOut();
-  }
-  
+  };
+
   const handleSettings = async () => {
     history.push("/settings");
   };
@@ -83,7 +85,7 @@ function Navbar() {
   const MainMenuItems = () => {
     return (
       <Menu
-        style={styles.greenBackground}
+        style={styles.orangeBackground}
         theme="dark"
         mode={!isSmallScreen ? "horizontal" : "vertical"}
         // defaultSelectedKeys={[selectedMenu]}
@@ -168,12 +170,20 @@ function Navbar() {
             }
             placement="bottom"
           >
-            <Avatar
+            {/* <Avatar
               size="large"
               //   alt={Hoàng Bảo Ngọc}
               //   src={currentUser?.avatarUrl}
             >
               Hoàng Bảo Ngọc
+            </Avatar> */}
+            <Avatar
+              size="large"
+              alt={signedInUser?.name}
+              // src={signedInUser?.avatarUrl}
+              onClick={() => history.push(`/userinfo/${signedInUser?._id}`)}
+            >
+              {signedInUser?.name}
             </Avatar>
           </Tooltip>
         </Menu.Item>
@@ -243,7 +253,7 @@ function Navbar() {
   return (
     <Header
       style={{
-        ...styles.greenBackground,
+        ...styles.orangeBackground,
         ...styles.fixedHeader,
       }}
     >
@@ -274,7 +284,7 @@ function Navbar() {
         <div className="d-flex">
           {!isSmallScreen && <MainMenuItems />}
 
-          <Menu theme="dark" mode="horizontal" style={styles.greenBackground}>
+          <Menu theme="dark" mode="horizontal" style={styles.orangeBackground}>
             <Dropdown
               overlay={menuMore}
               trigger={["click"]}
@@ -293,7 +303,7 @@ function Navbar() {
         {/* ) : (
           <>
             <Menu
-              style={styles.greenBackground}
+              style={styles.orangeBackground}
               theme="dark"
               mode={!isSmallScreen ? "horizontal" : "vertical"}
               defaultSelectedKeys={[selectedMenu]}

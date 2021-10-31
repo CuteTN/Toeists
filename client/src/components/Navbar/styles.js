@@ -25,7 +25,7 @@ const styles = {
     zIndex: 1,
     width: "100%",
   },
-  greenBackground: {
+  orangeBackground: {
     background: COLOR.orange,
   },
 };

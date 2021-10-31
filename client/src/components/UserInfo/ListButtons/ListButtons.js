@@ -1,60 +1,86 @@
 import React, { useEffect, useState } from "react";
 import { Button, Menu, message, Row, Modal, Input, Alert } from "antd";
-import { Link, useLocation } from "react-router-dom";
-
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { isLoginUser, checkFollow } from "../../../utils/user.js";
+import { followUser } from "../../../redux/actions/user";
+import * as apiConnection from "./../../../services/api/userConnection";
+import { useAuth } from "../../../contexts/authenticationContext.js";
 import styles from "./styles.js";
 
 const { TextArea } = Input;
 
 const ListButtons = () => {
-  const getDefaultSelectedItem = () => {
-    switch (location.pathname) {
-      case `/userinfo`:
-        return "post";
-      case `/userinfo/about`:
-        return "about";
-      default:
-        break;
-    }
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const user = useSelector((state) => state.user);
+  const isMyProfile = isLoginUser(user);
+  const isFollowed = checkFollow(user);
+  const { signedInUser } = useAuth();
+  const [loadingFollow, setLoadingFollow] = useState(false);
+
+  const handleFollowUser = async () => {
+    await apiConnection.follow(user?._id);
+    // dispatch(followUser(user?.username));
   };
 
-  const defaultSelectedKey = getDefaultSelectedItem();
-
-  const [selectedMenu, setSelectedMenu] = useState(defaultSelectedKey);
-  const [contentReport, setContentReport] = useState("");
-  const FriendButtons = () => {
-    return (
-      <Row>
-        <Button className="green-button" style={styles.button}>
-          Unfriend
-        </Button>
-      </Row>
-    );
+  const handleUnfollowUser = async () => {
+    console.error(user);
+    await apiConnection
+      .unfollow(user?._id)
+      .then(() => message.success({ content: "ABCDEFGH" }))
+      .catch(() => message.error({ content: "Something went wrong." }));
   };
 
-  // refactor this
+  const handleBlockUser = async () => {
+    await apiConnection
+      .block(user)
+      .then(() => history.push("/error404"))
+      .catch(() => message.error({ content: "Something went wrong." }));
+  };
 
   const FollowButton = () => {
-    return (
-      <Button className="orange-button" style={styles.button}>
-        Follow
-      </Button>
-    );
+    if (!isMyProfile) {
+      if (isFollowed)
+        return (
+          <Button
+            className="orange-button"
+            style={styles.button}
+            onClick={handleUnfollowUser}
+            // loading={loadingFollow}
+          >
+            UnFollow
+          </Button>
+        );
+      else
+        return (
+          <Button
+            className="orange-button"
+            style={styles.button}
+            onClick={handleFollowUser}
+            // loading={loadingFollow}
+          >
+            Follow
+          </Button>
+        );
+    }
+    return <></>;
   };
 
   const ReportButton = () => {
-    return (
-      <Button
-        className="red-button"
-        style={{ ...styles.button, backgroundColor: "red", color: "white" }}
-        onClick={() => {
-          // setIsModalReport(true);
-          console.log("hello");
-        }}
-      >
-        Report
-      </Button>
-    );
+    if (!isMyProfile) {
+      return (
+        <Button
+          className="orange-button"
+          style={{ ...styles.button, backgroundColor: "red", color: "white" }}
+          onClick={handleBlockUser}
+        >
+          Block
+        </Button>
+      );
+    }
+    return <></>;
   };
 
   const ModalReport = () => {
@@ -89,19 +115,9 @@ const ListButtons = () => {
         }}
       >
         <ModalReport></ModalReport>
-        <div style={{ marginBottom: 32, maxWidth: "60vw" }}>
-          <Menu mode="horizontal" selectedKeys={[selectedMenu]}>
-            <Menu.Item key="post">
-              <Link style={styles.linkView}>Post</Link>
-            </Menu.Item>
-
-            <Menu.Item key="about">
-              <Link style={styles.linkView}>About</Link>
-            </Menu.Item>
-          </Menu>
-        </div>
+        <div style={{ marginBottom: 62, maxWidth: "60vw" }} />
         <Row style={{ marginTop: 16 }}>
-          {FollowButton()}
+          <FollowButton></FollowButton>
           <ReportButton></ReportButton>
         </Row>
       </Row>

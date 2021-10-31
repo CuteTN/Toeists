@@ -5,11 +5,32 @@ import { autoTransformToUserIdsMdwFn } from "../middlewares/autoTransformToUserI
 
 export const userConnectionRouter = express.Router();
 
-const reqToUserIds = autoTransformToUserIdsMdwFn(
-  [req => req.body, "toUserId"]
-);
+const reqToUserIds = autoTransformToUserIdsMdwFn([
+  (req) => req.body,
+  "toUserId",
+]);
 
-userConnectionRouter.post("/follow", authorizeMdw, reqToUserIds, controllers.follow);
-userConnectionRouter.post("/block", authorizeMdw, reqToUserIds, controllers.block);
-userConnectionRouter.delete("/unfollow", authorizeMdw, reqToUserIds, controllers.unfollow);
-userConnectionRouter.delete("/unblock", authorizeMdw, reqToUserIds, controllers.unblock);
+userConnectionRouter.post(
+  "/follow",
+  authorizeMdw,
+  reqToUserIds,
+  controllers.follow
+);
+userConnectionRouter.post(
+  "/block",
+  authorizeMdw,
+  reqToUserIds,
+  controllers.block
+);
+userConnectionRouter.delete(
+  "/unfollow",
+  authorizeMdw,
+  reqToUserIds,
+  controllers.unfollow
+);
+userConnectionRouter.delete(
+  "/unblock",
+  authorizeMdw,
+  reqToUserIds,
+  controllers.unblock
+);

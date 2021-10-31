@@ -3,26 +3,11 @@ import styles from "./styles.js";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import {
-  CreatePostPage,
-  // FeedPage,
   UserInfoPage,
-  // SpecificPostPage,
-  UserResultSearchPage,
-  // AboutPage,
-  // GroupPage,
-  // CreateGroupPage,
   SignInPage,
   SignUpPage,
-  // ErrorPage,
+  ErrorPage,
   HomePage,
-  // MessagePage,
-  FriendManagementPage,
-  // MutualFriendPage,
-  GroupManagementPage,
-  // AuthAdminPage,
-  // StatisticsPage,
-  // UserAdminManagement,
-  // GroupAdminManagement,
   SettingsPage,
 } from "./pages/index";
 
@@ -84,7 +69,7 @@ function App() {
       >
         <FriendsStatusProvider userId={user?.result?._id}> */}
         <Switch>
-          {/* <Route exact path="/" component={HomePage} /> */}
+          <Route exact path="/" component={HomePage} />
           <Route exact path="/signin">
             <SignInPage />
           </Route>
@@ -100,11 +85,11 @@ function App() {
             path="/post/create"
             // component={CreatePostPage}
           />*/}
-        <PrivateRoute path="/userinfo/my">
-          <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
-        </PrivateRoute>
-        <Route path="/userinfo/:id" exact component={UserInfoPage} />
-        {/* <Route exact path="/post/:id" component={SpecificPostPage} />
+          <PrivateRoute path="/userinfo/my">
+            <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
+          </PrivateRoute>
+          <Route path="/userinfo/:id" exact component={UserInfoPage} />
+          {/* <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route
               path="/post/:id/:focusedCommentId"
               component={SpecificPostPage}
@@ -161,17 +146,16 @@ function App() {
             /> */}
           {/* <PrivateRoute exact path="/statistics" component={StatisticsPage} /> */}
           {/* <Route path="/demoSocketIO" component={DemoSocket} /> */}
-          {/* <Route exact path="/error403">
-              <ErrorPage code="403" />
-            </Route>
-            <Route>
-              <ErrorPage code="404" />
-            </Route> */}
+          <Route exact path="/error403">
+            <ErrorPage code="403" />
+          </Route>
+          <Route exact path="/error404">
+            <ErrorPage code="404" />
+          </Route>
         </Switch>
         {/* </FriendsStatusProvider> */}
         {/* </CuteClientIOProvider> */}
       </AuthenticationProvider>
-
     </div>
   );
 }
