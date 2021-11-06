@@ -6,15 +6,6 @@ import { userConnectionRouter } from "./userConnection.js";
 
 export const apiRouter = express.Router();
 
-/**
- * documentations
- */
-apiRouter.get("/", function (req, res, next) {
-  res.send(`
-    <code>API documentation coming soon...</code>
-  `);
-});
-
 apiRouter.use("/authentication", authenticationRouter);
 apiRouter.use("/authorization", authorizationRouter);
 apiRouter.use("/users", usersRouter);

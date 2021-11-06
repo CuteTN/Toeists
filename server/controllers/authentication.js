@@ -45,12 +45,14 @@ export const signIn = async (req, res, next) => {
   const isPasswordCorrect = await bcrypt.compare(password, user.hashedPassword);
   if (!isPasswordCorrect)
     return res.status(httpStatusCodes.badRequest).json({ message: "Wrong password." });
-
+    
   const tokens = generateUserTokens(user);
-
-  (await RefreshToken.create({
-    token: tokens.refreshToken,
-  }))
+    
+  const noRefresh = req.query["no-refresh"] !== undefined && req.query["no-refresh"] !== "false";
+  if(!noRefresh)
+    await RefreshToken.create({ token: tokens.refreshToken, });
+  else
+    delete tokens.refreshToken;
 
   return res.status(httpStatusCodes.ok).json({ ...tokens, username: user.username, userId: user._id });
 }

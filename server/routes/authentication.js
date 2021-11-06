@@ -1,26 +1,52 @@
 import express from "express";
 import * as controllers from "../controllers/authentication.js";
+import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
 
 export const authenticationRouter = express.Router();
 
 authenticationRouter.post("/signup", controllers.signUp);
 authenticationRouter.post("/signin", controllers.signIn);
 authenticationRouter.post("/refresh-token", controllers.refreshToken);
-
 authenticationRouter.delete("/invalidate", controllers.invalidateRefreshToken);
 
-// authenticationRouter.get("/newUsers/:range/:timeString", countNewUsers);
-// authenticationRouter.get("/password/check/:password", auth, checkPassword);
-// authenticationRouter.get("/checkAdminSystem", auth, checkAdminSystem);
 
-// authenticationRouter.post("/signin", signin);
-// authenticationRouter.post("/resend", resendVerificationMail);
-// authenticationRouter.post("/signout", signout);
 
-// authenticationRouter.put("/password/change", auth, changePassword);
-// authenticationRouter.put("/verify/:token", verifyToken);
+const controllerName = "authentication";
+export const authenticationSwaggerPaths = {
+  [`/${controllerName}/signup`]: {
+    post: createSwaggerPath(
+      "Register a new user.",
+      [controllerName],
+      null,
+      SwaggerTypes.ref("User"),
+      SwaggerTypes.ref("User"),
+    )
+  },
 
-// // user status APIs
-// authenticationRouter.get("/list/friendsStatus", auth, getFriendsStatus);
-// authenticationRouter.get("/getStatus", auth, getUserStatus);
-// authenticationRouter.put("/setStatus/:newStatus", auth, setUserStatus);
+  [`/${controllerName}/signin`]: {
+    post: createSwaggerPath(
+      "Sign user in. Response an access token and a refresh token by default",
+      [controllerName],
+      [
+        {
+          name: "no-refresh",
+          in: "query",
+          schema: SwaggerTypes.boolean({
+            description: "Disable refresh token.",
+            example: true
+          })
+        }
+      ],
+      SwaggerTypes.object({
+        identifier: SwaggerTypes.ref("UserIdentifier"),
+        password: SwaggerTypes.ref("UserPassword"),
+      }),
+      SwaggerTypes.object({
+        accessToken: SwaggerTypes.string(),
+        refreshToken: SwaggerTypes.string({ nullable: true }),
+        username: SwaggerTypes.string(),
+        userId: SwaggerTypes.string(),
+      })
+    )
+  }
+}

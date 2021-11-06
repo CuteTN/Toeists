@@ -11,6 +11,9 @@ import { apiRouter, rootRouter } from "./routes/index.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import UsersStatusManager from "./services/userStatus.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
+import swaggerUI from 'swagger-ui-express'
+import { getAppSwaggerSpecs } from "./routes/swaggerConfig.js";
+
 dotenv.config();
 
 const app = express();
@@ -42,8 +45,11 @@ app.use(cookieParser());
 // );
 // app.use(express.static(path.join(__dirname, "public")));
 
+const swaggerSpecs = getAppSwaggerSpecs(process.env.SERVER_URL);
+
 // router
 app.use("/", rootRouter);
+app.use("/api-doc/", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 app.use("/api", apiRouter);
 
 const SERVER_PORT = process.env.SERVER_PORT || 5000;
