@@ -1,11 +1,13 @@
 import { SwaggerTypes } from "../utils/swagger.js"
-import { authenticationSwaggerPaths } from "./authentication.js"
 import swaggerJsDoc from 'swagger-jsdoc';
+import { authenticationSwaggerPaths } from "./authentication.js"
 import { authorizationSwaggerPaths } from "./authorization.js";
+import { userConnectionsSwaggerPaths } from "./userConnection.js";
+import { usersSwaggerPaths } from "./users.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
-    id: SwaggerTypes.string({ readOnly: true }),
+    _id: SwaggerTypes.string({ readOnly: true }),
     name: SwaggerTypes.string({ example: "Thy Cute" }),
     username: SwaggerTypes.string({ example: "ThyCute" }),
     email: SwaggerTypes.string({ example: "ThyCute@thy.cute" }),
@@ -23,12 +25,29 @@ const swaggerSchemas = Object.freeze({
     example: "ThyCute"
   }),
 
-  UserPassword: SwaggerTypes.password({ example: "Test.123" })
+  UserPassword: SwaggerTypes.password({ example: "Test.123" }),
+
+  UserConnection: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    status: SwaggerTypes.enum(['following', 'blocking']),
+    fromUserId: SwaggerTypes.string(),
+    toUserId: SwaggerTypes.string(),
+  }),
+
+  ConnectionsOfAUser: SwaggerTypes.object({
+    blockerIds: SwaggerTypes.array(SwaggerTypes.string()),
+    blockingUserIds: SwaggerTypes.array(SwaggerTypes.string()),
+    followerIds: SwaggerTypes.array(SwaggerTypes.string()),
+    followingUserIds: SwaggerTypes.array(SwaggerTypes.string()),
+    friendIds: SwaggerTypes.array(SwaggerTypes.string()),
+  })
 })
 
 const swaggerPaths = Object.freeze({
   ...authenticationSwaggerPaths,
   ...authorizationSwaggerPaths,
+  ...userConnectionsSwaggerPaths,
+  ...usersSwaggerPaths,
 })
 
 
@@ -39,6 +58,9 @@ const swaggerPaths = Object.freeze({
 export const getAppSwaggerSpecs = (serverUrl) => {
   /** @type {swaggerJsDoc.Options} */
   const swaggerOptions = {
+    swaggerOptions: {
+    },
+    
     definition: {
       openapi: "3.0.0",
       info: {

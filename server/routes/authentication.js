@@ -48,5 +48,35 @@ export const authenticationSwaggerPaths = {
         userId: SwaggerTypes.string(),
       })
     )
+  },
+
+  [`/${controllerName}/refresh-token`]: {
+    post: createSwaggerPath(
+      "Get new access token and invalidate the supplied refresh token.",
+      [controllerName],
+      null,
+      SwaggerTypes.object({
+        refreshToken: SwaggerTypes.string(),
+      }),
+      SwaggerTypes.object({
+        accessToken: SwaggerTypes.string(),
+        refreshToken: SwaggerTypes.string(),
+      })
+    )
+  },
+
+  [`/${controllerName}/invalidate`]: {
+    delete: createSwaggerPath(
+      "Invalidate the supplied refresh token. This should be used when a user signs out.",
+      [controllerName],
+      null,
+      SwaggerTypes.object({
+        refreshToken: SwaggerTypes.string(),
+      }),
+      SwaggerTypes.object({
+        accessToken: SwaggerTypes.string(),
+        refreshToken: SwaggerTypes.string(),
+      })
+    )
   }
 }

@@ -49,7 +49,18 @@ const swaggerSpecs = getAppSwaggerSpecs(process.env.SERVER_URL);
 
 // router
 app.use("/", rootRouter);
-app.use("/api-doc/", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
+app.use("/api-doc/", swaggerUI.serve, swaggerUI.setup(swaggerSpecs,
+  {
+    swaggerOptions: {
+      docExpansion: "none",
+      operationsSorter: "alpha",
+      methodsSorter: "alpha",
+      tagsSorter: "alpha",
+      persistAuthorization: true,
+    },
+  },
+));
+
 app.use("/api", apiRouter);
 
 const SERVER_PORT = process.env.SERVER_PORT || 5000;
