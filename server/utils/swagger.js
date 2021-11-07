@@ -5,16 +5,13 @@
  * @param {SwaggerApiParamsType[]} parameters
  * @param {{"$ref": "#/components/schemas/<Model>"}} bodySchema 
  * @param {{"$ref": "#/components/schemas/<Model>"}} responseSchema 
+ * @param {boolean} consumesForm 
  */
-export const createSwaggerPath = (summary, tags, parameters, bodySchema, responseSchema) => {
+export const createSwaggerPath = (summary, tags, parameters, bodySchema, responseSchema, consumesForm = false) => {
   const result = {
     summary: summary ?? "",
     tags: tags ?? [],
     parameters: parameters ?? [],
-    requestBody: {
-      requrired: true,
-      content: { "application/json": { schema: bodySchema ?? {} } }
-    },
     responses: {
       "200": {
         content: { "application/json": { schema: responseSchema ?? {} } }
@@ -22,9 +19,21 @@ export const createSwaggerPath = (summary, tags, parameters, bodySchema, respons
     }
   }
 
-  if (!bodySchema)
-    delete result.requestBody;
+  if (bodySchema) {
+    const contentType = consumesForm ? "multipart/form-data" : "application/json";
 
+    result.requestBody = {
+      requrired: true,
+      content: {
+        [contentType]: { schema: bodySchema ?? {} }
+      }
+    }
+
+  }
+
+  if (consumesForm)
+    result.consumes = ["multipart/form-data"]
+  
   return result;
 }
 
@@ -43,6 +52,9 @@ export const SwaggerTypes = {
 
   /** @param {SwaggerTypeCommonOptions} opt */
   boolean: (opt) => createType("boolean", opt),
+
+  /** @param {SwaggerTypeCommonOptions} opt */
+  file: (opt) => createType("string", { ...opt, format: "binary" }),
 
   /** @param {SwaggerTypeCommonOptions} opt */
   date: (opt) => createType("string", { ...opt, format: "date" }),

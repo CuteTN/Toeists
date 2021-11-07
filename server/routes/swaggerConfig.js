@@ -4,6 +4,7 @@ import { authenticationSwaggerPaths } from "./authentication.js"
 import { authorizationSwaggerPaths } from "./authorization.js";
 import { userConnectionsSwaggerPaths } from "./userConnection.js";
 import { usersSwaggerPaths } from "./users.js";
+import { fileSwaggerPaths } from "./files.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -40,6 +41,12 @@ const swaggerSchemas = Object.freeze({
     followerIds: SwaggerTypes.array(SwaggerTypes.string()),
     followingUserIds: SwaggerTypes.array(SwaggerTypes.string()),
     friendIds: SwaggerTypes.array(SwaggerTypes.string()),
+  }),
+
+  Image: SwaggerTypes.object({
+    uploaderId: SwaggerTypes.string(),
+    url: SwaggerTypes.string(),
+    deleteUrl: SwaggerTypes.string(),
   })
 })
 
@@ -48,6 +55,7 @@ const swaggerPaths = Object.freeze({
   ...authorizationSwaggerPaths,
   ...userConnectionsSwaggerPaths,
   ...usersSwaggerPaths,
+  ...fileSwaggerPaths,
 })
 
 
