@@ -17,3 +17,21 @@ export const uploadImage = async (req, res, next) => {
 
   return res.status(httpStatusCodes.ok).json(image);
 }
+
+/** @type {express.RequestHandler} */
+export const uploadImageWithString = async (req, res, next) => {
+  const uploaderId = req.attached.decodedToken.userId;
+
+  /** Expected a base64 encoded string or a URL */
+  const imageStr = req.body.image;
+
+  let image = null;
+  try {
+    image = await uploadToImgbbAndSaveDb(uploaderId, imageStr);
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.badRequest).json({ error });
+  }
+
+  return res.status(httpStatusCodes.ok).json(image);
+}

@@ -3,14 +3,14 @@ import FormData from 'form-data'
 import { imgbbApiKey } from '../index.js';
 
 /**
- * @param {string} imgB64 base64 image
+ * @param {string} imgStr Expected a base64 encoded string or a URL
  */
-export const uploadToImgbbServer = (imgB64) => {
+export const uploadToImgbbServer = (imgStr) => {
   if(!imgbbApiKey)
     throw "No API key provided for 3rd-party service."
 
   const form = new FormData();
-  form.append("image", imgB64);
+  form.append("image", imgStr);
 
   return axios.post(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`, form, {
     headers: 

@@ -1,8 +1,12 @@
 import { Image } from "../models/image.js";
 import { uploadToImgbbServer } from "../services/imgbb.js";
 
-export const uploadToImgbbAndSaveDb = async (uploaderId, imgB64) => {
-  var serviceResponse = await uploadToImgbbServer(imgB64);
+/**
+ * @param {string} uploaderId 
+ * @param {string} imgStr Expected a base64 encoded string or a URL
+ */
+export const uploadToImgbbAndSaveDb = async (uploaderId, imgStr) => {
+  var serviceResponse = await uploadToImgbbServer(imgStr);
     
   const image = new Image({
     uploaderId,

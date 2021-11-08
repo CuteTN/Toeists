@@ -8,12 +8,13 @@ const upload = multer({ storage: multer.memoryStorage() });
 export const filesRouter = express.Router();
 
 filesRouter.post('/image', authorizeMdw, upload.single("image"), controllers.uploadImage);
+filesRouter.post('/image/str', authorizeMdw, controllers.uploadImageWithString);
 
 const controllerName = "files"
 export const fileSwaggerPaths = {
   [`/${controllerName}/image`]: {
     post: createSwaggerPath(
-      "Upload an image to imgbb server and get the url.",
+      "Upload an image to imgbb server and get the url. If the returned url exists, just return the old one.",
       [controllerName],
       null,
       SwaggerTypes.object({
@@ -21,6 +22,18 @@ export const fileSwaggerPaths = {
       }),
       SwaggerTypes.ref("Image"),
       true
+    )
+  },
+
+  [`/${controllerName}/image/str`]: {
+    post: createSwaggerPath(
+      "Upload an image to imgbb server and get the url with **Base64 encoded** string or a **URL**. If the returned url exists, just return the old one.",
+      [controllerName],
+      null,
+      SwaggerTypes.object({
+        image: SwaggerTypes.string(),
+      }),
+      SwaggerTypes.ref("Image"),
     )
   },
 }
