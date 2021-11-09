@@ -25,7 +25,7 @@ import COLOR from "../../constants/colors";
 // import axios from "axios";
 import { apiService } from "../../services/api";
 import axios from "axios";
-import { signUp as apiSignUp } from "../../services/api/authentication";
+import { signUp as apiSignUp } from "../../services/api/user";
 
 const { Title, Text } = Typography;
 

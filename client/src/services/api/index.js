@@ -5,7 +5,7 @@ import axios from "axios";
 import { BACKEND_URL } from "../../constants/config";
 import { AuthenticationService } from "../AuthenticationService";
 import { TokenService } from "../TokenService";
-import { SIGN_IN_ROUTE } from "./authentication";
+import { SIGN_IN_ROUTE } from "./user";
 
 export const apiService = axios.create({ baseURL: BACKEND_URL });
 

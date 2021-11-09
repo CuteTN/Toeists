@@ -1,4 +1,4 @@
-import { invalidateRefreshToken, refreshToken, signIn } from "./api/authentication";
+import { invalidateRefreshToken, refreshToken, signIn } from "./api/user";
 import { TokenService } from "./TokenService";
 import { EventEmitter } from 'events'
 

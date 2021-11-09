@@ -1,6 +1,6 @@
 import axios from 'axios'
 import FormData from 'form-data'
-import { imgbbApiKey } from '../index.js';
+import { imgbbApiKey } from '../../index.js';
 
 /**
  * @param {string} imgStr Expected a base64 encoded string or a URL

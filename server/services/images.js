@@ -1,5 +1,5 @@
 import { Image } from "../models/image.js";
-import { uploadToImgbbServer } from "../services/imgbb.js";
+import { uploadToImgbbServer } from "./external/imgbb.js";
 
 /**
  * @param {string} uploaderId 

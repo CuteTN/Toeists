@@ -1,6 +1,5 @@
 import { SwaggerTypes } from "../utils/swagger.js"
 import swaggerJsDoc from 'swagger-jsdoc';
-import { authenticationSwaggerPaths } from "./authentication.js"
 import { authorizationSwaggerPaths } from "./authorization.js";
 import { userConnectionsSwaggerPaths } from "./userConnection.js";
 import { usersSwaggerPaths } from "./users.js";
@@ -51,7 +50,6 @@ const swaggerSchemas = Object.freeze({
 })
 
 const swaggerPaths = Object.freeze({
-  ...authenticationSwaggerPaths,
   ...authorizationSwaggerPaths,
   ...userConnectionsSwaggerPaths,
   ...usersSwaggerPaths,

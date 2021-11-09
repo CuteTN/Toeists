@@ -1,6 +1,6 @@
 import express from 'express'
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
-import { uploadToImgbbAndSaveDb } from './images.js';
+import { uploadToImgbbAndSaveDb } from '../services/images.js';
 
 /** @type {express.RequestHandler} */
 export const uploadImage = async (req, res, next) => {
