@@ -34,6 +34,7 @@ setUpCuteIO(cuteIO);
 cuteIO.start();
 
 export const imgbbApiKey = process.env.IMGBB_API_KEY;
+export const jwtSecretKey = process.env.JWT_KEY;
 
 // app.use(bodyParser.json({ limit: "30mb", extended: true }));
 // app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));

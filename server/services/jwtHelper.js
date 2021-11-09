@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-const JWT_KEY = "TOEISTS_SUPER_SECRET_KEY";
+import { jwtSecretKey } from "../index.js";
 
 /**
  * @param {Object} payload 
@@ -7,7 +7,7 @@ const JWT_KEY = "TOEISTS_SUPER_SECRET_KEY";
  * @returns {string} token
  */
 export const signJwt = (payload, options) => {
-  return jwt.sign(payload, JWT_KEY, options);
+  return jwt.sign(payload, jwtSecretKey, options);
 }
 
 /**
@@ -21,7 +21,7 @@ export const verifyJwt = (token, options) => {
   let error = undefined;
   let valid = false;
 
-  try { payload = jwt.verify(token, JWT_KEY, options); valid = true; }
+  try { payload = jwt.verify(token, jwtSecretKey, options); valid = true; }
   catch(err) { error = err; valid = false; }
 
   return {
