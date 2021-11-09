@@ -6,9 +6,10 @@ import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
 
 export const userConnectionRouter = express.Router();
 
-const reqToUserIds = autoTransformToUserIdsMdwFn(
-  [req => req.body, "toUserId"]
-);
+const reqToUserIds = autoTransformToUserIdsMdwFn([
+  (req) => req.body,
+  "toUserId",
+]);
 
 userConnectionRouter.post("/follow", authorizeMdw, reqToUserIds, controllers.follow);
 userConnectionRouter.post("/block", authorizeMdw, reqToUserIds, controllers.block);

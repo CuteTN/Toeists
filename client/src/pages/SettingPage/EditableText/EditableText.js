@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
 import { Button, Input, Layout, Row, Typography } from "antd";
-
-import OverviewRow from "../../../components/UserInfo/IntroCard/OverviewRow/OverviewRow.js";
+import OverviewRow from "../OverViewRowEdit/OverviewRow.js";
 import { AiOutlineEdit } from "react-icons/all";
 
 import styles from "./styles.js";

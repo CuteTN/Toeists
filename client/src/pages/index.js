@@ -12,7 +12,7 @@ import UserInfoPage from "./UserInfoPage/UserInfoPage";
 // import MessagePage from "./ChatPage/ChatPage";
 import SignInPage from "./SignInPage/SignInPage";
 import SignUpPage from "./SignUpPage/SignUpPage";
-// import ErrorPage from "./ErrorPage/ErrorPage";
+import ErrorPage from "./ErrorPage/ErrorPage";
 // import HomePage from "./HomePage/HomePage";
 // import FriendManagementPage from "./FriendManagementPage/FriendManagementPage";
 // import MutualFriendPage from "./FriendManagementPage/MutualFriendPage";
@@ -20,6 +20,7 @@ import SignUpPage from "./SignUpPage/SignUpPage";
 // import UserAdminManagement from "./SystemAdmin/UserAdminManagement/UserAdminManagement";
 // import GroupAdminManagement from "./SystemAdmin/GroupAdminManagement/GroupAdminManagement";
 import SettingsPage from "./SettingPage/SettingPage";
+import HomePage from "./HomePage/HomePage";
 // import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
 // import StatisticsPage from "./StatisticsPage/StatisticsPage";
 export {
@@ -37,7 +38,8 @@ export {
   // CreateGroupPage,
   SignInPage,
   SignUpPage,
-  // ErrorPage,
+  HomePage,
+  ErrorPage,
   // MessagePage,
   // FriendManagementPage,
   // MutualFriendPage,

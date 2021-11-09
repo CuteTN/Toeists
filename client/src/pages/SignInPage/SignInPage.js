@@ -39,11 +39,10 @@ function SignInPage() {
   const [resend, setResend] = useState(false);
   const disableSignIn = useRef(false);
   const { signedInUser } = useAuth();
-  const backUrl = new URLSearchParams(location.search).get('url');
+  const backUrl = new URLSearchParams(location.search).get("url");
 
   React.useEffect(() => {
-    if(signedInUser)
-      routeBack()
+    if (signedInUser) routeBack();
   }, [signedInUser]);
 
   const setDisableSignIn = (b) => {
@@ -56,11 +55,9 @@ function SignInPage() {
   };
 
   const routeBack = () => {
-    if (backUrl)
-      history.replace('/settings');
-    else
-      history.replace('/');
-  }
+    if (backUrl) history.replace("/settings");
+    else history.replace("/");
+  };
 
   const handleFinish = async (values) => {
     if (disableSignIn.current === false) {
@@ -68,20 +65,18 @@ function SignInPage() {
       // const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
 
       AuthenticationService.signIn(form.identifier, form.password)
-        .then(res => {
+        .then((res) => {
           message.success(`Welcome, ${res.data.username}!`);
         })
-        .catch(error => {
-          const responseMessage = error?.response?.data?.message
-          if (responseMessage)
-            handleFinishFailed(responseMessage);
+        .catch((error) => {
+          const responseMessage = error?.response?.data?.message;
+          if (responseMessage) handleFinishFailed(responseMessage);
           else {
             console.error(error);
             handleFinishFailed("Something went wrong!");
           }
         })
-        .finally(() => setDisableSignIn(false))
-        ;
+        .finally(() => setDisableSignIn(false));
     }
   };
 
@@ -97,7 +92,7 @@ function SignInPage() {
   return (
     <div
       className="full d-flex align-items-center justify-content-center"
-      style={{ backgroundColor: COLOR.greenSmoke }}
+      style={{ backgroundColor: COLOR.orangeSmoke }}
     >
       <div
         style={{
@@ -121,15 +116,11 @@ function SignInPage() {
                 <Text>
                   No account?{" "}
                   <Link to="/signup">
-                    <Text className="clickable green bold">Create one!</Text>
+                    <Text className="clickable orange bold">Create one!</Text>
                   </Link>
                 </Text>
               </div>
-              <Form
-                name="basic"
-                size="large"
-                onFinish={handleFinish}
-              >
+              <Form name="basic" size="large" onFinish={handleFinish}>
                 <Form.Item
                   name="identifier"
                   rules={[
@@ -165,13 +156,13 @@ function SignInPage() {
                   {/* <Checkbox name="remember" onChange={handleChange}>
                     Remember me
                   </Checkbox> */}
-                  <Text className="clickable green ">Forgot password?</Text>
+                  <Text className="clickable orange ">Forgot password?</Text>
                 </Row>
 
                 <Form.Item style={{ marginBottom: 16 }}>
                   <Button
                     style={{ width: "100%" }}
-                    className="green-button"
+                    className="orange-button"
                     htmlType="submit"
                   >
                     {resend ? "Resend verification mail" : "Sign in"}
@@ -229,9 +220,7 @@ function SignInPage() {
               className="col-md-5 d-md-block d-sm-none d-none"
               style={{ justifyItems: "center" }}
             >
-              <div>
-
-              </div>
+              <div></div>
             </div>
           </Row>
         </Card>

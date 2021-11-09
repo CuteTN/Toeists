@@ -16,3 +16,9 @@ export const refreshToken = (refreshToken) =>
 
 export const invalidateRefreshToken = (refreshToken) =>
   apiService.delete('/api/users/invalidate-refresh-token', { data: { refreshToken } });
+
+export const getUserConnections = (id) =>
+  apiService.get(`api/users/${id}/connections`);
+
+  export const updateUser = (id, updatedInfo) =>
+  apiService.put(`api/users/${id}`, updatedInfo);

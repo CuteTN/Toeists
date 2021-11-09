@@ -8,6 +8,8 @@ import COLOR from "../../constants/colors.js";
 import { Content } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import EditableText from "./EditableText/EditableText";
+import { useAuth } from "../../contexts/authenticationContext.js";
+import * as authAPI from "../../services/api/user";
 // import * as authAPI from "../../api/auth";
 // import * as apiUser from "../../api/user_info";
 // import { useCurrentUser } from "../../context/CurrentUserContext.js";
@@ -15,27 +17,30 @@ import EditableText from "./EditableText/EditableText";
 const { Text } = Typography;
 
 const GeneralTab = () => {
-  //   const [currentUser, setCurrentUser] = useCurrentUser();
-  //   const [name, setName] = useState(currentUser?.name);
+  const { signedInUser } = useAuth();
+  const [currentUser, setCurrentUser] = useState(signedInUser);
+  const [name, setName] = useState(currentUser?.name);
+  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber);
 
-  //   const saveName = () => {
-  //     const key = "updateUserInfo"
-  //     message.loading({ content: "Saving your information...", key })
+  const saveName = () => {
+    console.error("tjhdsjfsjfd");
+    const key = "updateUserInfo";
+    message.loading({ content: "Saving your information...", key });
 
-  //     const updatedFields = { name };
+    const updatedFields = { name, phoneNumber };
 
-  //     apiUser
-  //       .updateUserInfo(updatedFields)
-  //       .then((res) => {
-  //         // console.log(res.data);
-  //         setCurrentUser(res.data);
-  //         message.success({ content: "Your information has been updated!", key });
-  //       })
-  //       .catch((error) => {
-  //         console.log("Error updating user setting", error);
-  //         message.error({ content: "Error updating user info", key });
-  //       });
-  //   };
+    authAPI
+      .updateUser(signedInUser?._id, updatedFields)
+      .then((res) => {
+        // console.log(res.data);
+        setCurrentUser(res.data);
+        message.success({ content: "Your information has been updated!", key });
+      })
+      .catch((error) => {
+        console.log("Error updating user setting", error);
+        message.error({ content: "Error updating user info", key });
+      });
+  };
 
   return (
     <div className="bg-white p-4">
@@ -59,8 +64,7 @@ const GeneralTab = () => {
                 Email
               </Text>
             }
-            // text={currentUser?.email}
-            text="huynhtkthao@gmail.com"
+            text={signedInUser?.email}
             placeholder="Email"
             // onChange={(value) => setEmail(value.target.value)}
             // onSave={saveAddress}
@@ -85,17 +89,67 @@ const GeneralTab = () => {
                 style={{ fontSize: 16, width: 150, color: COLOR.gray }}
                 strong
               >
+                Username
+              </Text>
+            }
+            text={signedInUser?.username}
+            placeholder="Username"
+            editable={false}
+          />
+        </div>
+        <div
+          style={{
+            height: 1,
+            backgroundColor: COLOR.whiteSmoke,
+            marginTop: -20,
+            marginBottom: 14,
+          }}
+        />
+        <div style={{ marginLeft: 12 }}>
+          <EditableText
+            firstIcon={
+              <Text
+                style={{ fontSize: 16, width: 150, color: COLOR.gray }}
+                strong
+              >
                 Name
               </Text>
             }
-            // text={currentUser?.name}
-            text="Hoàng Bảo Ngọc"
+            text={currentUser?.name}
             placeholder="Name"
-            // onChange={(value) => setName(value.target.value)}
-            // onSave={saveName}
-            // setPreviousState={() => {
-            //   setName(currentUser?.name ?? "");
-            // }}
+            onChange={(value) => setName(value.target.value)}
+            onSave={saveName}
+            setPreviousState={() => {
+              setName(currentUser?.name ?? "");
+            }}
+            editable={true}
+          />
+        </div>
+        <div
+          style={{
+            height: 1,
+            backgroundColor: COLOR.whiteSmoke,
+            marginTop: -20,
+            marginBottom: 14,
+          }}
+        />
+        <div style={{ marginLeft: 12 }}>
+          <EditableText
+            firstIcon={
+              <Text
+                style={{ fontSize: 16, width: 150, color: COLOR.gray }}
+                strong
+              >
+                Phone Number
+              </Text>
+            }
+            text={currentUser?.phoneNumber}
+            placeholder="Phone Number"
+            onChange={(value) => setPhoneNumber(value.target.value)}
+            onSave={saveName}
+            setPreviousState={() => {
+              setPhoneNumber(currentUser?.phoneNumber ?? "");
+            }}
             editable={true}
           />
         </div>
@@ -120,15 +174,6 @@ const SecurityTab = () => {
   };
   const [form, setForm] = useState(formDefault);
   const handleFinish = () => {
-    // const data = {
-    //   email: form.newEmail,
-    //   password: form.newPassword,
-    //   firstName: form.firstName,
-    //   lastName: form.lastName,
-    //   gender: form.gender,
-    //   dob: form.dob,
-    // };
-    // dispatch(signup(data, history, setUser));
     // authAPI
     //   .checkPassword(form.currentPassword)
     //   .then(() => {
@@ -245,7 +290,7 @@ const SecurityTab = () => {
         <Form.Item style={{}}>
           <Button
             style={{ width: "100%" }}
-            className="green-button"
+            className="orange-button"
             htmlType="submit"
           >
             Confirm
