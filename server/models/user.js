@@ -79,8 +79,9 @@ const userSchema = mongoose.Schema(
     hashedPassword: { type: String, required: true },
     gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
     birthday: { type: Date },
-    avatarUrl: { type: String },
+    avatarUrl: { type: String, maxLength: 200 },
     description: { type: String },
+    isActivated: { type: Boolean, default: false },
 
     /*
      rating: { type: Number },

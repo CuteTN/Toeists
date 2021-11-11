@@ -20,10 +20,13 @@ usersRouter.post("/refresh-token", controllers.refreshToken);
 
 usersRouter.delete("/invalidate-refresh-token", controllers.invalidateRefreshToken);
 
+usersRouter.post("/:id/activate-account", reqParamsToUserId, controllers.requestAccountActivation);
+usersRouter.put("/:id/activate-account", reqParamsToUserId, controllers.verifyAccountActivation);
+
 usersRouter.get("/:id", reqParamsToUserId, controllers.getUserById);
 usersRouter.put("/:id", authorizeMdw, reqParamsToUserId, controllers.updateUser);
 
-usersRouter.get( "/:id/connections", reqParamsToUserId, controllers.getUserConnections );
+usersRouter.get("/:id/connections", reqParamsToUserId, controllers.getUserConnections);
 
 
 
@@ -39,7 +42,7 @@ export const usersSwaggerPaths = {
     ),
 
     post: createSwaggerPath(
-      "Register a new user.",
+      "Register a new user. This doesn't include sending email verification link.",
       [controllerName],
       null,
       SwaggerTypes.ref("User"),
@@ -102,6 +105,40 @@ export const usersSwaggerPaths = {
         refreshToken: SwaggerTypes.string(),
       })
     )
+  },
+
+  [`/${controllerName}/{id}/activate-account`]: {
+    post: createSwaggerPath(
+      "Request an email confirmation link for account activation via user email.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.ref("UserIdentifier"),
+        }
+      ],
+      null,
+      null,
+    ),
+
+    put: createSwaggerPath(
+      "Verify account activation token and activate new user account.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.ref("UserIdentifier"),
+        }
+      ],
+      SwaggerTypes.object({
+        token: SwaggerTypes.string({ description: "Account activation token." })
+      }),
+      null,
+    ),
   },
 
   [`/${controllerName}/{id}`]: {

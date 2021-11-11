@@ -27,13 +27,13 @@ export const verifyJwt = (token, options) => {
   return {
     error,
     payload,
-    valid
+    isValid: valid
   }
 };
 
 /**
  * @typedef {Object} VerifyJwtResultType
- * @property {boolean} valid
+ * @property {boolean} isValid
  * @property {jwt.JwtPayload} payload
  * @property {jwt.VerifyErrors} error
  */

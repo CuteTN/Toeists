@@ -2,6 +2,8 @@ import { User } from "../models/user.js";
 import mongoose from "mongoose";
 import emailValidator from 'email-validator'
 import { signJwt } from './jwtHelper.js'
+import { clientUrl } from "../index.js";
+
 
 /**
  * @param {string} identifier Can be username or email
@@ -12,13 +14,16 @@ export const findUserByIdentifier = (identifier, users) => {
   if (!identifier)
     return null;
 
+  if (mongoose.isValidObjectId(identifier))
+    return users.find(user => user?._id?.equals(identifier));
+
   const idUpper = identifier.toUpperCase();
 
   let fieldName = "username";
   if (emailValidator.validate(identifier))
     fieldName = "email";
 
-  return users.find(user => user?.[fieldName]?.toUpperCase() === idUpper);
+    return users.find(user => user?.[fieldName]?.toUpperCase() === idUpper);
 }
 
 export const generateUserTokens = (user) => {
@@ -29,6 +34,23 @@ export const generateUserTokens = (user) => {
   const refreshToken = signJwt({ type: "r", userId: user._id });
 
   return { accessToken, refreshToken };
+}
+
+export const generateEmailConfirmationUrl = (userId, confirmationType, additionalPayload) => {
+  const confirmationToken = signJwt(
+    {
+      ...(additionalPayload ?? {}),
+      type: confirmationType,
+      userId,
+    },
+    { expiresIn: "30m", }
+  )
+  const confirmationUrl = `${clientUrl}/email-confirmation/${confirmationToken}`;
+
+  return {
+    confirmationToken,
+    confirmationUrl,
+  }
 }
 
 /** @param {string} userId */

@@ -1,6 +1,7 @@
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { verifyJwt } from "../services/jwtHelper.js";
 import express from "express";
+import { User } from "../models/user.js";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -14,7 +15,7 @@ export const authorizeMdw = async (req, res, next) => {
 
     const verification = verifyJwt(token);
 
-    if (!verification.valid)
+    if (!verification.isValid)
       return res
         .status(httpStatusCodes.unauthorized)
         .json({ message: `Invalid token.`, detail: verification.error });
@@ -23,8 +24,20 @@ export const authorizeMdw = async (req, res, next) => {
         .status(httpStatusCodes.unauthorized)
         .json({ message: `Invalid token. (Only access tokens are accepted)` });
 
+    const userId = verification.payload.userId;
+    const user = await User.findById(userId);
+
+    if (!user)
+      return res.status(httpStatusCodes.notFound).json({ message: "User does not exist." });
+
+    if (!user.isActivated)
+      return res.status(httpStatusCodes.forbidden).json({ message: "User has not activated their account." })
+
     if (!req.attached) req.attached = {};
     req.attached.decodedToken = verification.payload;
+    req.attached.user = user;
+    req.userId = userId;
+
     next?.();
   } catch (error) {
     console.error(error);

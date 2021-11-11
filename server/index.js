@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -13,6 +12,8 @@ import UsersStatusManager from "./services/userStatus.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import swaggerUI from 'swagger-ui-express'
 import { getAppSwaggerSpecs } from "./routes/swaggerConfig.js";
+import nodemailer from 'nodemailer'
+import xoauth2 from 'xoauth2'
 
 dotenv.config();
 
@@ -36,8 +37,19 @@ cuteIO.start();
 export const imgbbApiKey = process.env.IMGBB_API_KEY;
 export const jwtSecretKey = process.env.JWT_KEY;
 
-// app.use(bodyParser.json({ limit: "30mb", extended: true }));
-// app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+export const appEmail = process.env.APP_EMAIL;
+export const appEmailPassword = process.env.APP_EMAIL_PASSWORD;
+export const smtpTransport = nodemailer.createTransport({
+  from: appEmail,
+  service: "gmail",
+  auth: {
+    user: appEmail,
+    pass: appEmailPassword
+  }
+});
+
+export const clientUrl = process.env.CLIENT_URL;
+
 app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
