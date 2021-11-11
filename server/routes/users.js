@@ -20,8 +20,11 @@ usersRouter.post("/refresh-token", controllers.refreshToken);
 
 usersRouter.delete("/invalidate-refresh-token", controllers.invalidateRefreshToken);
 
-usersRouter.post("/:id/activate-account", reqParamsToUserId, controllers.requestAccountActivation);
+usersRouter.get("/:id/activate-account", reqParamsToUserId, controllers.requestAccountActivation);
 usersRouter.put("/:id/activate-account", reqParamsToUserId, controllers.verifyAccountActivation);
+
+usersRouter.get("/:id/reset-password", reqParamsToUserId, controllers.requestPasswordReset);
+usersRouter.put("/:id/reset-password", reqParamsToUserId, controllers.updateUserPassword);
 
 usersRouter.get("/:id", reqParamsToUserId, controllers.getUserById);
 usersRouter.put("/:id", authorizeMdw, reqParamsToUserId, controllers.updateUser);
@@ -108,8 +111,8 @@ export const usersSwaggerPaths = {
   },
 
   [`/${controllerName}/{id}/activate-account`]: {
-    post: createSwaggerPath(
-      "Request an email confirmation link for account activation via user email.",
+    get: createSwaggerPath(
+      "Request a confirmation link for account activation via user email.",
       [controllerName],
       [
         {
@@ -135,7 +138,43 @@ export const usersSwaggerPaths = {
         }
       ],
       SwaggerTypes.object({
-        token: SwaggerTypes.string({ description: "Account activation token." })
+        activateAccountToken: SwaggerTypes.string({ description: "Account activation token." })
+      }),
+      null,
+    ),
+  },
+
+  [`/${controllerName}/{id}/reset-password`]: {
+    get: createSwaggerPath(
+      "Request a confirmation link for password reset via user email.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.ref("UserIdentifier"),
+        }
+      ],
+      null,
+      null,
+    ),
+
+    put: createSwaggerPath(
+      "Handle updating a user's password.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.ref("UserIdentifier"),
+        }
+      ],
+      SwaggerTypes.object({
+        newPassword: SwaggerTypes.string({ nullable: false }),
+        currentPassword: SwaggerTypes.string({ nullable: true }),
+        resetPasswordToken: SwaggerTypes.string({ nullable: true }),
       }),
       null,
     ),

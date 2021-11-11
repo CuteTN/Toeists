@@ -36,14 +36,14 @@ export const generateUserTokens = (user) => {
   return { accessToken, refreshToken };
 }
 
-export const generateEmailConfirmationUrl = (userId, confirmationType, additionalPayload) => {
+export const generateEmailConfirmationUrl = (userId, confirmationType, additionalPayload, tokenExpiresIn) => {
   const confirmationToken = signJwt(
     {
       ...(additionalPayload ?? {}),
       type: confirmationType,
       userId,
     },
-    { expiresIn: "30m", }
+    { expiresIn: tokenExpiresIn, }
   )
   const confirmationUrl = `${clientUrl}/email-confirmation/${confirmationToken}`;
 

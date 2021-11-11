@@ -8,7 +8,7 @@ import { UserConnection } from "../models/userConnection.js";
 import { getAllConnectionsOfUser } from "../services/userConnection.js";
 import { findUserByIdentifier, generateEmailConfirmationUrl, generateUserTokens } from "../services/users.js";
 import { verifyJwt } from "../services/jwtHelper.js";
-import { smtpTransport } from "../index.js"; 
+import { smtpTransport } from "../index.js";
 
 /** @type {express.RequestHandler} */
 export const createUser = async (req, res, next) => {
@@ -24,7 +24,7 @@ export const createUser = async (req, res, next) => {
 
   // if the user email was already used for another INACTIVATED user, just delete that user right away
   const existingUser = await User.findOne({ email: newUserDto.email });
-  if(!existingUser.isActivated)
+  if (!existingUser.isActivated)
     await User.findByIdAndDelete(existingUser._id);
 
   /** @type {mongoose.Document} */
@@ -53,7 +53,7 @@ export const signIn = async (req, res, next) => {
   if (!user)
     return res.status(httpStatusCodes.notFound).json({ message: `User ${identifier} does not exist.` })
   if (!user.isActivated)
-    return res.status(httpStatusCodes.forbidden).json({ message: `User ${identifier} has not activated their account.`})
+    return res.status(httpStatusCodes.forbidden).json({ message: `User ${identifier} has not activated their account.` })
 
   const isPasswordCorrect = await bcrypt.compare(password, user.hashedPassword);
   if (!isPasswordCorrect)
@@ -91,7 +91,7 @@ export const refreshToken = async (req, res, next) => {
   if (!user)
     return res.status(httpStatusCodes.notFound).json({ message: "The owner of the token doesn't exist." })
   if (!user.isActivated)
-    return res.status(httpStatusCodes.forbidden).json({ message: `The owner of the token has not activated their account.`})
+    return res.status(httpStatusCodes.forbidden).json({ message: `The owner of the token has not activated their account.` })
 
   if (!refreshTokenDoc)
     return res.status(httpStatusCodes.badRequest).json({ message: "Invalid token (not in white-list)" });
@@ -127,10 +127,12 @@ export const requestAccountActivation = async (req, res, next) => {
 
   if (!user)
     return res.status(httpStatusCodes.notFound).json({ message: "User does not exist." });
+  if (user.isActivated)
+    return res.status(httpStatusCodes.badRequest).json({ message: "The user has already activated." });
 
   userId = user._id;
-  
-  const { confirmationUrl } = generateEmailConfirmationUrl(userId, "AccountActivation");
+
+  const { confirmationUrl } = generateEmailConfirmationUrl(userId, "AccountActivation", null, "30m");
 
   try {
     await smtpTransport.sendMail({
@@ -162,24 +164,24 @@ export const requestAccountActivation = async (req, res, next) => {
 /** @type {express.RequestHandler} */
 export const verifyAccountActivation = async (req, res, next) => {
   let userId = req.params.id;
-  
+
   if (!userId)
-  return res.status(httpStatusCodes.badRequest).json({ message: "A user ID is required." });
-  
+    return res.status(httpStatusCodes.badRequest).json({ message: "A user ID is required." });
+
   const allUsers = await User.find();
   const user = findUserByIdentifier(userId, allUsers);
-  
+
   if (!user)
-  return res.status(httpStatusCodes.notFound).json({ message: "User does not exist." });
+    return res.status(httpStatusCodes.notFound).json({ message: "User does not exist." });
   if (user.isActivated)
     return res.status(httpStatusCodes.badRequest).json({ message: "The user has already activated." });
 
   userId = user._id;
-  
-  const { token } = req.body;
-  const decodedToken = verifyJwt(token);
 
-  const isValidAccountActivationToken = 
+  const { activateAccountToken } = req.body;
+  const decodedToken = verifyJwt(activateAccountToken);
+
+  const isValidAccountActivationToken =
     decodedToken.isValid &&
     userId.equals(decodedToken.payload?.userId) &&
     decodedToken.payload?.type === "AccountActivation";
@@ -187,15 +189,60 @@ export const verifyAccountActivation = async (req, res, next) => {
   if (!isValidAccountActivationToken)
     return res.status(httpStatusCodes.badRequest).json({ message: "The provided token is not valid." });
 
-
   try {
-    await User.findByIdAndUpdate(user._id, { isActivated: true }); 
+    await User.findByIdAndUpdate(user._id, { isActivated: true });
   }
   catch {
     return res.status(httpStatusCodes.internalServerError).json({ message: "Error occurs while updating user." })
   }
-  
+
   return res.sendStatus(httpStatusCodes.ok);
+}
+
+
+/** @type {express.RequestHandler} */
+export const requestPasswordReset = async (req, res, next) => {
+  let userId = req.params.id;
+
+  if (!userId)
+    return res.status(httpStatusCodes.badRequest).json({ message: "A user ID is required." });
+
+  const allUsers = await User.find();
+  const user = findUserByIdentifier(userId, allUsers);
+
+  if (!user)
+    return res.status(httpStatusCodes.notFound).json({ message: "User does not exist." });
+  if (!user.isActivated)
+    return res.status(httpStatusCodes.forbidden).json({ message: "The user has not activated their account." })
+
+  userId = user._id;
+
+  const { confirmationUrl } = generateEmailConfirmationUrl(userId, "PasswordReset", null, "5m");
+
+  try {
+    await smtpTransport.sendMail({
+      to: user.email,
+      subject: "Confirm to reset your password!",
+      html: `
+      <h1>Hello ${user.name}!</h1>
+      <p>Your request to reset password has been received.</p>
+      <p>To continue the process, please <b>confirm your request</b> by simply clicking <a href="${confirmationUrl}">this link</a>!</p>
+      <em>NOTE: This confirmation link would only be available for 5 minutes. After this time, your request would be canceled.</em> 
+      <br> <br>
+      <b>Enjoy and best regards!<b>
+      <br>
+      <b>TOEISTS TEAM<b>
+      `
+    })
+
+    return res.sendStatus(httpStatusCodes.accepted);
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.badRequest).json({
+      message: "Couldn't send confirmation email.",
+      error
+    })
+  }
 }
 
 
@@ -245,12 +292,6 @@ export const updateUser = async (req, res, next) => {
   delete updatingData.email;
   delete updatingData.isActivated;
 
-  // if (updatingData.password) {
-  //   const hashedPassword = await bcrypt.hash(updatingData.password, 12);
-  //   updatingData.hashedPassword = hashedPassword;
-  //   delete updatingData.password;
-  // }
-
   if (!mongoose.isValidObjectId(id))
     return res
       .status(httpStatusCodes.badRequest)
@@ -269,3 +310,65 @@ export const updateUser = async (req, res, next) => {
 
   return res.status(httpStatusCodes.ok).json(updatedUser);
 };
+
+
+/** @type {express.RequestHandler} */
+export const updateUserPassword = async (req, res, next) => {
+  const { currentPassword, newPassword, resetPasswordToken } = req.body ?? {};
+
+  if (!newPassword)
+    return res.status(httpStatusCodes.badRequest).json({ message: "A new password is required." });
+
+  if ((!currentPassword) && (!resetPasswordToken))
+    return res.status(httpStatusCodes.badRequest).json({ message: "The current password or an reset password must be provided." })
+
+  let userId = req.params.id;
+
+  if (!userId)
+    return res.status(httpStatusCodes.badRequest).json({ message: "A user ID is required." });
+
+  const allUsers = await User.find();
+  const user = findUserByIdentifier(userId, allUsers);
+
+  if (await bcrypt.compare(newPassword, user.hashedPassword))
+    return res.status(httpStatusCodes.badRequest).json({ message: "The new password must be different from the previous one."})
+
+  if (!user)
+    return res.status(httpStatusCodes.notFound).json({ message: "User does not exist." });
+  if (!user.isActivated)
+    return res.status(httpStatusCodes.forbidden).json({ message: "The user has not activated their account." })
+
+  userId = user._id;
+
+  let canChange = false;
+
+  if (currentPassword) {
+    canChange = await bcrypt.compare(currentPassword, user.hashedPassword);
+
+    if (!canChange)
+      return res.status(httpStatusCodes.unauthorized).json({ message: "The provided password is not correct." });
+  }
+  else {
+    const decodedToken = verifyJwt(resetPasswordToken);
+
+    canChange =
+      decodedToken.isValid &&
+      userId.equals(decodedToken.payload?.userId) &&
+      decodedToken.payload?.type === "PasswordReset";
+
+    if (!canChange)
+      return res.status(httpStatusCodes.unauthorized).json({ message: "The provided token is invalid." });
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
+  if (canChange) {
+    try {
+      await User.findByIdAndUpdate(userId, { hashedPassword })
+    }
+    catch {
+      return res.status(httpStatusCodes.internalServerError).json({ message: "An error occured when updating data." });
+    }
+  }
+
+  return res.sendStatus(httpStatusCodes.ok);
+}
