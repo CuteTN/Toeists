@@ -3,6 +3,8 @@ import * as controllers from "../controllers/users.js";
 import { autoTransformToUserIdsMdwFn } from "../middlewares/autoTransformToUserIds.js";
 import { authorizeMdw } from "../middlewares/authorization.js";
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
+import { findByIdMdwFn } from "../middlewares/findById.js";
+import { User } from "../models/user.js";
 
 export const usersRouter = express.Router();
 
@@ -26,7 +28,7 @@ usersRouter.put("/:id/activate-account", reqParamsToUserId, controllers.verifyAc
 usersRouter.get("/:id/reset-password", reqParamsToUserId, controllers.requestPasswordReset);
 usersRouter.put("/:id/reset-password", reqParamsToUserId, controllers.updateUserPassword);
 
-usersRouter.get("/:id", reqParamsToUserId, controllers.getUserById);
+usersRouter.get("/:id", reqParamsToUserId, findByIdMdwFn({ model: User }), controllers.getUserById);
 usersRouter.put("/:id", authorizeMdw, reqParamsToUserId, controllers.updateUser);
 
 usersRouter.get("/:id/connections", reqParamsToUserId, controllers.getUserConnections);
