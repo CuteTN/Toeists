@@ -11,7 +11,7 @@ filesRouter.post('/image', authorizeMdw, upload.single("image"), controllers.upl
 filesRouter.post('/image/str', authorizeMdw, controllers.uploadImageWithString);
 
 const controllerName = "files"
-export const fileSwaggerPaths = {
+export const filesSwaggerPaths = {
   [`/${controllerName}/image`]: {
     post: createSwaggerPath(
       "Upload an image to imgbb server and get the url. If the returned url exists, just return the old one.",

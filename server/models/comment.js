@@ -1,11 +1,11 @@
 import mongoose from "mongoose"
 
-const commentSchema = mongoose.Schema(
+const commentSchema = new mongoose.Schema(
   {
     creatorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
-      required: true
+      required: true,
     },
     contentCreatedAt: {
       type: Date,

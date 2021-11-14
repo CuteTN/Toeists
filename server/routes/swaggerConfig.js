@@ -3,7 +3,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import { authorizationSwaggerPaths } from "./authorization.js";
 import { userConnectionsSwaggerPaths } from "./userConnection.js";
 import { usersSwaggerPaths } from "./users.js";
-import { fileSwaggerPaths } from "./files.js";
+import { filesSwaggerPaths } from "./files.js";
+import { forumsSwaggerPaths } from "./forum.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -46,6 +47,43 @@ const swaggerSchemas = Object.freeze({
     uploaderId: SwaggerTypes.string(),
     url: SwaggerTypes.string(),
     deleteUrl: SwaggerTypes.string(),
+  }),
+
+  Forum: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    creatorId: SwaggerTypes.string({ readOnly: true }),
+    title: SwaggerTypes.string(),
+    content: SwaggerTypes.object(),
+    contentCreatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),
+    contentUpdatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),
+    interactionInfoId: SwaggerTypes.string({ readOnly: true }, { readOnly: true }),
+    // interactionInfo: SwaggerTypes.ref('InteractionInfo', { readOnly: true }),
+    commentIds: SwaggerTypes.array(SwaggerTypes.string(), { readOnly: true }),
+    comments: SwaggerTypes.array(SwaggerTypes.ref('Comment'), { readOnly: true }),
+    hashtagIds: SwaggerTypes.array(SwaggerTypes.string(), { readOnly: true, example: [] }),
+    hashtags: SwaggerTypes.array(SwaggerTypes.ref("Hashtag"), { example: [] })
+  }),
+
+  InteractionInfo: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    upvoterIds: SwaggerTypes.array(SwaggerTypes.string(), { example: [] }),
+    downvoterIds: SwaggerTypes.array(SwaggerTypes.string(), { example: [] }),
+    followerIds: SwaggerTypes.array(SwaggerTypes.string(), { example: [] }),
+  }),
+
+  Comment: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    creatorId: SwaggerTypes.string({ readOnly: true }),
+    content: SwaggerTypes.object(),
+    contentCreatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),
+    contentUpdatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),
+    interactionInfoId: SwaggerTypes.string({ readOnly: true }, { readOnly: true }),
+    interactionInfo: SwaggerTypes.ref('InteractionInfo', { readOnly: true }),
+  }),
+
+  Hashtag: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    name: SwaggerTypes.string({ readOnly: true }),
   })
 })
 
@@ -53,7 +91,8 @@ const swaggerPaths = Object.freeze({
   ...authorizationSwaggerPaths,
   ...userConnectionsSwaggerPaths,
   ...usersSwaggerPaths,
-  ...fileSwaggerPaths,
+  ...filesSwaggerPaths,
+  ...forumsSwaggerPaths,
 })
 
 
@@ -66,7 +105,7 @@ export const getAppSwaggerSpecs = (serverUrl) => {
   const swaggerOptions = {
     swaggerOptions: {
     },
-    
+
     definition: {
       openapi: "3.0.0",
       info: {

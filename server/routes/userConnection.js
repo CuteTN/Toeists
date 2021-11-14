@@ -4,17 +4,17 @@ import { authorizeMdw } from "../middlewares/authorization.js";
 import { autoTransformToUserIdsMdwFn } from "../middlewares/autoTransformToUserIds.js";
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
 
-export const userConnectionRouter = express.Router();
+export const userConnectionsRouter = express.Router();
 
 const reqToUserIds = autoTransformToUserIdsMdwFn([
   (req) => req.body,
   "toUserId",
 ]);
 
-userConnectionRouter.post("/follow", authorizeMdw, reqToUserIds, controllers.follow);
-userConnectionRouter.post("/block", authorizeMdw, reqToUserIds, controllers.block);
-userConnectionRouter.delete("/unfollow", authorizeMdw, reqToUserIds, controllers.unfollow);
-userConnectionRouter.delete("/unblock", authorizeMdw, reqToUserIds, controllers.unblock);
+userConnectionsRouter.post("/follow", authorizeMdw, reqToUserIds, controllers.follow);
+userConnectionsRouter.post("/block", authorizeMdw, reqToUserIds, controllers.block);
+userConnectionsRouter.delete("/unfollow", authorizeMdw, reqToUserIds, controllers.unfollow);
+userConnectionsRouter.delete("/unblock", authorizeMdw, reqToUserIds, controllers.unblock);
 
 const controllerName = "user-connections";
 export const userConnectionsSwaggerPaths = {

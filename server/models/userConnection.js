@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const userConnectionSchema = mongoose.Schema(
+const userConnectionSchema = new mongoose.Schema(
   {
     status: {
       type: String,

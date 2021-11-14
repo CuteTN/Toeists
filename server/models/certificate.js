@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const certificateSchema = mongoose.Schema(
+const certificateSchema = new mongoose.Schema(
   {
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const notificationSchema = mongoose.Schema(
+const notificationSchema = new mongoose.Schema(
   {
     receiverId: {
       type: mongoose.Schema.Types.ObjectId,

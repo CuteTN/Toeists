@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const interactionInfoSchema = mongoose.Schema(
+const interactionInfoSchema = new mongoose.Schema(
   {
     upvoterIds: {
       type: [mongoose.Schema.Types.ObjectId],

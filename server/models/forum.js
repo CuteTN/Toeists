@@ -1,18 +1,12 @@
 import mongoose from "mongoose"
+import { Comment } from "./comment.js";
+import { InteractionInfo } from "./interactionInfo.js";
 
-const forumSchema = mongoose.Schema(
+const forumSchema = new mongoose.Schema(
   {
     creatorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
-      required: true
-    },
-    contentCreatedAt: {
-      type: Date,
-      required: true
-    },
-    contentUpdatedAt: {
-      type: Date,
       required: true
     },
     title: {
@@ -22,6 +16,14 @@ const forumSchema = mongoose.Schema(
     content: {
       type: Object,
       required: true,
+    },
+    contentCreatedAt: {
+      type: Date,
+      required: true
+    },
+    contentUpdatedAt: {
+      type: Date,
+      required: true
     },
     interactionInfoId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -43,5 +45,23 @@ const forumSchema = mongoose.Schema(
   },
   { timestamps: true }
 )
+
+forumSchema.virtual('creator', {
+  ref: 'users',
+  localField: 'creatorId',
+  foreignField: '_id',
+  justOne: true
+})
+
+forumSchema.post('findOneAndDelete', async (doc) => {
+  await doc?.commentIds?.forEach(async cmtId => {
+    await Comment.findByIdAndDelete(cmtId)
+  });
+
+  await InteractionInfo.findByIdAndDelete(doc.interactionInfoId);
+});
+
+forumSchema.set('toObject', { virtuals: true });
+forumSchema.set('toJSON', { virtuals: true });
 
 export var Forum = mongoose.model("forums", forumSchema)

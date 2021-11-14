@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const refreshTokenSchema = mongoose.Schema(
+const refreshTokenSchema = new mongoose.Schema(
   {
     token: { type: String, required: true },
   },
