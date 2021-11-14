@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Image, Typography, message, Row } from "antd";
 import { useSelector } from "react-redux";
+import { convertFileToBase64 } from "../../../utils/image.js";
 import styles from "./styles.js";
 
 const { Title } = Typography;
@@ -12,11 +13,27 @@ const AvatarView = () => {
   const displayName = user?.name ?? "";
   const hiddenBackgroundFileInput = React.useRef(null);
 
+  const handleBackgroundChange = async (e) => {
+    const fileUploaded = e.target.files[0];
+    const base64 = await convertFileToBase64(fileUploaded);
+
+    const image = {
+      type: "backgroundUrl",
+      base64: base64,
+    };
+    // const { data } = await apiUser.editImage(image);
+    // setBackgroundImage(data);
+  };
+
   const EditImageButton = () => {
     return (
       <div>
-        <Button className="orange-button mr-2" style={styles.editImageBtn}>
-          Edit
+        <Button
+          className="orange-button mr-2"
+          style={styles.editImageBtn}
+          onClick={() => hiddenBackgroundFileInput.current.click()}
+        >
+          Edit adsadasd
         </Button>
         <input
           type="file"
@@ -24,6 +41,7 @@ const AvatarView = () => {
           accept="image/png, image/gif, image/jpeg"
           ref={hiddenBackgroundFileInput}
           style={{ display: "none" }}
+          onChange={handleBackgroundChange}
         ></input>
       </div>
     );
