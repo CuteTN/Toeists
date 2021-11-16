@@ -30,12 +30,6 @@ const forumSchema = new mongoose.Schema(
       ref: 'interaction_infos',
       required: true
     },
-    commentIds: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'comments',
-      required: true,
-      default: [],
-    },
     hashtagIds: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'hashtags',
@@ -53,11 +47,22 @@ forumSchema.virtual('creator', {
   justOne: true
 })
 
-forumSchema.post('findOneAndDelete', async (doc) => {
-  await doc?.commentIds?.forEach(async cmtId => {
-    await Comment.findByIdAndDelete(cmtId)
-  });
+forumSchema.virtual('interactionInfo', {
+  ref: 'interaction_infos',
+  localField: 'interactionInfoId',
+  foreignField: '_id',
+  justOne: true,
+})
 
+forumSchema.virtual('comments', {
+  ref: 'comments',
+  localField: '_id',
+  foreignField: 'forumId',
+})
+
+forumSchema.post('findOneAndDelete', async (doc) => {
+  await doc.populate('comments');
+  doc.comments.foreach?.(cmt => Comment.findByIdAndDelete(cmt._id));
   await InteractionInfo.findByIdAndDelete(doc.interactionInfoId);
 });
 

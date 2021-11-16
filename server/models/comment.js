@@ -2,6 +2,11 @@ import mongoose from "mongoose"
 
 const commentSchema = new mongoose.Schema(
   {
+    forumId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'forums',
+      required: true,
+    },
     creatorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',

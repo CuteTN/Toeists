@@ -2,6 +2,9 @@ import express from 'express'
 import { Forum } from '../models/forum.js'
 import { InteractionInfo } from '../models/interactionInfo.js'
 import { httpStatusCodes } from '../utils/httpStatusCode.js'
+import { alterInteractionInfo } from '../services/interactionInfo.js'
+
+const FORUM_VIRTUAL_FIELDS = ['creator', 'interactionInfo', 'comments'];
 
 /** @type {express.RequestHandler} */
 export const createForum = async (req, res, next) => {
@@ -17,7 +20,8 @@ export const createForum = async (req, res, next) => {
   newForum.interactionInfoId = interactionInfo._id;
 
   try {
-    const createdForum = await Forum.create(newForum);
+    const createdForum = await Forum.create(newForum)
+    await createdForum.populate(FORUM_VIRTUAL_FIELDS);
     return res.status(httpStatusCodes.ok).json(createdForum);
   }
   catch (error) {
@@ -29,21 +33,21 @@ export const createForum = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const getForums = async (req, res, next) => {
-  const forums = await Forum.find().populate('creator');
+  const forums = await Forum.find().populate(FORUM_VIRTUAL_FIELDS);
   return res.status(httpStatusCodes.ok).json(forums);
 }
 
 
 /** @type {express.RequestHandler} */
-export const getAForum = async (req, res, next) => {
+export const getForumById = async (req, res, next) => {
   const forum = req.attached.targetedData;
-  await forum.populate("creator");
+  await forum.populate(FORUM_VIRTUAL_FIELDS)
   return res.status(httpStatusCodes.ok).json(forum);
 }
 
 
 /** @type {express.RequestHandler} */
-export const updateAForum = async (req, res, next) => {
+export const updateForum = async (req, res, next) => {
   const forumToUpdate = req.body;
 
   delete forumToUpdate.creatorId;
@@ -55,7 +59,7 @@ export const updateAForum = async (req, res, next) => {
   try {
     const updatedForum = await Forum
       .findByIdAndUpdate(req.params.id, forumToUpdate, { new: true })
-      .populate("creator");
+      .populate(FORUM_VIRTUAL_FIELDS)
 
     return res.status(httpStatusCodes.ok).json(updatedForum);
   }
@@ -66,12 +70,38 @@ export const updateAForum = async (req, res, next) => {
 
 
 /** @type {express.RequestHandler} */
-export const deleteAForum = async (req, res, next) => {
+export const deleteForum = async (req, res, next) => {
   try {
     await Forum.findByIdAndDelete(req.params.id);
     return res.sendStatus(httpStatusCodes.ok);
   }
   catch {
     return res.status(httpStatusCodes.badRequest).json({ message: "Error while deleting the forum." })
+  }
+}
+
+
+/** @type {express.RequestHandler} */
+export const interactWithForum = async (req, res, next) => {
+  try {
+    /** @type {import('../services/interactionInfo.js').InteractionInfoTypes} */
+    const interactionInfoType = req.query.type;
+
+    if (!interactionInfoType)
+      return res.status(httpStatusCodes.badRequest).json({ message: `The query "type" is required.`});
+
+    const forum = req.attached.targetedData;
+    await forum.populate('interactionInfo');
+
+    const { interactionInfo } = forum;
+
+    const { userId } = req.attached.decodedToken;
+    alterInteractionInfo(interactionInfo, userId, interactionInfoType);
+
+    await interactionInfo.save();
+    return res.status(httpStatusCodes.ok).json(forum);
+  }
+  catch (error) {
+    return res.sendStatus(httpStatusCodes.internalServerError).json({ message: "Error while updating forum's interaction info", error });
   }
 }

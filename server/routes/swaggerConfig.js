@@ -71,6 +71,8 @@ const swaggerSchemas = Object.freeze({
     followerIds: SwaggerTypes.array(SwaggerTypes.string(), { example: [] }),
   }),
 
+  InteractionInfoTypes: SwaggerTypes.enum(["upvote", "downvote", "unvote", "follow", "unfollow"], { example: "upvote" }),
+
   Comment: SwaggerTypes.object({
     _id: SwaggerTypes.string({ readOnly: true }),
     creatorId: SwaggerTypes.string({ readOnly: true }),

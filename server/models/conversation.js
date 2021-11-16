@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { Message } from "./message";
 
 const conversationMemberSchema = new mongoose.Schema(
   {
@@ -24,14 +25,22 @@ const conversationSchema = mongoose.Schema(
       required: true,
       default: [],
     },
-    messageIds: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'messages',
-      required: true,
-      default: [],
-    },
   },
   { timestamps: true }
 )
+
+conversationSchema.virtual('messages', {
+  ref: 'messages',
+  localField: '_id',
+  foreignField: 'conversationId',
+})
+
+conversationSchema.post('findOneAndDelete', async (doc) => {
+  await doc.populate('messages');
+  doc.messages.foreach?.(msg => Message.findByIdAndDelete(msg._id));
+});
+
+conversationSchema.set('toObject', { virtuals: true });
+conversationSchema.set('toJSON', { virtuals: true });
 
 export var Conversation = mongoose.model("conversations", conversationSchema)

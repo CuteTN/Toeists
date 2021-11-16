@@ -13,10 +13,13 @@ const checkIsForumOwner = (forum, req) => {
 }
 
 forumsRouter.get("/", controllers.getForums);
-forumsRouter.get("/:id", authorizeMdw, findByIdMdwFn({ model: Forum }), controllers.getAForum);
 forumsRouter.post("/", authorizeMdw, controllers.createForum );
-forumsRouter.put("/:id", authorizeMdw, findByIdMdwFn({ model: Forum, forbiddenChecker: checkIsForumOwner }), controllers.updateAForum);
-forumsRouter.delete("/:id", authorizeMdw, findByIdMdwFn({ model: Forum, forbiddenChecker: checkIsForumOwner }), controllers.deleteAForum);
+
+forumsRouter.get("/:id", authorizeMdw, findByIdMdwFn({ model: Forum }), controllers.getForumById);
+forumsRouter.put("/:id", authorizeMdw, findByIdMdwFn({ model: Forum, forbiddenChecker: checkIsForumOwner }), controllers.updateForum);
+forumsRouter.delete("/:id", authorizeMdw, findByIdMdwFn({ model: Forum, forbiddenChecker: checkIsForumOwner }), controllers.deleteForum);
+
+forumsRouter.put("/:id/interact", authorizeMdw, findByIdMdwFn({ model: Forum }), controllers.interactWithForum);
 
 const controllerName = "forums";
 export const forumsSwaggerPaths = {
@@ -84,4 +87,26 @@ export const forumsSwaggerPaths = {
       null
     ),
   },
+
+  [`/${controllerName}/{id}/interact`]: {
+    put: createSwaggerPath(
+      "Get a forum by its ID.",
+      [controllerName],
+      [
+        {
+          name: "id",
+          required: true,
+          in: "path",
+          schema: SwaggerTypes.string(),
+        },
+        {
+          name: "type",
+          in: "query",
+          schema: SwaggerTypes.ref("InteractionInfoTypes"),
+        }
+      ],
+      null,
+      SwaggerTypes.ref("Forum"),
+    ),
+  }
 }
