@@ -60,6 +60,8 @@ forumSchema.virtual('comments', {
   foreignField: 'forumId',
 })
 
+export const FORUM_VIRTUAL_FIELDS = ['creator', 'interactionInfo', 'comments'];
+
 forumSchema.post('findOneAndDelete', async (doc) => {
   await doc.populate('comments');
   doc.comments.foreach?.(cmt => Comment.findByIdAndDelete(cmt._id));

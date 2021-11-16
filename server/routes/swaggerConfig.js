@@ -5,6 +5,7 @@ import { userConnectionsSwaggerPaths } from "./userConnection.js";
 import { usersSwaggerPaths } from "./users.js";
 import { filesSwaggerPaths } from "./files.js";
 import { forumsSwaggerPaths } from "./forum.js";
+import { commentsSwaggerPaths } from "./comment.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -76,11 +77,12 @@ const swaggerSchemas = Object.freeze({
   Comment: SwaggerTypes.object({
     _id: SwaggerTypes.string({ readOnly: true }),
     creatorId: SwaggerTypes.string({ readOnly: true }),
+    forumId: SwaggerTypes.string(),
     content: SwaggerTypes.object(),
     contentCreatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),
     contentUpdatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),
     interactionInfoId: SwaggerTypes.string({ readOnly: true }, { readOnly: true }),
-    interactionInfo: SwaggerTypes.ref('InteractionInfo', { readOnly: true }),
+    // interactionInfo: SwaggerTypes.ref('InteractionInfo', { readOnly: true }),
   }),
 
   Hashtag: SwaggerTypes.object({
@@ -95,6 +97,7 @@ const swaggerPaths = Object.freeze({
   ...usersSwaggerPaths,
   ...filesSwaggerPaths,
   ...forumsSwaggerPaths,
+  ...commentsSwaggerPaths,
 })
 
 
