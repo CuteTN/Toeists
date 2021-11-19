@@ -97,7 +97,7 @@ export const refreshToken = async (req, res, next) => {
     return res.status(httpStatusCodes.badRequest).json({ message: "Invalid token (not in white-list)" });
 
   const tokens = generateUserTokens(user);
-  await RefreshToken.findByIdAndUpdate(refreshTokenDoc._id, { token: tokens.refreshToken });
+  await RefreshToken.findByIdAndUpdate(refreshTokenDoc._id, { token: tokens.refreshToken }, { runValidators: true });
 
   return res.status(httpStatusCodes.ok).json(tokens);
 }
@@ -190,7 +190,7 @@ export const verifyAccountActivation = async (req, res, next) => {
     return res.status(httpStatusCodes.badRequest).json({ message: "The provided token is not valid." });
 
   try {
-    await User.findByIdAndUpdate(user._id, { isActivated: true });
+    await User.findByIdAndUpdate(user._id, { isActivated: true }, { runValidators: true });
   }
   catch {
     return res.status(httpStatusCodes.internalServerError).json({ message: "Error occurs while updating user." })
@@ -299,6 +299,7 @@ export const updateUser = async (req, res, next) => {
   try {
     var updatedUser = await User.findByIdAndUpdate(id, updatingData, {
       new: true,
+      runValidators: true,
     });
   } catch (error) {
     return res.status(httpStatusCodes.badRequest).json(error);
@@ -359,7 +360,7 @@ export const updateUserPassword = async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(newPassword, 12);
   if (canChange) {
     try {
-      await User.findByIdAndUpdate(userId, { hashedPassword })
+      await User.findByIdAndUpdate(userId, { hashedPassword }, { runValidators: true })
     }
     catch {
       return res.status(httpStatusCodes.internalServerError).json({ message: "An error occured when updating data." });

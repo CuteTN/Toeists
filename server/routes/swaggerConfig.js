@@ -62,7 +62,8 @@ const swaggerSchemas = Object.freeze({
     commentIds: SwaggerTypes.array(SwaggerTypes.string(), { readOnly: true }),
     comments: SwaggerTypes.array(SwaggerTypes.ref('Comment'), { readOnly: true }),
     hashtagIds: SwaggerTypes.array(SwaggerTypes.string(), { readOnly: true, example: [] }),
-    hashtags: SwaggerTypes.array(SwaggerTypes.ref("Hashtag"), { example: [] })
+    hashtags: SwaggerTypes.array(SwaggerTypes.ref("Hashtag"), { readOnly: true, example: [] }),
+    hashtagNames: SwaggerTypes.array(SwaggerTypes.string(), { writeOnly: true, example: ["Toeists", "English"] })
   }),
 
   InteractionInfo: SwaggerTypes.object({

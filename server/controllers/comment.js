@@ -80,7 +80,7 @@ export const updateComment = async (req, res, next) => {
   commentToUpdate.contentUpdatedAt = Date.now();
   try {
     const updatedComment = await Comment
-      .findByIdAndUpdate(req.params.id, commentToUpdate, { new: true })
+      .findByIdAndUpdate(req.params.id, commentToUpdate, { new: true, runValidators: true })
       .populate(COMMENT_VIRTUAL_FIELDS)
 
     return res.status(httpStatusCodes.ok).json(updatedComment);

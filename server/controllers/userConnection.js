@@ -38,7 +38,7 @@ const setUserConnectionFn = (status) => async (req, res, next) => {
       const updatedUserConnection = await UserConnection.findByIdAndUpdate(
         existingUserConnection._id,
         userConnectionToUpdate,
-        { new: true }
+        { new: true, runValidators: true }
       );
       return res.status(httpStatusCodes.ok).json(updatedUserConnection);
     } else {

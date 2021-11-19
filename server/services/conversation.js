@@ -188,7 +188,7 @@ export const addMessageToConversation = async (
 
   const newConversation = await Conversation.findByIdAndUpdate(
     conversationId,
-    conversation
+    conversation,
   );
 
   return {

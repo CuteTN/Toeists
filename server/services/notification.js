@@ -7,21 +7,13 @@ import { cuteIO } from "../index.js";
  * @param {{userId, content, image, kind, link, seen}} notification
  */
 export const sendNotificationUser = async (notification) => {
-  try {
-    const { userId, kind } = notification;
-    const notificationDoc = new Notification(notification);
-    await notificationDoc.save();
-    cuteIO.sendToUser(userId, "Notification-" + kind, notificationDoc);
-  } catch (error) {
-    throw error;
-  }
+  const { userId, kind } = notification;
+  const notificationDoc = new Notification(notification);
+  await notificationDoc.save();
+  cuteIO.sendToUser(userId, "Notification-" + kind, notificationDoc);
 };
 
 export const sendRequestUser = (request) => {
-  try {
-    const { userId, kind } = request;
-    cuteIO.sendToUser(userId, "Request-" + kind, request);
-  } catch (error) {
-    throw error;
-  }
+  const { userId, kind } = request;
+  cuteIO.sendToUser(userId, "Request-" + kind, request);
 };

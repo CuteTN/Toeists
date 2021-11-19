@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { addToArraySet, CHECK_EQUALITY_MONGOOSE_ID, removeFromArrySet } from '../utils/arraySet.js';
 
 /**
  * warning: multable function: mutates directly on the interaction info object
@@ -13,20 +14,15 @@ export const alterInteractionInfo = (interactionInfo, userId, interactionType) =
    * @param {mongoose.Types.ObjectId[]} arr 
    * @param {mongoose.Types.ObjectId} id 
    */  
-  const addId = (arr, id) => {
-    let result = [...arr];
-    if (!arr.find(_id => _id.equals(id)))
-      result.push(id); 
-    return result;
-  }
+  const addId = (arr, id) =>
+    addToArraySet(arr, id, CHECK_EQUALITY_MONGOOSE_ID);
 
   /**
    * @param {mongoose.Types.ObjectId[]} arr 
    * @param {mongoose.Types.ObjectId} id 
    */  
-  const removeId = (arr, id) => {
-    return arr.filter(_id => !_id.equals(id));
-  }
+  const removeId = (arr, id) => 
+    removeFromArrySet(arr, id, CHECK_EQUALITY_MONGOOSE_ID);
 
   switch (interactionType) {
     case "unvote": {
