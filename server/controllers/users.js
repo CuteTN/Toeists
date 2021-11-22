@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { User } from "../models/user.js";
+import { User, USER_VIRTUAL_FIELDS } from "../models/user.js";
 import { RefreshToken } from '../models/refreshToken.js';
 import express from "express";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
@@ -9,6 +9,8 @@ import { getAllConnectionsOfUser } from "../services/userConnection.js";
 import { findUserByIdentifier, generateEmailConfirmationUrl, generateUserTokens } from "../services/users.js";
 import { verifyJwt } from "../services/jwtHelper.js";
 import { smtpTransport } from "../index.js";
+import { CHECK_EQUALITY_DEFAULT, removeDuplication } from "../utils/arraySet.js";
+import { findExistingHashtags, reduceHashtagPreferences, upsertHashtagPreferences } from "../services/hashtag.js";
 
 /** @type {express.RequestHandler} */
 export const createUser = async (req, res, next) => {
@@ -24,16 +26,31 @@ export const createUser = async (req, res, next) => {
 
   // if the user email was already used for another INACTIVATED user, just delete that user right away
   const existingUser = await User.findOne({ email: newUserDto.email });
-  if (!existingUser.isActivated)
+  if (existingUser && !existingUser.isActivated)
     await User.findByIdAndDelete(existingUser._id);
+
+  let hashtagNames = [];
+
+  if (Array.isArray(newUserDto.hashtagNames)) {
+    hashtagNames = removeDuplication(newUserDto.hashtagNames, CHECK_EQUALITY_DEFAULT);
+    await upsertHashtagPreferences(hashtagNames);
+    newUserDto.hashtagIds = (await findExistingHashtags(hashtagNames)).map(ht => ht._id);
+  }
+  else {
+    newUserDto.hashtagIds = [];
+  }
 
   /** @type {mongoose.Document} */
   const newUser = new User(newUserDto);
 
   try { await newUser.validate(); }
-  catch (error) { return res.status(httpStatusCodes.badRequest).json(error) }
+  catch (error) {
+    await reduceHashtagPreferences(hashtagNames);
+    return res.status(httpStatusCodes.badRequest).json(error)
+  }
 
   await newUser.save();
+  await newUser.populate(USER_VIRTUAL_FIELDS);
   return res.status(httpStatusCodes.ok).json(newUser);
 }
 
@@ -248,14 +265,17 @@ export const requestPasswordReset = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const getAllUsers = async (req, res, next) => {
-  const users = await User.find();
+  const users = await User.find().populate(USER_VIRTUAL_FIELDS);
   return res.status(httpStatusCodes.ok).send(users);
 };
 
 
 /** @type {express.RequestHandler} */
 export const getUserById = async (req, res, next) => {
-  return res.status(httpStatusCodes.ok).send(req?.attached?.targetedData);
+  const user = req?.attached?.targetedData;
+  await user.populate(USER_VIRTUAL_FIELDS);
+
+  return res.status(httpStatusCodes.ok).send(user);
 };
 
 
@@ -293,15 +313,36 @@ export const updateUser = async (req, res, next) => {
       .status(httpStatusCodes.badRequest)
       .json({ message: "Invalid ID." });
 
-  const existedUser = await User.findById(id);
+  const existedUser = await User.findById(id).populate(USER_VIRTUAL_FIELDS);
   if (!existedUser) return res.sendStatus(httpStatusCodes.notFound);
 
+  const flagUpdateHashtags = Array.isArray(updatingData.hashtagNames);
+  let oldHashtagNames = [];
+  let newHashtagNames = [];
+
+  if (flagUpdateHashtags) {
+    oldHashtagNames = existedUser.hashtags.map(ht => ht.name);
+    await reduceHashtagPreferences(oldHashtagNames);
+
+    newHashtagNames = removeDuplication(updatingData.hashtagNames, CHECK_EQUALITY_DEFAULT);
+    await upsertHashtagPreferences(newHashtagNames);
+    updatingData.hashtagIds = (await findExistingHashtags(newHashtagNames)).map(ht => ht._id);
+  }
+
   try {
-    var updatedUser = await User.findByIdAndUpdate(id, updatingData, {
-      new: true,
-      runValidators: true,
-    });
+    var updatedUser = await User
+      .findByIdAndUpdate(id, updatingData, {
+        new: true,
+        runValidators: true,
+      })
+      .populate(USER_VIRTUAL_FIELDS);
   } catch (error) {
+    // revert hashtag update
+    if (flagUpdateHashtags) {
+      await upsertHashtagPreferences(oldHashtagNames);
+      await reduceHashtagPreferences(newHashtagNames);
+    }
+
     return res.status(httpStatusCodes.badRequest).json(error);
   }
 
@@ -328,7 +369,7 @@ export const updateUserPassword = async (req, res, next) => {
   const user = findUserByIdentifier(userId, allUsers);
 
   if (await bcrypt.compare(newPassword, user.hashedPassword))
-    return res.status(httpStatusCodes.badRequest).json({ message: "The new password must be different from the previous one."})
+    return res.status(httpStatusCodes.badRequest).json({ message: "The new password must be different from the previous one." })
 
   if (!user)
     return res.status(httpStatusCodes.notFound).json({ message: "User does not exist." });

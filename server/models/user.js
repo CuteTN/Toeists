@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import emailValidator from 'email-validator'
+import { reduceHashtagPreferences } from "../services/hashtag.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -83,13 +84,36 @@ const userSchema = new mongoose.Schema(
     description: { type: String },
     isActivated: { type: Boolean, default: false },
 
+    hashtagIds: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'hashtags',
+      required: true,
+      default: [],
+      maxlength: 10,
+    }
+
     /*
      rating: { type: Number },
      certificateIds
-     hashtagIds
      */
   },
   { timestamps: true }
 );
+
+userSchema.virtual('hashtags', {
+  ref: 'hashtags',
+  localField: 'hashtagIds',
+  foreignField: '_id',
+});
+
+export const USER_VIRTUAL_FIELDS = ["hashtags"];
+
+userSchema.post('findOneAndDelete', async (doc) => {
+  await doc.populate('hashtags');
+  await reduceHashtagPreferences(doc.hashtags?.map(ht => ht.name));
+});
+
+userSchema.set('toObject', { virtuals: true });
+userSchema.set('toJSON', { virtuals: true });
 
 export var User = mongoose.model("users", userSchema);

@@ -47,7 +47,7 @@ export const upsertHashtagPreferences = async (hashtagNames) => {
         hashtag.count = 0;
 
       hashtag.count++;
-      await hashtag.save?.();
+      // await hashtag.save?.();
     }
     else {
       const newHashtag = {
@@ -60,6 +60,8 @@ export const upsertHashtagPreferences = async (hashtagNames) => {
       catch { }
     }
   }
+
+  await Hashtag.bulkSave(existingHashTags);
 }
 
 /**
@@ -75,4 +77,6 @@ export const reduceHashtagPreferences = async (hashtagNames) => {
       hashtag.count--;
     await hashtag.save?.();
   }
+
+  await Hashtag.bulkSave(existingHashTags);
 }

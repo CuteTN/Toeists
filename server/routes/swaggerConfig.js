@@ -19,7 +19,10 @@ const swaggerSchemas = Object.freeze({
     avatarUrl: SwaggerTypes.string({ example: "https://i.imgur.com/cNzoO9b.png" }),
     description: SwaggerTypes.string(),
     gender: SwaggerTypes.enum(['Male', 'Female', 'Other'], { example: "Female" }),
-    birthday: SwaggerTypes.date()
+    birthday: SwaggerTypes.date(),
+    hashtagIds: SwaggerTypes.array(SwaggerTypes.string(), { readOnly: true, example: [] }),
+    hashtags: SwaggerTypes.array(SwaggerTypes.ref("Hashtag"), { readOnly: true, example: [] }),
+    hashtagNames: SwaggerTypes.array(SwaggerTypes.string(), { writeOnly: true, example: ["Toeists", "English"] })
   }),
 
   UserIdentifier: SwaggerTypes.string({
