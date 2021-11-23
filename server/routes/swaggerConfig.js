@@ -6,6 +6,7 @@ import { usersSwaggerPaths } from "./users.js";
 import { filesSwaggerPaths } from "./files.js";
 import { forumsSwaggerPaths } from "./forum.js";
 import { commentsSwaggerPaths } from "./comment.js";
+import { certificatesSwaggerPaths } from "./certificate.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -92,7 +93,16 @@ const swaggerSchemas = Object.freeze({
   Hashtag: SwaggerTypes.object({
     _id: SwaggerTypes.string({ readOnly: true }),
     name: SwaggerTypes.string({ readOnly: true }),
-  })
+  }),
+
+  Certificate: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    ownerId: SwaggerTypes.string({ readOnly: true }),
+    type: SwaggerTypes.string({ example: "TOEIC"}),
+    imageUrl: SwaggerTypes.string({ example: "https://i.imgur.com/cNzoO9b.png" }),
+    description: SwaggerTypes.string({ example: "Score: 600"}),
+    isVerified: SwaggerTypes.boolean({ readOnly: true }),
+  }),
 })
 
 const swaggerPaths = Object.freeze({
@@ -102,6 +112,7 @@ const swaggerPaths = Object.freeze({
   ...filesSwaggerPaths,
   ...forumsSwaggerPaths,
   ...commentsSwaggerPaths,
+  ...certificatesSwaggerPaths,
 })
 
 

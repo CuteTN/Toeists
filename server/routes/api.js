@@ -5,6 +5,7 @@ import { userConnectionsRouter } from "./userConnection.js";
 import { filesRouter } from "./files.js";
 import { forumsRouter } from "./forum.js";
 import { commentsRouter } from "./comment.js";
+import { certificatesRouter } from "./certificate.js";
 
 export const apiRouter = express.Router();
 
@@ -13,5 +14,6 @@ apiRouter.use("/users", usersRouter);
 apiRouter.use("/user-connections", userConnectionsRouter);
 apiRouter.use("/forums", forumsRouter);
 apiRouter.use("/comments", commentsRouter);
+apiRouter.use("/certificates", certificatesRouter);
 
 apiRouter.use("/files", filesRouter);

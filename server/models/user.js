@@ -90,12 +90,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: [],
       maxlength: 10,
-    }
+    },
 
-    /*
-     rating: { type: Number },
-     certificateIds
-     */
+    rating: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
@@ -106,7 +103,13 @@ userSchema.virtual('hashtags', {
   foreignField: '_id',
 });
 
-export const USER_VIRTUAL_FIELDS = ["hashtags"];
+userSchema.virtual('certificates', {
+  ref: 'certificates',
+  localField: '_id',
+  foreignField: 'ownerId',
+});
+
+export const USER_VIRTUAL_FIELDS = ["hashtags", "certificates"];
 
 userSchema.post('findOneAndDelete', async (doc) => {
   await doc.populate('hashtags');

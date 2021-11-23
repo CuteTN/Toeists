@@ -36,7 +36,7 @@ export const findByIdMdwFn = ({
       return res.status(httpStatusCodes.forbidden).json({ message: forbiddenMsg })
   }
   catch (error) {
-    return res.status(httpStatusCodes.internalServerError).json({ message: "Internal server error." , error });
+    return res.status(httpStatusCodes.internalServerError).json({ message: "Internal server error while checking user permission." , error });
   }
 
   if (!req.attached) req.attached = {};

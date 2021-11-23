@@ -98,7 +98,7 @@ export const deleteComment = async (req, res, next) => {
     return res.sendStatus(httpStatusCodes.ok);
   }
   catch {
-    return res.status(httpStatusCodes.badRequest).json({ message: "Error while deleting the comment." })
+    return res.status(httpStatusCodes.internalServerError).json({ message: "Error while deleting the comment." })
   }
 }
 

@@ -111,7 +111,7 @@ export const deleteForum = async (req, res, next) => {
     return res.sendStatus(httpStatusCodes.ok);
   }
   catch {
-    return res.status(httpStatusCodes.badRequest).json({ message: "Error while deleting the forum." })
+    return res.status(httpStatusCodes.internalServerError).json({ message: "Error while deleting the forum." })
   }
 }
 
