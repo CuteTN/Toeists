@@ -7,6 +7,7 @@ import { filesSwaggerPaths } from "./files.js";
 import { forumsSwaggerPaths } from "./forum.js";
 import { commentsSwaggerPaths } from "./comment.js";
 import { certificatesSwaggerPaths } from "./certificate.js";
+import { hashtagsSwaggerPaths } from "./hashtag.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -113,6 +114,7 @@ const swaggerPaths = Object.freeze({
   ...forumsSwaggerPaths,
   ...commentsSwaggerPaths,
   ...certificatesSwaggerPaths,
+  ...hashtagsSwaggerPaths,
 })
 
 

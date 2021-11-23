@@ -1,4 +1,7 @@
+import mongoose from 'mongoose'
+import { Forum } from "../models/forum.js";
 import { Hashtag } from "../models/hashtag.js";
+import { User } from "../models/user.js";
 
 /**
  * @param {string} name 
@@ -79,4 +82,42 @@ export const reduceHashtagPreferences = async (hashtagNames) => {
   }
 
   await Hashtag.bulkSave(existingHashTags);
+}
+
+
+export const refreshHashtags = async () => {
+  const users = await User.find();
+  const forums = await Forum.find();
+  const counter = {};
+
+  users.forEach(user => {
+    user.hashtagIds.forEach(hashtagId => {
+      const idStr = hashtagId.toString();
+
+      if (counter[idStr])
+        counter[idStr]++;
+      else
+        counter[idStr] = 1;
+    })
+  });
+
+  forums.forEach(forum => {
+    forum.hashtagIds.forEach(hashtagId => {
+      const idStr = hashtagId.toString();
+
+      if (counter[idStr])
+        counter[idStr]++;
+      else
+        counter[idStr] = 1;
+    })
+  });
+
+  const hashtags = await Hashtag.find();
+  hashtags.forEach(hashtag => {
+    const idStr = hashtag._id.toString();
+    hashtag.count = counter[idStr] ?? 0;
+  })
+
+  await Hashtag.bulkSave(hashtags);
+  await Hashtag.deleteMany({ count: 0 });
 }
