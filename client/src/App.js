@@ -9,6 +9,7 @@ import {
   ErrorPage,
   HomePage,
   SettingsPage,
+  ChatPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -48,7 +49,7 @@ function App() {
       <CuteClientIOProvider
         serverUri={BACKEND_URL} //TODO: change all localhost to deploy link
         token={accessToken}
-      // onNewConnection={handleNewIOConnection}
+        // onNewConnection={handleNewIOConnection}
       >
         {/*<FriendsStatusProvider userId={user?.result?._id}> */}
         <Switch>
@@ -105,6 +106,7 @@ function App() {
             <Redirect to="/group/:id/main" />
           </Route> */}
           <PrivateRoute exact path="/settings" component={SettingsPage} />
+          <Route exact path="/chat" component={ChatPage} />
           {/* <Route exact path="/activate/:token" component={ActivationPage} /> */}
           {/* <PrivateRoute exact path="/message" component={MessagePage} /> */}
           {/* <Route path="/group/:id/about" component={GroupPage} />

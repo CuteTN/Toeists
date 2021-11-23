@@ -39,7 +39,7 @@ function UserInfoPage() {
                 padding: 8,
               }}
             >
-              <AvatarView></AvatarView>
+              <AvatarView />
               <ListButtons />
             </Content>
           </Layout>
