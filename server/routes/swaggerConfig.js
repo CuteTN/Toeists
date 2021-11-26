@@ -8,6 +8,7 @@ import { forumsSwaggerPaths } from "./forum.js";
 import { commentsSwaggerPaths } from "./comment.js";
 import { certificatesSwaggerPaths } from "./certificate.js";
 import { hashtagsSwaggerPaths } from "./hashtag.js";
+import { conversationsSwaggerPaths } from "./conversation.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -99,11 +100,35 @@ const swaggerSchemas = Object.freeze({
   Certificate: SwaggerTypes.object({
     _id: SwaggerTypes.string({ readOnly: true }),
     ownerId: SwaggerTypes.string({ readOnly: true }),
-    type: SwaggerTypes.string({ example: "TOEIC"}),
+    type: SwaggerTypes.string({ example: "TOEIC" }),
     imageUrl: SwaggerTypes.string({ example: "https://i.imgur.com/cNzoO9b.png" }),
-    description: SwaggerTypes.string({ example: "Score: 600"}),
+    description: SwaggerTypes.string({ example: "Score: 600" }),
     isVerified: SwaggerTypes.boolean({ readOnly: true }),
   }),
+
+  ConversationMember: SwaggerTypes.object({
+    memberId: SwaggerTypes.ref("UserIdentifier"),
+    role: SwaggerTypes.enum(["admin", "none"], { readOnly: true }),
+    hasSeen: SwaggerTypes.boolean({ readOnly: true }),
+    hasMuted: SwaggerTypes.boolean({ readOnly: true }),
+  }),
+  
+  Conversation: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    name: SwaggerTypes.string({ example: "Class A1"}),    
+    memberIds: SwaggerTypes.array(SwaggerTypes.ref("UserIdentifier"), { writeOnly: true }),
+    members: SwaggerTypes.array(SwaggerTypes.ref("ConversationMember"), { readOnly: true }),
+    type: SwaggerTypes.enum(["private", "group"]),
+  }), 
+
+  Message: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    isSystemMessage: SwaggerTypes.boolean(),
+    senderId: SwaggerTypes.ref("UserIdentifier"),
+    conversationId: SwaggerTypes.string(),
+    text: SwaggerTypes.string(),
+    attachedContent: SwaggerTypes.object(),
+  })
 })
 
 const swaggerPaths = Object.freeze({
@@ -115,6 +140,7 @@ const swaggerPaths = Object.freeze({
   ...commentsSwaggerPaths,
   ...certificatesSwaggerPaths,
   ...hashtagsSwaggerPaths,
+  ...conversationsSwaggerPaths,
 })
 
 

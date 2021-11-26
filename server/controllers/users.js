@@ -76,9 +76,10 @@ export const signIn = async (req, res, next) => {
   if (!isPasswordCorrect)
     return res.status(httpStatusCodes.badRequest).json({ message: "Wrong password." });
 
-  const tokens = generateUserTokens(user);
-
   const noRefresh = req.query["no-refresh"] !== undefined && req.query["no-refresh"] !== "false";
+
+  const tokens = generateUserTokens(user, noRefresh ? "24h" : null);
+
   if (!noRefresh)
     await RefreshToken.create({ token: tokens.refreshToken, });
   else
@@ -365,7 +366,7 @@ export const updateUserPassword = async (req, res, next) => {
   if (!userId)
     return res.status(httpStatusCodes.badRequest).json({ message: "A user ID is required." });
 
-  const allUsers = await User.find();
+  const allUsers = await User.find().select("+hashedPassword");
   const user = findUserByIdentifier(userId, allUsers);
 
   if (await bcrypt.compare(newPassword, user.hashedPassword))

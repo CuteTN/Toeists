@@ -2,10 +2,14 @@ import mongoose from "mongoose"
 
 const messageSchema = new mongoose.Schema(
   {
+    isSystemMessage: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
-      required: true
     },
     conversationId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,8 +1,30 @@
 import mongoose from "mongoose";
-import Conversation from "../models/conversation.js";
-import Message from "../models/message.js";
+import { Conversation } from "../models/conversation.js";
+import { Message } from "../models/message.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
+export const findPrivateConversation = async (user1Id, user2Id) => {
+  const result = (await Conversation.find({ type: "private" }))
+    .find(conversation =>
+      getMemberInfoOfConversation(conversation, user1Id)
+      &&
+      getMemberInfoOfConversation(conversation, user2Id)
+    )
+
+  return result;
+}
+
+/**
+ * @returns return null if the user themselves is not a member of conversation
+ */
+export const getMemberInfoOfConversation = (conversation, userId) => {
+  try { var _userId = new mongoose.Types.ObjectId(userId); }
+  catch { return null; }
+  return conversation?.members?.find(member => _userId.equals(member.memberId));
+}
+
+
+//LEGACY:
 /**
  * @param {string} pathName
  * @returns {(userId: string | mongoose.Types.ObjectId, conversation: POJO) => boolean}
@@ -96,11 +118,7 @@ const setUserAsUnseenConversation =
  * @param {{ text: string, senderId }} message
  * @returns {Promise<MessageEventResult>}
  */
-export const addMessageToConversation = async (
-  userId,
-  conversationId,
-  message
-) => {
+export const addMessageToConversation = async (userId, conversationId, message) => {
   const res = {
     userId,
     conversationId,

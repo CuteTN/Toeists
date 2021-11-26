@@ -26,10 +26,10 @@ export const findUserByIdentifier = (identifier, users) => {
     return users.find(user => user?.[fieldName]?.toUpperCase() === idUpper);
 }
 
-export const generateUserTokens = (user) => {
+export const generateUserTokens = (user, expiresIn) => {
   const accessToken = signJwt(
     { type: "a", userId: user._id, username: user.username, email: user.email },
-    { expiresIn: "1h" }
+    { expiresIn: expiresIn ?? "30m" }
   );
   const refreshToken = signJwt({ type: "r", userId: user._id });
 

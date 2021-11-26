@@ -45,6 +45,8 @@ export const findByIdMdwFn = ({
   next?.();
 }
 
+export const TARGETED_DATA_EXTRACTOR = (req) => req?.attached?.targetedData;
+
 /**
  * @typedef {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} ExpressReq
  */

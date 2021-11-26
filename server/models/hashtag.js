@@ -20,7 +20,6 @@ const hashtagSchema = new mongoose.Schema(
         {
           validator: name => validateHashtagName(name).isValid,
           message: props => validateHashtagName(props.value).message
-
         }
       ]
     },
