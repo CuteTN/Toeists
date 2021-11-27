@@ -64,7 +64,7 @@ export const signIn = async (req, res, next) => {
   if (!password)
     return res.status(httpStatusCodes.badRequest).json({ message: "Password is required." });
 
-  const allUsers = await User.find();
+  const allUsers = await User.find().select("+hashedPassword");
   const user = findUserByIdentifier(identifier, allUsers);
 
   if (!user)

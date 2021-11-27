@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 import { Message } from "./message.js";
-import { findPrivateConversation } from '../services/conversation.js'
+import { getPrivateConversation } from '../services/conversation.js'
 
 const conversationMemberSchema = new mongoose.Schema(
   {
@@ -79,7 +79,7 @@ conversationSchema.pre('validate', async function (next) {
     if (this.members?.length !== 2)
       return next(this.invalidate('members', 'A private conversation must have exact 2 members.'));
 
-    const existedConversation = await findPrivateConversation(this.members[0]?.memberId, this.members[1]?.memberId);
+    const existedConversation = await getPrivateConversation(this.members[0]?.memberId, this.members[1]?.memberId);
 
     if (existedConversation)
       return next(this.invalidate('members', 'The private conversation of these 2 members has already existed.'));

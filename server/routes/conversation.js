@@ -16,9 +16,15 @@ conversationsRouter.post("/",
   controllers.createConversation
 );
 
+conversationsRouter.get("/private/:partnerId",
+  authorizeMdw,
+  autoTransformToUserIdsMdwFn([req => req.params, "partnerId"]),
+  controllers.getPrivateConversationByPartnerId,
+)
+
 conversationsRouter.get("/:id",
   authorizeMdw,
-  findByIdMdwFn({ model: Conversation }),
+  findByIdMdwFn({ model: Conversation, enable404: false }),
   checkIsMemberOfConversationMdwFn(),
   controllers.getConversationById,
 )
@@ -40,23 +46,46 @@ export const conversationsSwaggerPaths = {
       null,
       SwaggerTypes.ref("Conversation"),
       SwaggerTypes.ref("Conversation"),
-      )
-    },
-    
-    [`/${controllerName}/{id}`]: {
-      get: createSwaggerPath(
-        "Get a conversation of the current user by its ID.",
-        [controllerName],
-        [
-          {
-            in: "path",
-            name: "id",
-            required: true,
-            schema: SwaggerTypes.string(),
-          }
-        ],
-        null,
-        SwaggerTypes.ref("Conversation"),
+    )
+  },
+
+  [`/${controllerName}/{id}`]: {
+    get: createSwaggerPath(
+      "Get a conversation of the current user by its ID.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      null,
+      SwaggerTypes.ref("Conversation"),
     ),
+  },
+
+  [`/${controllerName}/private/{partnerId}`]: {
+    get: createSwaggerPath(
+      "Retrieve or create a private conversation with another user.",
+      [controllerName],
+      [
+        {
+          name: "partnerId",
+          in: "path",
+          required: true,
+          schema: SwaggerTypes.ref("UserIdentifier"),
+        },
+        {
+          name: "auto-create",
+          in: "query",
+          description: "When enabled, a new private conversation would be created if it doesn't exist.",
+          schema: SwaggerTypes.boolean(),
+        }
+      ],
+      null,
+      SwaggerTypes.ref("Conversation"),
+    )
   }
 }

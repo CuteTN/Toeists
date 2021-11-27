@@ -3,13 +3,26 @@ import { Conversation } from "../models/conversation.js";
 import { Message } from "../models/message.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
-export const findPrivateConversation = async (user1Id, user2Id) => {
-  const result = (await Conversation.find({ type: "private" }))
+/**
+ * @param {*} user1Id 
+ * @param {*} user2Id 
+ * @param {boolean} autoCreate Auto create a new conversation of 2 users if it doesn't exist
+ * @returns 
+ */
+export const getPrivateConversation = async (user1Id, user2Id, autoCreate = false) => {
+  let result = (await Conversation.find({ type: "private" }))
     .find(conversation =>
       getMemberInfoOfConversation(conversation, user1Id)
       &&
       getMemberInfoOfConversation(conversation, user2Id)
     )
+
+  if (autoCreate && !result) {
+    result = await Conversation.create({
+      members: [user1Id, user2Id].map(memberId => ({ memberId })),
+      type: "private",
+    })
+  }
 
   return result;
 }
