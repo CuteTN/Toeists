@@ -5,7 +5,14 @@ import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
 
 export const authorizationRouter = express.Router();
 
-authorizationRouter.get("/", authorizeMdw, (_, res) => res.sendStatus(httpStatusCodes.ok));
+authorizationRouter.get("/",
+  authorizeMdw,
+  (req, res) =>
+    res.status(200).json({
+      userId: req.attached.decodedToken.userId,
+      username: req.attached.decodedToken.username,
+      expiresAt: new Date(req.attached.decodedToken.exp * 1000)
+    }));
 authorizationRouter.head("/", authorizeMdw, (_, res) => res.sendStatus(httpStatusCodes.ok));
 
 const controllerName = "authorization";

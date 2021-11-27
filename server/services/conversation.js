@@ -37,6 +37,34 @@ export const getMemberInfoOfConversation = (conversation, userId) => {
 }
 
 
+/**
+ * @param {*} conversation 
+ * @param {string} userId 
+ */
+export const upsertMemberOfConversation = (conversation, userId) => {
+  try { var _userId = new mongoose.Types.ObjectId(userId); }
+  catch { return }
+
+  if (!getMemberInfoOfConversation(conversation, userId))
+    if (Array.isArray(conversation.members))
+      conversation.members.push({
+        memberId: _userId,
+      })
+}
+
+
+export const removeMemberOfConversation = (conversation, userId) => {
+  try { var _userId = new mongoose.Types.ObjectId(userId); }
+  catch { return }
+
+  const memberIndex = conversation?.members?.findIndex(member => _userId.equals(member?.memberId)) ?? -1;
+  if (memberIndex < 0)
+    return;
+
+  conversation.members.splice(memberIndex, 1);
+}
+
+
 //LEGACY:
 /**
  * @param {string} pathName

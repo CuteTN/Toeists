@@ -21,7 +21,7 @@ export const checkIsMemberOfConversationMdwFn = (conversationExtractor = TARGETE
     if (!memberInfo)
       return res.status(httpStatusCodes.forbidden).json({ message: "You're not a member of this conversation." })
 
-    if (adminRequired && (memberInfo.role !== "admin"))
+    if (adminRequired && (memberInfo.role !== "admin") && (conversation.type === "group"))
       return res.status(httpStatusCodes.forbidden).json({ message: "You must be an admin to perform this action." })
 
     if (!req.attached) req.attached = {};

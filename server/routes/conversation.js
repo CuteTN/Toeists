@@ -1,11 +1,11 @@
 import express from "express";
 import * as controllers from "../controllers/conversation.js";
 import { authorizeMdw } from "../middlewares/authorization.js";
-import { checkIsMemberOfConversationMdwFn } from "../middlewares/conversation.js"
+import { checkConversationTypeMdwFn, checkIsMemberOfConversationMdwFn } from "../middlewares/conversation.js"
 import { autoTransformToUserIdsMdwFn } from "../middlewares/autoTransformToUserIds.js";
 import { Conversation } from "../models/conversation.js"
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
-import { findByIdMdwFn } from "../middlewares/findById.js";
+import { findByIdMdwFn, TARGETED_DATA_EXTRACTOR } from "../middlewares/findById.js";
 
 export const conversationsRouter = express.Router();
 
@@ -24,10 +24,52 @@ conversationsRouter.get("/private/:partnerId",
 
 conversationsRouter.get("/:id",
   authorizeMdw,
-  findByIdMdwFn({ model: Conversation, enable404: false }),
+  findByIdMdwFn({ model: Conversation }),
   checkIsMemberOfConversationMdwFn(),
   controllers.getConversationById,
 )
+
+conversationsRouter.put("/:id",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR, true),
+  controllers.updateConversation,
+)
+
+conversationsRouter.delete("/:id",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkConversationTypeMdwFn("group"),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR, true),
+  controllers.removeGroupConversation,
+)
+
+conversationsRouter.post("/:id/members",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkConversationTypeMdwFn("group"),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR, true),
+  autoTransformToUserIdsMdwFn([req => req.body, "memberIds"]),
+  controllers.upsertMembersToGroupConversation
+)
+
+conversationsRouter.delete("/:id/members",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkConversationTypeMdwFn("group"),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR, true),
+  autoTransformToUserIdsMdwFn([req => req.body, "memberIds"]),
+  controllers.removeMembersFromGroupConversation
+)
+
+conversationsRouter.put("/:id/member-roles",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkConversationTypeMdwFn("group"),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR, true),
+  controllers.setMemberRolesOfGroupConversation
+)
+
 
 const controllerName = "conversations";
 export const conversationsSwaggerPaths = {
@@ -62,6 +104,94 @@ export const conversationsSwaggerPaths = {
         }
       ],
       null,
+      SwaggerTypes.ref("Conversation"),
+    ),
+
+    put: createSwaggerPath(
+      "Update conversation information. Only group's admins can perform this action. This does NOT update conversation members and type.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.ref("Conversation"),
+      SwaggerTypes.ref("Conversation"),
+    ),
+
+    delete: createSwaggerPath(
+      "Remove a group conversation. Only admins can perform this action.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      null,
+      null
+    )
+  },
+
+  [`/${controllerName}/{id}/members`]: {
+    post: createSwaggerPath(
+      "Upsert members to a group conversation. Only admins can perform this action.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({
+        memberIds: SwaggerTypes.array(SwaggerTypes.ref("UserIdentifier"))
+      }),
+      SwaggerTypes.ref("Conversation"),
+    ),
+
+    delete: createSwaggerPath(
+      "Remove members from a group conversation. Only admins can perform this action.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({
+        memberIds: SwaggerTypes.array(SwaggerTypes.ref("UserIdentifier"))
+      }),
+      SwaggerTypes.ref("Conversation"),
+    ),
+  },
+
+  [`/${controllerName}/{id}/member-roles`]: {
+    put: createSwaggerPath(
+      "Set members' roles in group conversation. Only admins can perform this action.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({
+        members: SwaggerTypes.array(SwaggerTypes.object({
+          memberId: SwaggerTypes.ref("UserIdentifier"),
+          role: SwaggerTypes.enum(["admin", "none"], { example: "none" })
+        }))
+      }),
       SwaggerTypes.ref("Conversation"),
     ),
   },

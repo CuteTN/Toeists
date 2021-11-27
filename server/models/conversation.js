@@ -9,6 +9,9 @@ const conversationMemberSchema = new mongoose.Schema(
       ref: "users",
       required: true,
     },
+    nickname: {
+      type: String,
+    },
     role: {
       type: String,
       enum: ['admin', 'none'],
@@ -23,9 +26,15 @@ const conversationMemberSchema = new mongoose.Schema(
     hasMuted: {
       type: Boolean,
       required: true,
-      default: true,
+      default: false,
       select: false,
-    }
+    },
+    hasBlocked: {
+      type: Boolean,
+      required: true,
+      default: false,
+      select: false,
+    },
   },
   { timestamps: true, _id: false }
 )
