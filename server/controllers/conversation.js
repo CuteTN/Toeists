@@ -243,3 +243,17 @@ export const setMyBlockedStateConversation = setMyMemberInfoFn("hasBlocked", req
     throw "The field 'value' must have type boolean."
   return value;
 });
+
+export const leaveConversation = async (req, res, next) => {
+  const conversation = req.attached?.targetedData;
+  const memberIdToRemove = req.attached.decodedToken.userId;
+  removeMemberOfConversation(conversation, memberIdToRemove)
+
+  try {
+    await conversation.save?.();
+    return res.status(httpStatusCodes.ok).json(conversation);
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.unprocessableEntity).json({ message: "Error while removing a member from the conversation", error })
+  }
+}

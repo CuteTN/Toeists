@@ -99,6 +99,14 @@ conversationsRouter.put("/:id/my-seen-state",
   controllers.setMySeenStateConversation
 );
 
+conversationsRouter.put("/:id/leave",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR),
+  checkConversationTypeMdwFn("group"),
+  controllers.leaveConversation
+);
+
 
 const controllerName = "conversations";
 export const conversationsSwaggerPaths = {
@@ -312,6 +320,23 @@ export const conversationsSwaggerPaths = {
         }
       ],
       SwaggerTypes.object({ value: SwaggerTypes.boolean() }),
+      SwaggerTypes.ref("Conversation"),
+    ),
+  },
+
+  [`/${controllerName}/{id}/leave`]: {
+    put: createSwaggerPath(
+      "Leave a group conversation.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      null,
       SwaggerTypes.ref("Conversation"),
     ),
   }
