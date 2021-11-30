@@ -47,6 +47,7 @@ conversationMemberSchema.virtual('member', {
 })
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 const conversationSchema = new mongoose.Schema(
@@ -90,7 +91,7 @@ conversationSchema.pre('validate', async function (next) {
 
     const existedConversation = await getPrivateConversation(this.members[0]?.memberId, this.members[1]?.memberId);
 
-    if (existedConversation)
+    if (!existedConversation._id.equals(this._id))
       return next(this.invalidate('members', 'The private conversation of these 2 members has already existed.'));
   }
 

@@ -70,6 +70,35 @@ conversationsRouter.put("/:id/member-roles",
   controllers.setMemberRolesOfGroupConversation
 )
 
+conversationsRouter.put("/:id/my-nickname",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR),
+  controllers.setMyNicknameInConversation
+);
+
+conversationsRouter.put("/:id/my-muted-state",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR),
+  controllers.setMyMutedStateConversation
+);
+
+conversationsRouter.put("/:id/my-blocked-state",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR),
+  checkConversationTypeMdwFn("private"),
+  controllers.setMyBlockedStateConversation
+);
+
+conversationsRouter.put("/:id/my-seen-state",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR),
+  controllers.setMySeenStateConversation
+);
+
 
 const controllerName = "conversations";
 export const conversationsSwaggerPaths = {
@@ -217,5 +246,73 @@ export const conversationsSwaggerPaths = {
       null,
       SwaggerTypes.ref("Conversation"),
     )
+  },
+
+  [`/${controllerName}/{id}/my-nickname`]: {
+    put: createSwaggerPath(
+      "Update nickname of the current user in a conversation.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({ nickname: SwaggerTypes.string() }),
+      SwaggerTypes.ref("Conversation"),
+    ),
+  },
+
+  [`/${controllerName}/{id}/my-muted-state`]: {
+    put: createSwaggerPath(
+      "Mute/Unmute a conversation.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({ value: SwaggerTypes.boolean() }),
+      SwaggerTypes.ref("Conversation"),
+    ),
+  },
+
+  [`/${controllerName}/{id}/my-blocked-state`]: {
+    put: createSwaggerPath(
+      "Block/Unblock a private conversation.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({ value: SwaggerTypes.boolean() }),
+      SwaggerTypes.ref("Conversation"),
+    ),
+  },
+
+  [`/${controllerName}/{id}/my-seen-state`]: {
+    put: createSwaggerPath(
+      "Mark a conversation as seen/unseen.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({ value: SwaggerTypes.boolean() }),
+      SwaggerTypes.ref("Conversation"),
+    ),
   }
 }

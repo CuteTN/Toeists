@@ -165,7 +165,7 @@ export const setMemberRolesOfGroupConversation = async (req, res, next) => {
     const role = members[i].role;
 
     if (!(role && userIdentifier))
-      return res.status(httpStatusCodes.badRequest).json({ message: "memberId and role fields are required for each element of members array."});
+      return res.status(httpStatusCodes.badRequest).json({ message: "memberId and role fields are required for each element of members array." });
 
     const user = findUserByIdentifier(userIdentifier, allUser);
     if (!user)
@@ -184,3 +184,62 @@ export const setMemberRolesOfGroupConversation = async (req, res, next) => {
     return res.status(httpStatusCodes.unprocessableEntity).json({ message: "Error while updating roles of members in the conversation", error })
   }
 }
+
+
+/**
+ * @param {string} field 
+ * @param {(req: express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>) => any} valueExtractor This can also be a value
+ * @returns {express.RequestHandler};
+ */
+const setMyMemberInfoFn = (field, valueExtractor) => async (req, res, next) => {
+  const memberInfo = req?.attached?.conversationMemberInfo;
+  const conversation = req?.attached?.targetedData;
+
+  try {
+    var newValue = typeof valueExtractor === "function" ?
+      valueExtractor(req)
+      :
+      valueExtractor;
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.badRequest).json({ message: "Error while extracting data to update.", error });
+  }
+
+  try {
+    memberInfo[field] = newValue;
+    await conversation.save();
+    return res.status(httpStatusCodes.ok).json(conversation);
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.badRequest).json({ message: "Error while updating the conversation member info.", error })
+  }
+}
+
+export const setMyNicknameInConversation = setMyMemberInfoFn("nickname", req => req.body.nickname);
+
+export const setMyMutedStateConversation = setMyMemberInfoFn("hasMuted", req => {
+  const { value } = req.body;
+  if (value === undefined)
+    throw "The field 'value' is required."
+  if (typeof value !== "boolean")
+    throw "The field 'value' must have type boolean."
+  return value;
+});
+
+export const setMySeenStateConversation = setMyMemberInfoFn("hasSeen", req => {
+  const { value } = req.body;
+  if (value === undefined)
+    throw "The field 'value' is required."
+  if (typeof value !== "boolean")
+    throw "The field 'value' must have type boolean."
+  return value;
+});
+
+export const setMyBlockedStateConversation = setMyMemberInfoFn("hasBlocked", req => {
+  const { value } = req.body;
+  if (value === undefined)
+    throw "The field 'value' is required."
+  if (typeof value !== "boolean")
+    throw "The field 'value' must have type boolean."
+  return value;
+});
