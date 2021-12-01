@@ -106,7 +106,7 @@ function App() {
             <Redirect to="/group/:id/main" />
           </Route> */}
           <PrivateRoute exact path="/settings" component={SettingsPage} />
-          <Route exact path="/chat" component={ChatPage} />
+          <PrivateRoute path="/chat/:conversationId?" component={ChatPage} />
           {/* <Route exact path="/activate/:token" component={ActivationPage} /> */}
           {/* <PrivateRoute exact path="/message" component={MessagePage} /> */}
           {/* <Route path="/group/:id/about" component={GroupPage} />

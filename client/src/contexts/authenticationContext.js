@@ -16,7 +16,7 @@ export const useAuth = () => {
 
 export const AuthenticationProvider = ({ children }) => {
   const [signedInUser, setSignedInUser] = React.useState(null);
-  const [accessToken, setAccessToken] = React.useState(null);
+  const [accessToken, setAccessToken] = React.useState(undefined);
 
   React.useEffect(() => {
     refreshSignedInUser();

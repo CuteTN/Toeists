@@ -38,12 +38,12 @@ function SignInPage() {
   const location = useLocation();
   const [resend, setResend] = useState(false);
   const disableSignIn = useRef(false);
-  const { signedInUser } = useAuth();
+  const { accessToken } = useAuth();
   const backUrl = new URLSearchParams(location.search).get("url");
 
   React.useEffect(() => {
-    if (signedInUser) routeBack();
-  }, [signedInUser]);
+    if (accessToken !== null) routeBack();
+  }, [accessToken]);
 
   const setDisableSignIn = (b) => {
     disableSignIn.current = b;
@@ -55,7 +55,7 @@ function SignInPage() {
   };
 
   const routeBack = () => {
-    if (backUrl) history.replace("/settings");
+    if (backUrl) history.replace(backUrl);
     else history.replace("/");
   };
 

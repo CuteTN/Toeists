@@ -1,16 +1,23 @@
 import React from "react";
-import { Route, Redirect, useLocation } from "react-router-dom";
+import { Route, Redirect, useLocation, useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/authenticationContext";
+import { TokenService } from "../services/TokenService";
 
 export default function PrivateRoute({ component: Component, ...rest }) {
-  const { signedInUser } = useAuth();
+  const { accessToken } = useAuth()
   const { pathname } = useLocation();
+  const history = useHistory();
+
+  React.useEffect(() => {
+    if (accessToken === null)
+      history.replace(`/signin?url=${encodeURIComponent(pathname)}`);
+  }, [accessToken])
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        return signedInUser ? <Component {...props} /> : <Redirect to={`/signin?url=${encodeURIComponent(pathname)}`}/>;
+        return <Component {...props} />
       }}
     ></Route>
   );

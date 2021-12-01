@@ -26,23 +26,27 @@ export class TokenService {
 
   /** @type {string | undefined} */
   static get accessToken() {
-    return localStorage.getItem(this.ACCESS_TOKEN_NAME);
+    return localStorage.getItem(this.ACCESS_TOKEN_NAME) ?? null;
   }
 
   static set accessToken(token) {
+    const currentToken = this.accessToken;
+
     if (!token) {
       localStorage.removeItem(this.ACCESS_TOKEN_NAME);
-      this.#onAccessTokenChangeEvent.emit("", null);
+      if (currentToken !== null)
+        this.#onAccessTokenChangeEvent.emit("", null);
     }
     else {
       localStorage.setItem(this.ACCESS_TOKEN_NAME, token);
-      this.#onAccessTokenChangeEvent.emit("", token);
+      if (currentToken !== token)
+        this.#onAccessTokenChangeEvent.emit("", token);
     }
   }
 
   /** @type {string | undefined} */
   static get refreshToken() {
-    return localStorage.getItem(this.REFRESH_TOKEN_NAME);
+    return localStorage.getItem(this.REFRESH_TOKEN_NAME) ?? null;
   }
 
   static set refreshToken(token) {
