@@ -1,10 +1,10 @@
 .chat-wrapper {
     display: grid;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 25% 75%;
     grid-template-rows: 64px 80px 509px 100px;
     grid-template-areas: 
     "header header"
-    "list-friend message-header"
+    "manage-conversations message-header"
     "list-friend message-form"
     "list-friend input-chat"
 }
