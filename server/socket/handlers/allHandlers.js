@@ -1,14 +1,11 @@
 import CuteServerIO from "../CuteServerIO.js";
-// import { setUpOnReceiveMessages } from "./MessageHandlers.js";
+import { setUpOnReceiveMessages } from "./MessageHandlers.js";
 import { isValidUser } from "../../services/users.js"
 
 /**
  * @param {CuteServerIO} cuteIO
  */
 export const setUpCuteIO = (cuteIO) => {
-  // setupDemoOnReceive(cuteIO);
-  // setUpOnReceiveMessages(cuteIO);
-  // cuteIO.queueReceiveHandler("testping", ({msg}) => console.log(msg));
-
+  setUpOnReceiveMessages(cuteIO);
   cuteIO.verifyUser = isValidUser;
 };

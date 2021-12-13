@@ -3,6 +3,6 @@ import React from "react";
 import "./style.css";
 
 const MessageForm = () => (
-  <div className="div-manage-conversations-wrapper">MessageForm</div>
+  <div className="message-form-wrapper">MessageForm</div>
 );
 export default MessageForm;

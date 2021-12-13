@@ -6,12 +6,12 @@ import "./style.css";
 const ListConversations = ({ conversations, onConversationClick }) => {
   const handleConversationClick = React.useCallback((conversation) => {
     onConversationClick?.(conversation);
-  }, []);
+  }, [onConversationClick])
 
   return (
     <div className="list-conversations-wrapper">
       {conversations?.map((c, i) =>
-        <ConversationCard key={i} conversation={c} onClick={handleConversationClick}/>)
+        <ConversationCard key={i} conversation={c} onClick={handleConversationClick} />)
       }
     </div>
   );

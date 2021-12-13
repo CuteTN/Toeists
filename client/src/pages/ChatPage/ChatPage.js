@@ -11,41 +11,75 @@ import { getConversationById, getConversations } from "../../services/api/conver
 import { useHistory, useParams } from "react-router";
 import { message } from "antd";
 import DivManageConversations from "./DivManageConversations/DivManageConversations";
+import { useMessage } from '../../hooks/useMessage'
+import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 
 const ChatPage = () => {
   /** @type {[any[],React.Dispatch<any[]>]} */
   const [conversations, setConversations] = React.useState(null);
+  const msgIO = useMessage();
+  const cuteClientIO = useCuteClientIO();
 
   const [currentConversation, setCurrentConversation] = React.useState(null);
   const { conversationId } = useParams();
   const history = useHistory();
 
-  React.useEffect(() => {
+  const fetchConversations = () => {
     getConversations()
       .then(res => {
         setConversations(res.data);
-        console.log(res.data);
       })
-  }, [])
+  };
 
-  React.useEffect(() => {
+  const fetchCurrentConversation = () => {
     if (conversationId)
       getConversationById(conversationId)
         .then(({ data }) => {
           setCurrentConversation(data);
-          console.log(data);
         })
         .catch(error => {
           message.error('Failed to load conversation.', undefined, () => history.replace('/chat'));
         })
+  }
+
+  React.useEffect(() => {
+    fetchConversations();
+  }, [])
+
+  React.useEffect(() => {
+    fetchCurrentConversation();
   }, [conversationId])
 
-  const handleConversationClick = React.useCallback((conversation) => {
-    const id = conversation.id;
+  React.useEffect(() => {
+    msgIO.onReceive(msg => {
+      if (msg.status.code === 200) {
+        fetchConversations();
+        fetchCurrentConversation();
+      }
+    });
 
-    if (id && id !== conversationId)
-      history.push(`/chat/${id}`)
-  }, [])
+    msgIO.onSent((msg) => {
+      if (msg.status.code === 200) {
+        fetchConversations();
+        fetchCurrentConversation();
+      }
+    })
+
+    return msgIO.cleanUpAll;
+  }, [msgIO.cuteIO.socketId])
+
+
+  const onMessagePressSend = (message) => {
+    if (conversationId)
+      msgIO.send(conversationId, message);
+  }
+
+  const handleConversationClick = React.useCallback(conversation => {
+    const { id } = conversation ?? {};
+
+    if ((id) && id !== conversationId)
+      history.push(`/chat/${id}`);
+  }, [conversationId]);
 
   return <div className="chat-wrapper">
     <Navbar />
@@ -56,7 +90,9 @@ const ChatPage = () => {
     />
     <MessageHeader />
     <MessageForm />
-    <InputChat />
+    <InputChat
+      onMessagePressSend={onMessagePressSend}
+    />
   </div>
 }
 export default ChatPage;

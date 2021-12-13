@@ -8,7 +8,7 @@ import { httpStatusCodes } from '../utils/httpStatusCode.js';
 
 /** @type {express.RequestHandler} */
 export const getConversationsOfUser = async (req, res, next) => {
-  const allConversations = await Conversation.find().populate(CONVERSATION_VIRTUAL_FIELDS);
+  const allConversations = await Conversation.find().populate(CONVERSATION_VIRTUAL_FIELDS).sort({ messageUpdatedAt: 'desc' });
   const { userId } = req.attached.decodedToken;
 
   const conversationsOfUser = allConversations.filter(

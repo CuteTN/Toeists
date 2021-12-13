@@ -120,10 +120,11 @@ export const useMessage = () => {
     onConversationDeleted,
 
     cleanUpAll,
+    cuteIO,
   }
 }
 
 /** @typedef {object} MessageEventParams
- * @property {{code: string, msg: string}} Status
- * @property {{senderId: string, conversationId: string, seenValue: boolean, message: any, listSeenMembers: [string], messageId:string}} res
+ * @property {{code: string, msg: string}} status
+ * @property {any} res
  */

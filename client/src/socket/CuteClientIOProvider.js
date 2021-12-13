@@ -20,6 +20,7 @@ CuteClientIOInstance.onRejectedDueToTokenExpired(
 export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnection }) => {
   /** @type [CuteClientIO, any] */
   const [cuteIO, setCuteIO] = useState(() => CuteClientIOInstance);
+  const [socketId, setSocketId] = React.useState(null);
 
   useEffect(() => {
     setCuteIO(
@@ -27,7 +28,9 @@ export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnecti
        * @param {CuteClientIO} cuteIO
        */
       cuteIO => {
-        cuteIO.connect(serverUri, token);
+        cuteIO.connect(serverUri, token,
+          socket => { setSocketId(socket.id); }
+        );
 
         onNewConnection?.(cuteIO);
         return cuteIO;

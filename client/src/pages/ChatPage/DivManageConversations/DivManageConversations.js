@@ -3,6 +3,6 @@ import React from "react";
 import "./style.css";
 
 const DivManageConversations = () => (
-  <div className="message-form-wrapper">Manage conversations</div>
+  <div className="div-manage-conversations-wrapper">Manage conversations</div>
 );
 export default DivManageConversations;

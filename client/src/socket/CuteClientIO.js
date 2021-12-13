@@ -45,9 +45,10 @@ export default class CuteClientIO {
    * set socket with new serverUri and token and connect to server
    * @param {string} serverUri The address of the server.
    * @param {string} token
+   * @param {(socket: Socket<DefaultEventsMap, DefaultEventsMap>) => void} onConnected
    * @returns {CuteClientIO}
    */
-  connect = (serverUri, token) => {
+  connect = (serverUri, token, onConnected) => {
     if (serverUri === this.#uri && token === this.#token) return this;
 
     this.#uri = serverUri;
@@ -68,9 +69,10 @@ export default class CuteClientIO {
 
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
-      // console.info(
-      //   `[IO] Connected to socket ${this.#socketId}`
-      // );
+      onConnected?.(this.#socket);
+      console.info(
+        `[IO] Connected to socket ${this.#socketId}`
+      );
 
       this.socket.once("System-AcceptBrowserId", (msg) => {
         // DANGER: async accross tabs here
@@ -92,13 +94,13 @@ export default class CuteClientIO {
         }
       })
 
+      this.#resendAfterTokenRefreshed(this.#oldToken, this.#token);
+
       this.socket.on("System-TokenExpired", ({ rejectedEvent }) => {
         this.#onRejectedDueToTokenExpiredEvent.emit("");
         if (rejectedEvent?.event !== null && rejectedEvent?.event !== "connection")
           this.#rejectedDueToTokenExpiredMesages.push(rejectedEvent);
       })
-
-      this.#resendAfterTokenRefreshed(this.#oldToken, this.#token);
 
       this.onReceiveMulti(this.#queueEventHandlersOnConnection);
       this.#queueEventHandlersOnConnection = [];
@@ -201,7 +203,7 @@ export default class CuteClientIO {
    * @param {string} newToken 
    */
   #checkAccessTokensOfSameUser = (oldToken, newToken) => {
-    if(!(oldToken && newToken))
+    if (!(oldToken && newToken))
       return true;
 
     const oldPayload = jwtDecode(oldToken);
@@ -216,8 +218,9 @@ export default class CuteClientIO {
   }
 
   #resendAfterTokenRefreshed = (oldToken, newToken) => {
-    if (this.#checkAccessTokensOfSameUser(oldToken, newToken))
-      this.#rejectedDueToTokenExpiredMesages.forEach(message => this.send(message.event, message.msg))
+    this.#rejectedDueToTokenExpiredMesages.forEach(message => {
+      this.send(message.event, message.msg);
+    })
 
     this.#rejectedDueToTokenExpiredMesages = [];
   }

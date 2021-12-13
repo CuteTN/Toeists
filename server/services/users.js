@@ -29,7 +29,8 @@ export const findUserByIdentifier = (identifier, users) => {
 export const generateUserTokens = (user, expiresIn) => {
   const accessToken = signJwt(
     { type: "a", userId: user._id, username: user.username, email: user.email },
-    { expiresIn: expiresIn ?? "30m" }
+    // BUGGY: Cannot handle socket IO 
+    // { expiresIn: expiresIn ?? "10m" }
   );
   const refreshToken = signJwt({ type: "r", userId: user._id });
 

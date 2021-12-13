@@ -63,6 +63,11 @@ const conversationSchema = new mongoose.Schema(
       type: String,
       enum: ["private", "group"],
       required: true,
+    },
+    messageUpdatedAt: {
+      type: Date,
+      required: true,
+      default: () => Date.now()
     }
   },
   { timestamps: true }
