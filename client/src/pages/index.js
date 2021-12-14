@@ -5,12 +5,13 @@ import ErrorPage from "./ErrorPage/ErrorPage";
 import SettingsPage from "./SettingPage/SettingPage";
 import HomePage from "./HomePage/HomePage";
 import ChatPage from "./ChatPage/ChatPage";
+import CreatePostPage from "./CreatePostPage/CreatePostPage";
 
 export {
   // HomePage,
   // AboutPage,
   // AuthPage,
-  // CreatePostPage,
+  CreatePostPage,
   // FeedPage,
   // TestPage,
   // SpecificPostPage,

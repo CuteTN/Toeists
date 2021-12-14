@@ -1,0 +1,16 @@
+
+.editor-component-wrapper{
+  width: 1020px;
+
+  grid-area: editor;
+  place-self: center;
+}
+.input-title{
+margin: 30px 0px 50px -350px;
+width: 700px;
+display: inline-flex;
+}
+.editor{
+  background-color:#ffffff;
+  height: 490px;
+}

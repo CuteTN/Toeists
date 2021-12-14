@@ -251,6 +251,7 @@ function Navbar() {
   );
 
   return (
+    <div className="header-wrapper">
     <Header
       style={{
         ...styles.orangeBackground,
@@ -326,6 +327,7 @@ function Navbar() {
         )} */}
       </Row>
     </Header>
+    </div>
   );
 }
 
