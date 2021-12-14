@@ -1,19 +1,24 @@
 import express from 'express'
 import { Conversation, CONVERSATION_VIRTUAL_FIELDS } from '../models/conversation.js';
 import { User } from '../models/user.js';
-import { getPrivateConversation, getMemberInfoOfConversation, upsertMemberOfConversation, removeMemberOfConversation } from '../services/conversation.js';
+import { getPrivateConversation, getMemberInfoOfConversation, upsertMemberOfConversation, removeMemberOfConversation, hideSensitiveConversationDataFromUser } from '../services/conversation.js';
 import { findUserByIdentifier } from '../services/users.js';
 import { CHECK_EQUALITY_DEFAULT, removeDuplication } from '../utils/arraySet.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
 
 /** @type {express.RequestHandler} */
 export const getConversationsOfUser = async (req, res, next) => {
-  const allConversations = await Conversation.find().populate(CONVERSATION_VIRTUAL_FIELDS).sort({ messageUpdatedAt: 'desc' });
+  const allConversations = await Conversation.find()
+    .select("+members.hasMuted +members.hasBlocked")
+    .sort({ messageUpdatedAt: 'desc' })
+    .populate({ path: "messages", options: { limit: 1 } })
+    .populate({ path: "members.member" });
+
   const { userId } = req.attached.decodedToken;
 
-  const conversationsOfUser = allConversations.filter(
-    conversation => getMemberInfoOfConversation(conversation, userId)
-  );
+  const conversationsOfUser = allConversations
+    .filter(conversation => getMemberInfoOfConversation(conversation, userId))
+    .map(conversation => hideSensitiveConversationDataFromUser(conversation, userId));
 
   return res.status(httpStatusCodes.ok).json(conversationsOfUser);
 }
@@ -21,10 +26,14 @@ export const getConversationsOfUser = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const getConversationById = async (req, res, next) => {
-  const conversation = req.attached.targetedData;
-  await conversation.populate?.(CONVERSATION_VIRTUAL_FIELDS);
+  const { userId } = req.attached.decodedToken;
+  const conversation = await Conversation
+    .findById(req.params.id)
+    .select("+members.hasMuted +members.hasBlocked")
+    .populate({ path: "messages" })
+    .populate({ path: "members.member" });
 
-  return res.status(httpStatusCodes.ok).json(conversation);
+  return res.status(httpStatusCodes.ok).json(hideSensitiveConversationDataFromUser(conversation, userId));
 }
 
 

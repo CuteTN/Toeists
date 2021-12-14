@@ -80,7 +80,7 @@ conversationSchema.virtual('messages', {
   localField: '_id',
   foreignField: 'conversationId',
   options: {
-    sort: { createdAt: 1 }
+    sort: { createdAt: -1 }
   },
 })
 

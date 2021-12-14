@@ -66,6 +66,30 @@ export const removeMemberOfConversation = (conversation, userId) => {
 
 
 /**
+ * WARN: This function will return a conversation as POJO, only use this before responding to client 
+ * @param {*} conversation 
+ * @param {*} userId 
+ * @returns 
+ */
+export const hideSensitiveConversationDataFromUser = (conversation, userId) => {
+  if (!(conversation?.members && userId))
+    return;
+  const conversationObj = conversation.toObject?.();
+  if (!conversationObj)
+    return;
+
+  const _userId = new mongoose.Types.ObjectId(userId);
+  conversationObj.members.forEach(member => {
+    if (!_userId.equals(member.memberId)) {
+      delete member.hasMuted;
+      delete member.hasBlocked;
+    }
+  });
+  
+  return conversationObj;
+}
+
+/**
  * @param {mongoose.Types.ObjectId | string} userId
  * @param {mongoose.Types.ObjectId | string} conversationId
  * @param {{ text: string, senderId }} message
@@ -93,8 +117,8 @@ export const addMessageToConversation = async (userId, conversationId, message) 
     };
   }
 
-  const conversation = conversationId? await Conversation.findById(conversationId) : null;
-  
+  const conversation = conversationId ? await Conversation.findById(conversationId) : null;
+
   if (!conversation) {
     // return res.status(httpStatusCodes.notFound).send();
     return {
@@ -118,7 +142,7 @@ export const addMessageToConversation = async (userId, conversationId, message) 
 
   message.senderId = userId;
   message.conversationId = conversationId;
-  
+
   try {
     var createdMessage = await Message.create(message);
   } catch (error) {
@@ -133,7 +157,7 @@ export const addMessageToConversation = async (userId, conversationId, message) 
 
   // Update conversation
   conversation.messageUpdatedAt = Date.now();
-  conversation.members?.forEach(member => { member.hasSeen = member.memberId === userId; });
+  conversation.members?.forEach(member => { member.hasSeen = member.memberId.equals(userId); });
   await conversation.save();
 
   return {
