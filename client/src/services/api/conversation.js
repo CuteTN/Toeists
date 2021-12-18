@@ -5,6 +5,7 @@ const CONVERSATION_ROUTE = "/api/conversations";
 export const getConversations = () => apiService.get(CONVERSATION_ROUTE);
 export const getConversationById = (id) => apiService.get(`${CONVERSATION_ROUTE}/${id}`);
 export const getPrivateConversationByPartnerId = (partnerId) => apiService.get(`${CONVERSATION_ROUTE}/private/${partnerId}`);
+export const updateConversation = (id, conversation) => apiService.put(`${CONVERSATION_ROUTE}/${id}`, conversation)
 
 // updating self information
 export const updateConversationMyBlockedState = (id, value) =>

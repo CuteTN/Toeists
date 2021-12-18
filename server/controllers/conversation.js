@@ -108,11 +108,16 @@ export const removeGroupConversation = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const updateConversation = async (req, res, next) => {
+  const existingConversation = req.attached.targetedData;
   const conversationToUpdate = req.body;
   const conversationId = req.params.id;
 
   delete conversationToUpdate.members;
-  delete conversationToUpdate.type;
+  conversationToUpdate.type = existingConversation.type;
+
+  conversationToUpdate.name = conversationToUpdate.name?.trim?.();
+  if (conversationToUpdate.type === "group" && !conversationToUpdate.name)
+    return res.status(httpStatusCodes.badRequest).json({ message: "A group conversation must have a name." });
 
   try {
     const updatedConversation = await Conversation.findByIdAndUpdate(conversationId, conversationToUpdate, { new: true, runValidators: true });

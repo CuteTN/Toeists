@@ -15,6 +15,7 @@ import { useMessage } from '../../hooks/useMessage'
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 import { ConversationService } from "../../services/ConversationService";
 import { useAuth } from "../../contexts/authenticationContext";
+import ConversationSettingModal from "./ConversationSettingModal/ConversationSettingModal";
 
 const ChatPage = () => {
   /** @type {[any[],React.Dispatch<any[]>]} */
@@ -27,6 +28,9 @@ const ChatPage = () => {
   const { conversationId } = useParams();
   const history = useHistory();
   const disabledAutoSeen = React.useRef(false);
+
+  const conversationToEditRef = React.useRef(null);
+  const [conversationSettingModalVisible, setConversationSettingModalVisible] = React.useState(false);
 
   const fetchConversations = () => {
     conversationApis.getConversations()
@@ -86,27 +90,60 @@ const ChatPage = () => {
       conversationApis.updateConversationMySeenState(conversationId, true);
   }, [currentConversation, conversationId])
 
+  //#region Conversation actions
   const toggleCurrentConversationSeenState = () => {
-    if(currentConversationMemberInfo && conversationId) {
+    if (currentConversationMemberInfo && conversationId) {
       conversationApis.updateConversationMySeenState(conversationId, !currentConversationMemberInfo.hasSeen);
       disabledAutoSeen.current = true;
     }
   }
 
   const toggleCurrentConversationMutedState = () => {
-    if(currentConversationMemberInfo && conversationId) {
+    if (currentConversationMemberInfo && conversationId) {
       conversationApis.updateConversationMyMutedState(conversationId, !currentConversationMemberInfo.hasMuted);
     }
   }
 
   const toggleCurrentConversationBlockedState = () => {
-    if(currentConversationMemberInfo && conversationId) {
+    if (currentConversationMemberInfo && conversationId) {
       conversationApis.updateConversationMyBlockedState(conversationId, !currentConversationMemberInfo.hasBlocked);
     }
   }
+  //#endregion
 
+  //#region Modal conversation setting
+  const showConversationSettingToUpdate = () => {
+    conversationToEditRef.current = currentConversation;
+    setConversationSettingModalVisible(true);
+  }
 
-  const onMessagePressSend = (message) => {
+  const hideConversationSetting = () => {
+    conversationToEditRef.current = null;
+    setConversationSettingModalVisible(false);
+  }
+
+  const handleConversationModalSettingSubmit = (data, isCreating) => {
+    const toastKey = "update-conversation-" + Date.now();
+
+    if (isCreating);
+    // TODO: Create a conversation
+    else {
+      message.loading({ key: toastKey, content: "Updating conversation..." })
+      conversationApis.updateConversation(data._id, data)
+        .then(() => { message.success({ content: "The conversation was successfully updated." }) })
+        .catch(() => { message.error({ content: "Something went wrong." }) })
+        .finally(() => { message.destroy(toastKey); })
+    }
+
+    hideConversationSetting();
+  }
+
+  const handleConversationModalSettingCancel = () => {
+    hideConversationSetting();
+  }
+  //#endregion
+
+  const handleMessagePressSend = (message) => {
     if (conversationId)
       msgIO.send(conversationId, message);
   }
@@ -130,12 +167,20 @@ const ChatPage = () => {
       toggleSeenState={toggleCurrentConversationSeenState}
       toggleMutedState={toggleCurrentConversationMutedState}
       toggleBlockedState={toggleCurrentConversationBlockedState}
+      showConversationSetting={showConversationSettingToUpdate}
     />
     <MessagesView
       conversation={currentConversation}
     />
     <InputChat
-      onMessagePressSend={onMessagePressSend}
+      onMessagePressSend={handleMessagePressSend}
+    />
+
+    <ConversationSettingModal
+      visible={conversationSettingModalVisible}
+      onCancel={handleConversationModalSettingCancel}
+      onSubmit={handleConversationModalSettingSubmit}
+      conversation={conversationToEditRef.current}
     />
   </div>
 }
