@@ -175,6 +175,42 @@ export const removeMembersFromGroupConversation = async (req, res, next) => {
   }
 }
 
+
+/** @type {express.RequestHandler} */
+export const setMembersOfGroupConversation = async (req, res, next) => {
+  // NOTE: It's not neccessary to populate data here
+  const { userId } = req.attached.decodedToken ?? {};
+  const conversation = req.attached?.targetedData;
+  const oldMemberIds = conversation.members.map(({ memberId }) => memberId.toString());
+
+  if (!Array.isArray(req.body.memberIds))
+    return res.sendStatus(httpStatusCodes.badRequest).json({ message: "memberIds is required and must be an array." });
+
+  const newMemberIds = [...req.body.memberIds, userId];
+  const allMemberIds = removeDuplication([...oldMemberIds, ...newMemberIds]);
+  
+  allMemberIds.forEach(memberId => {
+    const isInOld = oldMemberIds.includes(memberId);
+    const isInNew = newMemberIds.includes(memberId);
+
+    if(isInOld && !isInNew)
+      removeMemberOfConversation(conversation, memberId);
+    if(isInNew && !isInOld)
+      upsertMemberOfConversation(conversation, memberId);
+  });
+
+  try {
+    await conversation.save?.();
+
+    notifyUpdatedConversations(conversation, allMemberIds);
+    return res.status(httpStatusCodes.ok).json(conversation);
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.unprocessableEntity).json({ message: "Error while removing members from the conversation", error })
+  }
+}
+
+
 /** @type {express.RequestHandler} */
 export const setMemberRolesOfGroupConversation = async (req, res, next) => {
   const conversation = req.attached?.targetedData;
