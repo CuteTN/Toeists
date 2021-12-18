@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Select } from "antd";
-import createPostStyle from "./styles.js";
+import createPostStyle from "../styles.js";
 
 function CreatePostPrivacySelect({
   postSpace = undefined,
@@ -27,7 +27,7 @@ function CreatePostPrivacySelect({
     <>
       <Select
         className="green"
-        style={{ width: "100%" }}
+        style={{ width: "100%", ...createPostStyle.editorFont }}
         options={privacyOpts}
         value={postPrivacy}
         onChange={handlePostPrivacyChange}
