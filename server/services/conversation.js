@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Conversation } from "../models/conversation.js";
 import { Message } from "../models/message.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { cuteIO } from './../index.js'
 
 /**
  * @param {*} user1Id 
@@ -26,6 +27,25 @@ export const getPrivateConversation = async (user1Id, user2Id, autoCreate = fals
 
   return result;
 }
+
+
+/**
+ * @param {*} conversation 
+ * @param {string[]?} toUserIds if this is not set, the list of members would be applied
+ * @param {*} additionalData 
+ */
+export const notifyUpdatedConversations = (conversation, toUserIds, additionalData) => {
+  try {
+    if (!Array.isArray(toUserIds))
+      toUserIds = conversation.members.map(({ memberId }) => memberId);
+
+    toUserIds.forEach(userId => {
+      cuteIO.sendToUser(userId.toString(), "Message-conversationsUpdated", additionalData ?? {});
+    })
+  }
+  catch { }
+}
+
 
 /**
  * @returns return null if the user themselves is not a member of conversation
@@ -85,7 +105,7 @@ export const hideSensitiveConversationDataFromUser = (conversation, userId) => {
       delete member.hasBlocked;
     }
   });
-  
+
   return conversationObj;
 }
 

@@ -70,35 +70,35 @@ export const useMessage = () => {
   }
 
 
-  /**
-   * add handler to handle when a conversation is created 
-   * @param {(msg: MessageEventParams) => any} handler
-   */
-  const onConversationCreated = (handler) => {
-    const cleanUp = cuteIO.onReceive("Message-conversationCreated", handler);
-    cleanUpCallbacks.current.push(cleanUp);
-  }
-
-
+  
+  
   /**
    * add handler to handle when a conversation is updated 
    * @param {(msg: MessageEventParams) => any} handler
    */
-  const onConversationUpdated = (handler) => {
-    const cleanUp = cuteIO.onReceive("Message-conversationUpdated", handler);
+  const onConversationsUpdated = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-conversationsUpdated", handler);
     cleanUpCallbacks.current.push(cleanUp);
   }
+  
+  // LEGACY:
+  // /**
+  //  * add handler to handle when a conversation is created 
+  //  * @param {(msg: MessageEventParams) => any} handler
+  //  */
+  // const onConversationCreated = (handler) => {
+  //   const cleanUp = cuteIO.onReceive("Message-conversationCreated", handler);
+  //   cleanUpCallbacks.current.push(cleanUp);
+  // }
 
-
-  /**
-   * add handler to handle when a conversation is deleted 
-   * @param {(msg: MessageEventParams) => any} handler
-   */
-  const onConversationDeleted = (handler) => {
-    const cleanUp = cuteIO.onReceive("Message-conversationDeleted", handler);
-    cleanUpCallbacks.current.push(cleanUp);
-  }
-
+  // /**
+  //  * add handler to handle when a conversation is deleted 
+  //  * @param {(msg: MessageEventParams) => any} handler
+  //  */
+  // const onConversationDeleted = (handler) => {
+  //   const cleanUp = cuteIO.onReceive("Message-conversationDeleted", handler);
+  //   cleanUpCallbacks.current.push(cleanUp);
+  // }
 
   const cleanUpAll = () => {
     cleanUpCallbacks.current.forEach(clean => clean());
@@ -112,12 +112,7 @@ export const useMessage = () => {
     onReceive,
     onRemove,
 
-    setSeen,
-    onSeen,
-
-    onConversationCreated,
-    onConversationUpdated,
-    onConversationDeleted,
+    onConversationsUpdated,
 
     cleanUpAll,
     cuteIO,

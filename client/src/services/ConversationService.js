@@ -13,4 +13,17 @@ export class ConversationService {
       return this.getOtherMembers(conversation)?.[0]?.member.username;
     return null;
   }
+
+  static getLastMessage(conversation) {
+    if (!conversation?.messages?.length)
+      return null;
+    return conversation.messages[0];
+  }
+
+  static getMemberInfo(conversation, userId) {
+    if (!conversation?.members)
+      return null;
+
+    return conversation?.members?.find(member => member.memberId === userId);
+  }
 }

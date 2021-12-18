@@ -1,7 +1,7 @@
 import express from 'express'
 import { Conversation, CONVERSATION_VIRTUAL_FIELDS } from '../models/conversation.js';
 import { User } from '../models/user.js';
-import { getPrivateConversation, getMemberInfoOfConversation, upsertMemberOfConversation, removeMemberOfConversation, hideSensitiveConversationDataFromUser } from '../services/conversation.js';
+import { getPrivateConversation, getMemberInfoOfConversation, upsertMemberOfConversation, removeMemberOfConversation, hideSensitiveConversationDataFromUser, notifyUpdatedConversations } from '../services/conversation.js';
 import { findUserByIdentifier } from '../services/users.js';
 import { CHECK_EQUALITY_DEFAULT, removeDuplication } from '../utils/arraySet.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
@@ -11,7 +11,7 @@ export const getConversationsOfUser = async (req, res, next) => {
   const allConversations = await Conversation.find()
     .select("+members.hasMuted +members.hasBlocked")
     .sort({ messageUpdatedAt: 'desc' })
-    .populate({ path: "messages", options: { limit: 1 } })
+    .populate({ path: "messages", options: { perDocumentLimit: 1 } })
     .populate({ path: "members.member" });
 
   const { userId } = req.attached.decodedToken;
@@ -80,6 +80,7 @@ export const createConversation = async (req, res, next) => {
     const createdConversation = await Conversation.create(newConversationDto);
     await createdConversation.populate?.(CONVERSATION_VIRTUAL_FIELDS);
 
+    notifyUpdatedConversations(createdConversation);
     return res.status(httpStatusCodes.ok).json(createdConversation);
   }
   catch (error) {
@@ -93,7 +94,10 @@ export const removeGroupConversation = async (req, res, next) => {
   const conversationId = req.params.id;
 
   try {
+    const conversation = req.attached?.targetedData;
     await Conversation.findByIdAndDelete(conversationId);
+
+    notifyUpdatedConversations(conversation);
     return res.sendStatus(httpStatusCodes.ok);
   }
   catch {
@@ -112,6 +116,8 @@ export const updateConversation = async (req, res, next) => {
 
   try {
     const updatedConversation = await Conversation.findByIdAndUpdate(conversationId, conversationToUpdate, { new: true, runValidators: true });
+
+    notifyUpdatedConversations(updatedConversation);
     return res.status(httpStatusCodes.ok).json(updatedConversation);
   }
   catch (error) {
@@ -133,6 +139,7 @@ export const upsertMembersToGroupConversation = async (req, res, next) => {
 
   try {
     await conversation.save?.();
+    notifyUpdatedConversations(conversation);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
@@ -145,6 +152,7 @@ export const upsertMembersToGroupConversation = async (req, res, next) => {
 export const removeMembersFromGroupConversation = async (req, res, next) => {
   // NOTE: It's not neccessary to populate data here
   const conversation = req.attached?.targetedData;
+  const initialMemberIds = conversation.members.map(({ memberId }) => memberId);
   const memberIdsToRemove = req.body.memberIds;
 
   if (!Array.isArray(memberIdsToRemove))
@@ -153,6 +161,8 @@ export const removeMembersFromGroupConversation = async (req, res, next) => {
   memberIdsToRemove.forEach(memberId => removeMemberOfConversation(conversation, memberId))
   try {
     await conversation.save?.();
+
+    notifyUpdatedConversations(conversation, initialMemberIds);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
@@ -187,6 +197,8 @@ export const setMemberRolesOfGroupConversation = async (req, res, next) => {
 
   try {
     await conversation.save?.();
+
+    notifyUpdatedConversations(conversation);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
@@ -217,6 +229,8 @@ const setMyMemberInfoFn = (field, valueExtractor) => async (req, res, next) => {
   try {
     memberInfo[field] = newValue;
     await conversation.save();
+
+    notifyUpdatedConversations(conversation);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
@@ -256,10 +270,12 @@ export const setMyBlockedStateConversation = setMyMemberInfoFn("hasBlocked", req
 export const leaveConversation = async (req, res, next) => {
   const conversation = req.attached?.targetedData;
   const memberIdToRemove = req.attached.decodedToken.userId;
+  const initialMemberIds = conversation.members.map(({ memberId }) => memberId);
   removeMemberOfConversation(conversation, memberIdToRemove)
 
   try {
     await conversation.save?.();
+    notifyUpdatedConversations(conversation, initialMemberIds);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
