@@ -1,14 +1,18 @@
 
 .editor-component-wrapper{
   width: 1020px;
-
   grid-area: editor;
   place-self: center;
 }
+.page-title{
+  margin-top: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size:48px;
+}
 .input-title{
-margin: 30px 0px 50px -350px;
-width: 700px;
-display: inline-flex;
+  margin: 30px 0px 50px -350px;
+  width: 700px;
+  display: inline-flex;
 }
 .editor{
   background-color:#ffffff;

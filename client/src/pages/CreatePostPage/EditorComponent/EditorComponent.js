@@ -21,29 +21,7 @@ const EditorComponent = () => {
   const [listHashtagNames, setListHashtagNames] = useState([]);
   const [convertedContent, setConvertedContent] = useState(null);
 
-  const uploadImageCallBack = (file) => {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "https://api.imgur.com/3/image");
-      xhr.setRequestHeader("Authorization", "Client-ID ##clientid###");
-      const data = new FormData();
-      data.append("image", file);
-      xhr.send(data);
-      xhr.addEventListener("load", () => {
-        const response = JSON.parse(xhr.responseText);
-        console.log(response);
-        resolve(response);
-      });
-      xhr.addEventListener("error", () => {
-        const error = JSON.parse(xhr.responseText);
-        console.log(error);
-        reject(error);
-      });
-    });
-  };
-
   const wrapPostData = () => {
-    console.log("thy", convertedContent);
     const result = {
       title: postTitle?.trim?.(),
       content: convertedContent,
@@ -99,7 +77,7 @@ const EditorComponent = () => {
   };
   return (
     <div className="editor-component-wrapper">
-      <h2>Create Post</h2>
+      <h2 className="page-title">Create Post</h2>
       <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />
       <div className="input-title">
         <div className="col-12">
