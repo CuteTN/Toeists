@@ -8,10 +8,19 @@ const { Title } = Typography;
 
 const AvatarView = () => {
   const user = useSelector((state) => state.user);
+  const [backgroundImage, setBackgroundImage] = useState(
+    user?.backgroundUrl ?? "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
+  );
   //   const isMyProfile = isLoginUser(user);
 
   const displayName = user?.name ?? "";
   const hiddenBackgroundFileInput = React.useRef(null);
+
+  useEffect(() => {
+    setBackgroundImage(
+      user?.backgroundUrl ?? "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
+    );
+  }, [user]);
 
   const handleBackgroundChange = async (e) => {
     const fileUploaded = e.target.files[0];
@@ -23,7 +32,7 @@ const AvatarView = () => {
     };
     // const { data } = await apiUser.editImage(image);
     // setBackgroundImage(data);
-  };
+  };  
 
   const EditImageButton = () => {
     return (
