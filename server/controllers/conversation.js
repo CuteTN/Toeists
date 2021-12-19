@@ -234,6 +234,8 @@ export const setMemberRolesOfGroupConversation = async (req, res, next) => {
     const memberInfo = getMemberInfoOfConversation(conversation, user.id);
     if (memberInfo)
       memberInfo.role = role;
+    else
+      return res.status(httpStatusCodes.badRequest).json({ message: `User ${userIdentifier} is not a member of this conversation.`})
   }
 
   try {

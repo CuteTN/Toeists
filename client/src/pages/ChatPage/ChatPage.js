@@ -29,7 +29,7 @@ const ChatPage = () => {
   const history = useHistory();
   const disabledAutoSeen = React.useRef(false);
 
-  const conversationToEditRef = React.useRef(null);
+  const [conversationToEdit, setConversationToEdit] = React.useState(null);
   const [conversationSettingModalVisible, setConversationSettingModalVisible] = React.useState(false);
 
   const fetchConversations = () => {
@@ -113,12 +113,12 @@ const ChatPage = () => {
 
   //#region Modal conversation setting
   const showConversationSettingToUpdate = () => {
-    conversationToEditRef.current = currentConversation;
+    setConversationToEdit(currentConversation);
     setConversationSettingModalVisible(true);
   }
 
   const hideConversationSetting = () => {
-    conversationToEditRef.current = null;
+    setConversationToEdit(null);
     setConversationSettingModalVisible(false);
   }
 
@@ -180,7 +180,7 @@ const ChatPage = () => {
       visible={conversationSettingModalVisible}
       onCancel={handleConversationModalSettingCancel}
       onSubmit={handleConversationModalSettingSubmit}
-      conversation={conversationToEditRef.current}
+      conversation={conversationToEdit}
     />
   </div>
 }
