@@ -12,6 +12,7 @@ import {
   CHECK_EQUALITY_DEFAULT,
   removeDuplication,
 } from "../utils/arraySet.js";
+import { checkIsForumVisibleByUser } from "../services/forum.js";
 
 /** @type {express.RequestHandler} */
 export const createForum = async (req, res, next) => {
@@ -57,12 +58,23 @@ export const createForum = async (req, res, next) => {
 /** @type {express.RequestHandler} */
 export const getForums = async (req, res, next) => {
   const forums = await Forum.find().populate(FORUM_VIRTUAL_FIELDS);
-  return res.status(httpStatusCodes.ok).json(forums);
+
+  // NOTE: Can be null-ish
+  const userId = req.attached?.decodedToken?.userId
+  const visibleForums = forums.filter(forum => checkIsForumVisibleByUser(forum, userId));
+
+  return res.status(httpStatusCodes.ok).json(visibleForums);
 };
 
 /** @type {express.RequestHandler} */
 export const getForumById = async (req, res, next) => {
   const forum = req.attached.targetedData;
+
+  // NOTE: Can be null-ish
+  const userId = req.attached?.decodedToken?.userId
+  if (!checkIsForumVisibleByUser(forum, userId))
+    return res.status(httpStatusCodes.forbidden).json({ message: "Cannot view this forum due to its privacy."});
+
   await forum.populate(FORUM_VIRTUAL_FIELDS);
   return res.status(httpStatusCodes.ok).json(forum);
 };
@@ -148,6 +160,9 @@ export const interactWithForum = async (req, res, next) => {
     const { interactionInfo } = forum;
 
     const { userId } = req.attached.decodedToken;
+    if(!checkIsForumVisibleByUser(forum, userId))
+      return res.status(httpStatusCodes.forbidden).json({ message: "Cannot interact with this forum due to its privacy."});
+
     alterInteractionInfo(interactionInfo, userId, interactionInfoType);
 
     await interactionInfo.save();

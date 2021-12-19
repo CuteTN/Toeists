@@ -25,6 +25,12 @@ const forumSchema = new mongoose.Schema(
         },
       ],
     },
+    privacy: {
+      type: String,
+      required: true,
+      enum: ["private", "public"],
+      default: "private",
+    },
     content: {
       type: String,
       required: true,

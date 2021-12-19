@@ -3,11 +3,7 @@ import { verifyJwt } from "../services/jwtHelper.js";
 import express from "express";
 import { User } from "../models/user.js";
 
-/**
- * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
- * @param {express.Response<any, Record<string, any>, number>} res
- * @param {express.NextFunction} next
- */
+/** @type {express.RequestHandler} */
 export const authorizeMdw = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split?.(" ")?.[1];
@@ -46,3 +42,25 @@ export const authorizeMdw = async (req, res, next) => {
       .json({ message: error.message });
   }
 };
+
+/** @type {express.RequestHandler} */
+export const extractUserTokenMdw = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split?.(" ")?.[1];
+    const verification = verifyJwt(token);
+
+    const userId = verification.payload.userId;
+    const user = await User.findById(userId);
+
+    if (!(token && verification.isValid && userId && user))
+      throw "Invalid authorization";
+
+    if (!req.attached) req.attached = {};
+    req.attached.decodedToken = verification.payload;
+    req.attached.user = user;
+    req.userId = userId;
+  }
+  catch { }
+
+  next();
+}

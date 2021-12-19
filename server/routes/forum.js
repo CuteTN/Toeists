@@ -1,6 +1,6 @@
 import express from "express";
 import * as controllers from "../controllers/forum.js";
-import { authorizeMdw } from "../middlewares/authorization.js";
+import { authorizeMdw, extractUserTokenMdw } from "../middlewares/authorization.js";
 import { findByIdMdwFn } from "../middlewares/findById.js";
 import { Forum } from "../models/forum.js"
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
@@ -12,10 +12,10 @@ const checkIsForumOwner = (forum, req) => {
     return "Only the forum's creator can access this data."
 }
 
-forumsRouter.get("/", controllers.getForums);
+forumsRouter.get("/", extractUserTokenMdw, controllers.getForums);
 forumsRouter.post("/", authorizeMdw, controllers.createForum );
 
-forumsRouter.get("/:id", authorizeMdw, findByIdMdwFn({ model: Forum }), controllers.getForumById);
+forumsRouter.get("/:id", extractUserTokenMdw, findByIdMdwFn({ model: Forum }), controllers.getForumById);
 forumsRouter.put("/:id", authorizeMdw, findByIdMdwFn({ model: Forum, forbiddenChecker: checkIsForumOwner }), controllers.updateForum);
 forumsRouter.delete("/:id", authorizeMdw, findByIdMdwFn({ model: Forum, forbiddenChecker: checkIsForumOwner }), controllers.deleteForum);
 
