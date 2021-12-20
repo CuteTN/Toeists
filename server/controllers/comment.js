@@ -39,8 +39,7 @@ export const createComment = async (req, res, next) => {
   }
 }
 
-
-/** @type {express.RequestHandler} */
+/** @type {express.RequestHandler} @deprecated It is not allowed to retrieve comments by themself */
 export const getComments = async (req, res, next) => {
   const filter = {};
 
