@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, Tooltip } from "antd";
 import { ShareAltOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
@@ -46,15 +46,6 @@ function ShareButton({ post }) {
               </FacebookShareCount>
             </div>
           </div>
-
-          {/* <div>
-            <FacebookMessengerShareButton
-              url={shareUrl}
-              appId="521270401588372"
-            >
-              <FacebookMessengerIcon size={32} round />
-            </FacebookMessengerShareButton>
-          </div> */}
 
           <div>
             <TwitterShareButton url={shareUrl} title={post?.title}>

@@ -25,6 +25,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 // import { deletePost } from "../../../redux/actions/posts";
 import { useAuth } from "../../../contexts/authenticationContext";
+import { deleteForum } from "../../../services/api/forum";
 import moment from "moment";
 //others
 import styles from "./styles";
@@ -43,49 +44,46 @@ function OwnerInformation({ post }) {
 
   //#region menu more
 
-  // const showConfirmDeletePost = (id) => {
-  //   confirm({
-  //     title: "Do you want to delete this post?",
-  //     icon: <ExclamationCircleOutlined />,
-  //     content: "You cannot undo this action",
-  //     onOk() {
-  //       dispatch(deletePost(id));
-  //       message.success("Post has been deleted");
-  //       history.push("/feed");
-  //       window.location.reload(); // load feed to have new items
-  //     },
-  //     onCancel() {
-  //       message.info("Post is not deleted");
-  //     },
-  //   });
-  // };
-
-  const handleDeletePost = (id) => {
-    // showConfirmDeletePost(id);
+  const handleDeleteForum = (id) => {
+    deleteForum(id)
+      .then((res) => {
+        message.success("Forum has been deleted");
+        history.push("/feed");
+        window.location.reload(); // load feed to have new items
+      })
+      .catch((error) => message.success(error.message));
   };
 
-  const handleEditPost = (postId) => {
-    // history.push({
-    //   pathname: "/post/create",
-    //   state: { postId },
-    // });
+  const showConfirmDeletePost = (id) => {
+    confirm({
+      title: "Do you want to delete this forum?",
+      icon: <ExclamationCircleOutlined />,
+      content: "You cannot undo this action",
+      onOk() {
+        handleDeleteForum(id);
+      },
+      onCancel() {
+        message.info("Forum is not deleted");
+      },
+    });
+  };
+
+  const handleDeletePost = (id) => {
+    showConfirmDeletePost(id);
+  };
+
+  const handleEditPost = (post) => {
+    history.push({
+      pathname: "/forum/create",
+      state: { post },
+    });
   };
 
   const menuMore = (
     <Menu>
       {signedInUser?._id === post?.creatorId ? (
         <>
-          <Menu.Item
-            key="edit"
-            onClick={() =>
-              handleEditPost(
-                post?._id,
-                post?.title,
-                post?.privacy,
-                post?.content
-              )
-            }
-          >
+          <Menu.Item key="edit" onClick={() => handleEditPost(post)}>
             <Row align="middle">
               <EditFilled className="mr-2" />
               <Text>Edit post</Text>
@@ -113,17 +111,6 @@ function OwnerInformation({ post }) {
       )}
     </Menu>
   );
-
-  // const renderUserInfo = () => {
-  //   const userInfo = post?.userId?.userInfo;
-  //   const education = userInfo.educations?.[userInfo.educations?.length - 1];
-  //   const work = userInfo.works?.[userInfo.works?.length - 1];
-  //   const educationInfo = education
-  //     ? `${education?.moreInfo} at ${education?.schoolName}`
-  //     : null;
-  //   const workInfo = work ? `${work?.position} at ${work?.location}` : null;
-  //   return workInfo || educationInfo;
-  // };
 
   const renderPrivacyIcon = (privacy) => {
     switch (privacy) {
@@ -157,7 +144,7 @@ function OwnerInformation({ post }) {
                     strong
                     style={{ fontSize: "1.2rem" }}
                   >
-                    Thy Xinh Đẹp
+                    {post?.creator.name}
                   </Text>
                 </Link>
               </Space>

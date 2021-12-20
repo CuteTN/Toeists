@@ -33,7 +33,7 @@ const ReactionComponent = ({ post }) => {
                 />
               </Tooltip>
               <Text strong style={{ fontSize: "1.5rem" }}>
-                108
+                {post?.interactionInfo?.upvoterIds?.length}
               </Text>
             </Space>
           </Space>
