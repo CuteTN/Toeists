@@ -19,7 +19,6 @@ import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 // import { useToken } from "./context/TokenContext.js";
 import PrivateRoute from "./utils/PrivateRoute.js";
-// import { handleNewIOConnection } from "./notifications/index.js";
 // import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 // import AdminDashboardPage from "./pages/SystemAdmin/AdminDashboardPage/AdminDashboardPage.js";
 // import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
@@ -51,7 +50,7 @@ function App() {
       <CuteClientIOProvider
         serverUri={BACKEND_URL} //TODO: change all localhost to deploy link
         token={accessToken}
-        // onNewConnection={handleNewIOConnection}
+        // onNewConnection={}
       >
         {/*<FriendsStatusProvider userId={user?.result?._id}> */}
         <Switch>

@@ -63,6 +63,11 @@ const conversationSchema = new mongoose.Schema(
       type: String,
       enum: ["private", "group"],
       required: true,
+    },
+    messageUpdatedAt: {
+      type: Date,
+      required: true,
+      default: () => Date.now()
     }
   },
   { timestamps: true }
@@ -75,7 +80,7 @@ conversationSchema.virtual('messages', {
   localField: '_id',
   foreignField: 'conversationId',
   options: {
-    sort: { createdAt: 1 }
+    sort: { createdAt: -1 }
   },
 })
 

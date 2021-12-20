@@ -1,19 +1,24 @@
 import express from 'express'
 import { Conversation, CONVERSATION_VIRTUAL_FIELDS } from '../models/conversation.js';
 import { User } from '../models/user.js';
-import { getPrivateConversation, getMemberInfoOfConversation, upsertMemberOfConversation, removeMemberOfConversation } from '../services/conversation.js';
+import { getPrivateConversation, getMemberInfoOfConversation, upsertMemberOfConversation, removeMemberOfConversation, hideSensitiveConversationDataFromUser, notifyUpdatedConversations } from '../services/conversation.js';
 import { findUserByIdentifier } from '../services/users.js';
 import { CHECK_EQUALITY_DEFAULT, removeDuplication } from '../utils/arraySet.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
 
 /** @type {express.RequestHandler} */
 export const getConversationsOfUser = async (req, res, next) => {
-  const allConversations = await Conversation.find().populate(CONVERSATION_VIRTUAL_FIELDS);
+  const allConversations = await Conversation.find()
+    .select("+members.hasMuted +members.hasBlocked")
+    .sort({ messageUpdatedAt: 'desc' })
+    .populate({ path: "messages", options: { perDocumentLimit: 1 } })
+    .populate({ path: "members.member" });
+
   const { userId } = req.attached.decodedToken;
 
-  const conversationsOfUser = allConversations.filter(
-    conversation => getMemberInfoOfConversation(conversation, userId)
-  );
+  const conversationsOfUser = allConversations
+    .filter(conversation => getMemberInfoOfConversation(conversation, userId))
+    .map(conversation => hideSensitiveConversationDataFromUser(conversation, userId));
 
   return res.status(httpStatusCodes.ok).json(conversationsOfUser);
 }
@@ -21,10 +26,14 @@ export const getConversationsOfUser = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const getConversationById = async (req, res, next) => {
-  const conversation = req.attached.targetedData;
-  await conversation.populate?.(CONVERSATION_VIRTUAL_FIELDS);
+  const { userId } = req.attached.decodedToken;
+  const conversation = await Conversation
+    .findById(req.params.id)
+    .select("+members.hasMuted +members.hasBlocked")
+    .populate({ path: "messages" })
+    .populate({ path: "members.member" });
 
-  return res.status(httpStatusCodes.ok).json(conversation);
+  return res.status(httpStatusCodes.ok).json(hideSensitiveConversationDataFromUser(conversation, userId));
 }
 
 
@@ -71,6 +80,7 @@ export const createConversation = async (req, res, next) => {
     const createdConversation = await Conversation.create(newConversationDto);
     await createdConversation.populate?.(CONVERSATION_VIRTUAL_FIELDS);
 
+    notifyUpdatedConversations(createdConversation);
     return res.status(httpStatusCodes.ok).json(createdConversation);
   }
   catch (error) {
@@ -84,7 +94,10 @@ export const removeGroupConversation = async (req, res, next) => {
   const conversationId = req.params.id;
 
   try {
+    const conversation = req.attached?.targetedData;
     await Conversation.findByIdAndDelete(conversationId);
+
+    notifyUpdatedConversations(conversation);
     return res.sendStatus(httpStatusCodes.ok);
   }
   catch {
@@ -95,14 +108,21 @@ export const removeGroupConversation = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const updateConversation = async (req, res, next) => {
+  const existingConversation = req.attached.targetedData;
   const conversationToUpdate = req.body;
   const conversationId = req.params.id;
 
   delete conversationToUpdate.members;
-  delete conversationToUpdate.type;
+  conversationToUpdate.type = existingConversation.type;
+
+  conversationToUpdate.name = conversationToUpdate.name?.trim?.();
+  if (conversationToUpdate.type === "group" && !conversationToUpdate.name)
+    return res.status(httpStatusCodes.badRequest).json({ message: "A group conversation must have a name." });
 
   try {
     const updatedConversation = await Conversation.findByIdAndUpdate(conversationId, conversationToUpdate, { new: true, runValidators: true });
+
+    notifyUpdatedConversations(updatedConversation);
     return res.status(httpStatusCodes.ok).json(updatedConversation);
   }
   catch (error) {
@@ -124,6 +144,7 @@ export const upsertMembersToGroupConversation = async (req, res, next) => {
 
   try {
     await conversation.save?.();
+    notifyUpdatedConversations(conversation);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
@@ -136,6 +157,7 @@ export const upsertMembersToGroupConversation = async (req, res, next) => {
 export const removeMembersFromGroupConversation = async (req, res, next) => {
   // NOTE: It's not neccessary to populate data here
   const conversation = req.attached?.targetedData;
+  const initialMemberIds = conversation.members.map(({ memberId }) => memberId);
   const memberIdsToRemove = req.body.memberIds;
 
   if (!Array.isArray(memberIdsToRemove))
@@ -144,12 +166,50 @@ export const removeMembersFromGroupConversation = async (req, res, next) => {
   memberIdsToRemove.forEach(memberId => removeMemberOfConversation(conversation, memberId))
   try {
     await conversation.save?.();
+
+    notifyUpdatedConversations(conversation, initialMemberIds);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
     return res.status(httpStatusCodes.unprocessableEntity).json({ message: "Error while removing members from the conversation", error })
   }
 }
+
+
+/** @type {express.RequestHandler} */
+export const setMembersOfGroupConversation = async (req, res, next) => {
+  // NOTE: It's not neccessary to populate data here
+  const { userId } = req.attached.decodedToken ?? {};
+  const conversation = req.attached?.targetedData;
+  const oldMemberIds = conversation.members.map(({ memberId }) => memberId.toString());
+
+  if (!Array.isArray(req.body.memberIds))
+    return res.sendStatus(httpStatusCodes.badRequest).json({ message: "memberIds is required and must be an array." });
+
+  const newMemberIds = [...req.body.memberIds, userId];
+  const allMemberIds = removeDuplication([...oldMemberIds, ...newMemberIds]);
+  
+  allMemberIds.forEach(memberId => {
+    const isInOld = oldMemberIds.includes(memberId);
+    const isInNew = newMemberIds.includes(memberId);
+
+    if(isInOld && !isInNew)
+      removeMemberOfConversation(conversation, memberId);
+    if(isInNew && !isInOld)
+      upsertMemberOfConversation(conversation, memberId);
+  });
+
+  try {
+    await conversation.save?.();
+
+    notifyUpdatedConversations(conversation, allMemberIds);
+    return res.status(httpStatusCodes.ok).json(conversation);
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.unprocessableEntity).json({ message: "Error while removing members from the conversation", error })
+  }
+}
+
 
 /** @type {express.RequestHandler} */
 export const setMemberRolesOfGroupConversation = async (req, res, next) => {
@@ -174,10 +234,14 @@ export const setMemberRolesOfGroupConversation = async (req, res, next) => {
     const memberInfo = getMemberInfoOfConversation(conversation, user.id);
     if (memberInfo)
       memberInfo.role = role;
+    else
+      return res.status(httpStatusCodes.badRequest).json({ message: `User ${userIdentifier} is not a member of this conversation.`})
   }
 
   try {
     await conversation.save?.();
+
+    notifyUpdatedConversations(conversation);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
@@ -208,6 +272,8 @@ const setMyMemberInfoFn = (field, valueExtractor) => async (req, res, next) => {
   try {
     memberInfo[field] = newValue;
     await conversation.save();
+
+    notifyUpdatedConversations(conversation);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {
@@ -247,10 +313,12 @@ export const setMyBlockedStateConversation = setMyMemberInfoFn("hasBlocked", req
 export const leaveConversation = async (req, res, next) => {
   const conversation = req.attached?.targetedData;
   const memberIdToRemove = req.attached.decodedToken.userId;
+  const initialMemberIds = conversation.members.map(({ memberId }) => memberId);
   removeMemberOfConversation(conversation, memberIdToRemove)
 
   try {
     await conversation.save?.();
+    notifyUpdatedConversations(conversation, initialMemberIds);
     return res.status(httpStatusCodes.ok).json(conversation);
   }
   catch (error) {

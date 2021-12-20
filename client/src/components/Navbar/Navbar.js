@@ -71,7 +71,7 @@ function Navbar() {
   };
 
   const handleMessage = () => {
-    history.push("/message");
+    history.push("/chat");
   };
 
   const handleSignOutClick = () => {

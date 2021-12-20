@@ -1,4 +1,14 @@
 .input-chat-wrapper{
   background-color: #7a376c;
   grid-area: input-chat;
+
+  position: fixed;
+  width: 75%;
+  height: 100px;
+  bottom: 0;
+  right: 0;
+}
+
+.input-chat {
+  margin: 32px;
 }

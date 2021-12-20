@@ -3,9 +3,15 @@
   grid-area: list-friend;
 }
 
+.list-conversations-wrapper .conversation-card-not-seen {
+  background-color: #ffedd6;
+  color: #f89823;
+  font-weight: bold;
+}
+
 .conversation-card {
   background-color: antiquewhite;
   border: 2px solid #968692;
   cursor: pointer;
-  height: 50px;
+  /* height: 50px; */
 }

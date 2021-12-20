@@ -53,8 +53,7 @@ export default class CuteServerIO {
     if (tokenPayload.type !== 'a')
       tokenPayload = {}
 
-    const userId = tokenPayload.id;
-    const { username } = tokenPayload;
+    const { userId, username } = tokenPayload;
 
     const browserId = socket.handshake.query.browserId;
 
@@ -77,10 +76,11 @@ export default class CuteServerIO {
    */
   #createCuteParameter = (socket, msg) => {
     if (typeof socket === "string") socket = this.#getSocket(socket);
-    const { userId, token, browserId } = this.#extractInfoSocket(socket);
+    const { userId, token, browserId, username } = this.#extractInfoSocket(socket);
 
     return {
       userId,
+      username,
       token,
       socket,
       browserId,
@@ -320,6 +320,7 @@ export default class CuteServerIO {
 /**
  * @typedef {object} OnReceiveParams
  * @property {string?} userId
+ * @property {string?} username
  * @property {string?} token
  * @property {string?} browserId
  * @property {Socket?} socket

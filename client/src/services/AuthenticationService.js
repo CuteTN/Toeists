@@ -104,8 +104,11 @@ export class AuthenticationService {
       this.saveTokens(response.data ?? {});
     }
     catch (error) {
-      this.signOut();
-      throw error;
+      // NOTE: this is to deal with the async error when calling refresh token too fast
+      if (currentRefreshToken === TokenService.refreshToken && TokenService.refreshToken) {
+        this.signOut();
+        throw error;
+      }
     }
   }
 

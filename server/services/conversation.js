@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Conversation } from "../models/conversation.js";
 import { Message } from "../models/message.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { cuteIO } from './../index.js'
 
 /**
  * @param {*} user1Id 
@@ -26,6 +27,25 @@ export const getPrivateConversation = async (user1Id, user2Id, autoCreate = fals
 
   return result;
 }
+
+
+/**
+ * @param {*} conversation 
+ * @param {string[]?} toUserIds if this is not set, the list of members would be applied
+ * @param {*} additionalData 
+ */
+export const notifyUpdatedConversations = (conversation, toUserIds, additionalData) => {
+  try {
+    if (!Array.isArray(toUserIds))
+      toUserIds = conversation.members.map(({ memberId }) => memberId);
+
+    toUserIds.forEach(userId => {
+      cuteIO.sendToUser(userId.toString(), "Message-conversationsUpdated", additionalData ?? {});
+    })
+  }
+  catch { }
+}
+
 
 /**
  * @returns return null if the user themselves is not a member of conversation
@@ -65,93 +85,29 @@ export const removeMemberOfConversation = (conversation, userId) => {
 }
 
 
-//LEGACY:
 /**
- * @param {string} pathName
- * @returns {(userId: string | mongoose.Types.ObjectId, conversation: POJO) => boolean}
+ * WARN: This function will return a conversation as POJO, only use this before responding to client 
+ * @param {*} conversation 
+ * @param {*} userId 
+ * @returns 
  */
-const checkMemberOfConversationFunc = (pathName) => (userId, conversation) => {
-  userId = new mongoose.Types.ObjectId(userId);
+export const hideSensitiveConversationDataFromUser = (conversation, userId) => {
+  if (!(conversation?.members && userId))
+    return;
+  const conversationObj = conversation.toObject?.();
+  if (!conversationObj)
+    return;
 
-  /** @type [*]? */
-  const listUsers = conversation[pathName];
+  const _userId = new mongoose.Types.ObjectId(userId);
+  conversationObj.members.forEach(member => {
+    if (!_userId.equals(member.memberId)) {
+      delete member.hasMuted;
+      delete member.hasBlocked;
+    }
+  });
 
-  if (listUsers) {
-    return listUsers.some((m) => userId.equals(m) || userId.equals(m?._id));
-  }
-
-  // there's not currently a list user in this conversation
-  return false;
-};
-
-export const isMemberOfConversation =
-  checkMemberOfConversationFunc("listMembers");
-export const isOwnerOfConversation =
-  checkMemberOfConversationFunc("listOwners");
-export const isConversationSeenByUser =
-  checkMemberOfConversationFunc("listSeenMembers");
-
-/**
- * Return an immutable function to add new member to a specific list
- * @param {string} pathName
- * @param {boolean} [allowDuplicated=false]
- * @returns {(userId: string | mongoose.Types.ObjectId, conversation: POJO) => POJO}
- */
-const addMemberOfConversationFunc =
-  (pathName, allowDuplicated = false) =>
-    (userId, conversation) => {
-      if (!conversation) return null;
-      if (!userId) return conversation;
-
-      userId = new mongoose.Types.ObjectId(userId);
-
-      /** @type [*]? */
-      let listUsers = conversation[pathName];
-      listUsers = Array.isArray(listUsers) ? [...listUsers] : [];
-
-      // I don't believe in set here so yeah let's implement it ourselves!
-      if (
-        allowDuplicated ||
-        !listUsers.find((memberId) => userId.equals(memberId))
-      ) {
-        listUsers.push(userId);
-      }
-
-      return {
-        ...conversation,
-        [pathName]: listUsers,
-      };
-    };
-
-/**
- * Return an immutable function to remove a member from a specific list
- * @param {string} pathName
- * @returns {(userId: string | mongoose.Types.ObjectId, conversation: POJO) => POJO}
- */
-const removeMemberOfConversationFunc = (pathName) => (userId, conversation) => {
-  if (!conversation) return null;
-  if (!userId) return conversation;
-
-  userId = new mongoose.Types.ObjectId(userId);
-
-  /** @type [*]? */
-  let listUsers = conversation[pathName];
-  if (!Array.isArray(listUsers)) listUsers = [];
-
-  listUsers.filter((memberId) => !userId.equals(memberId));
-
-  return {
-    ...conversation,
-    [pathName]: listUsers,
-  };
-};
-
-const setUserAsSeenConversation = addMemberOfConversationFunc(
-  "listSeenMembers",
-  false
-);
-const setUserAsUnseenConversation =
-  removeMemberOfConversationFunc("listSeenMembers");
+  return conversationObj;
+}
 
 /**
  * @param {mongoose.Types.ObjectId | string} userId
@@ -160,35 +116,28 @@ const setUserAsUnseenConversation =
  * @returns {Promise<MessageEventResult>}
  */
 export const addMessageToConversation = async (userId, conversationId, message) => {
-  const res = {
-    userId,
-    conversationId,
-    message,
-  };
+  const res = { userId, conversationId, message, };
 
   if (!userId) {
     return {
       status: {
         code: httpStatusCodes.unauthorized,
-        msg: "No userId",
+        msg: "Unauthorized.",
       },
       res,
     };
   }
-
   if (!message) {
     return {
       status: {
         code: httpStatusCodes.badContent,
-        msg: "No message",
+        msg: "A message is required.",
       },
       res,
     };
   }
 
-  const conversation = (
-    await Conversation.findById(conversationId)
-  )?.toObject();
+  const conversation = conversationId ? await Conversation.findById(conversationId) : null;
 
   if (!conversation) {
     // return res.status(httpStatusCodes.notFound).send();
@@ -201,7 +150,7 @@ export const addMessageToConversation = async (userId, conversationId, message) 
     };
   }
 
-  if (!isMemberOfConversation(userId, conversation)) {
+  if (!getMemberInfoOfConversation(conversation, userId)) {
     return {
       status: {
         code: httpStatusCodes.forbidden,
@@ -212,19 +161,10 @@ export const addMessageToConversation = async (userId, conversationId, message) 
   }
 
   message.senderId = userId;
-  let newMessage = null;
+  message.conversationId = conversationId;
 
   try {
-    newMessage = new Message({
-      ...message,
-    });
-
-    await (await newMessage.save()).populate({
-      path: `senderId`,
-      select: `name avatarUrl`,
-      model: `User`,
-    }).execPopulate();
-
+    var createdMessage = await Message.create(message);
   } catch (error) {
     return {
       status: {
@@ -234,21 +174,11 @@ export const addMessageToConversation = async (userId, conversationId, message) 
       res,
     };
   }
-  const msgObj = newMessage.toObject();
 
-  if (conversation?.listMessages)
-    conversation.listMessages = [msgObj._id, ...conversation.listMessages];
-  else conversation.listMessages = [msgObj._id];
-
-  // reset seen members
-  conversation.listSeenMembers = [];
-
+  // Update conversation
   conversation.messageUpdatedAt = Date.now();
-
-  const newConversation = await Conversation.findByIdAndUpdate(
-    conversationId,
-    conversation,
-  );
+  conversation.members?.forEach(member => { member.hasSeen = member.memberId.equals(userId); });
+  await conversation.save();
 
   return {
     status: {
@@ -257,89 +187,12 @@ export const addMessageToConversation = async (userId, conversationId, message) 
     res: {
       senderId: userId,
       conversationId,
-      message: msgObj,
-      receiverIds: newConversation?.toObject?.().listMembers,
+      message: createdMessage,
+      receiverIds: conversation.members.map(m => m.memberId.toString()),
     },
   };
 };
 
-/**
- * @param {mongoose.Types.ObjectId | string} userId
- * @param {mongoose.Types.ObjectId | string} conversationId
- * @param {boolean} newSeenValue
- * @returns {Promise<MessageEventResult>}
- */
-export const setMemberSeenInConversation = async (
-  userId,
-  conversationId,
-  newSeenValue
-) => {
-  const res = {
-    conversationId: conversationId.toString(),
-    userId: userId.toString(),
-    seenValue: newSeenValue,
-  };
-
-  if (!userId) {
-    return {
-      status: {
-        code: httpStatusCodes.unauthorized,
-        msg: "No userId",
-      },
-      res,
-    };
-  }
-
-  const conversation = (
-    await Conversation.findById(conversationId)
-  )?.toObject();
-
-  if (!conversation) {
-    // return res.status(httpStatusCodes.notFound).send();
-    return {
-      status: {
-        code: httpStatusCodes.notFound,
-        msg: `There's no conversation with id ${conversationId}`,
-      },
-      res,
-    };
-  }
-
-  if (!isMemberOfConversation(userId, conversation)) {
-    return {
-      status: {
-        code: httpStatusCodes.forbidden,
-        msg: "Not a member of conversation",
-      },
-      res,
-    };
-  }
-
-  const newConversation = newSeenValue
-    ? setUserAsSeenConversation(userId, conversation)
-    : setUserAsUnseenConversation(userId, conversation);
-
-  const isUpdated =
-    conversation?.listSeenMembers?.length !==
-    newConversation?.listSeenMembers?.length;
-
-  if (newConversation)
-    await Conversation.findByIdAndUpdate(conversationId, newConversation);
-
-  return {
-    status: {
-      code: httpStatusCodes.ok,
-    },
-    res: {
-      senderId: userId,
-      conversationId,
-      seenValue: newSeenValue,
-      receiverIds: newConversation?.listMembers,
-      listSeenMembers: newConversation?.listSeenMembers,
-      isUpdated,
-    },
-  };
-};
 
 /**
  * @typedef {{status: {code: string, msg: any}, res: {senderId: string, conversationId: string, message: any, receiverIds: string, seenValue: boolean, listSeenMembers: [string]}}} MessageEventResult

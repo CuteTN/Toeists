@@ -22,7 +22,6 @@ const messageSchema = new mongoose.Schema(
     },
     attachedContent: {
       type: Object,
-      required: true,
     },
   },
   { timestamps: true }

@@ -62,6 +62,16 @@ conversationsRouter.delete("/:id/members",
   controllers.removeMembersFromGroupConversation
 )
 
+conversationsRouter.put("/:id/members",
+  authorizeMdw,
+  findByIdMdwFn({ model: Conversation }),
+  checkConversationTypeMdwFn("group"),
+  checkIsMemberOfConversationMdwFn(TARGETED_DATA_EXTRACTOR, true),
+  autoTransformToUserIdsMdwFn([req => req.body, "memberIds"]),
+  controllers.setMembersOfGroupConversation
+)
+
+
 conversationsRouter.put("/:id/member-roles",
   authorizeMdw,
   findByIdMdwFn({ model: Conversation }),
@@ -195,6 +205,23 @@ export const conversationsSwaggerPaths = {
 
     delete: createSwaggerPath(
       "Remove members from a group conversation. Only admins can perform this action.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "id",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({
+        memberIds: SwaggerTypes.array(SwaggerTypes.ref("UserIdentifier"))
+      }),
+      SwaggerTypes.ref("Conversation"),
+    ),
+    
+    put: createSwaggerPath(
+      "Set members of a group conversation. Only admins can perform this action.",
       [controllerName],
       [
         {
