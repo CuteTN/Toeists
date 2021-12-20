@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { message, Button } from "antd";
 import { EditorState, convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
+import { useHistory } from "react-router-dom";
 // components
 import TextEditor from "./TextEditor";
 import CreatePostPrivacySelect from "../CreatePostPrivacySelect/CreatePostPrivacySelect";
@@ -19,13 +20,18 @@ const EditorComponent = () => {
   const [postSpace, setPostSpace] = useState(""); // just text
   const [postPrivacy, setPostPrivacy] = useState("");
   const [listHashtagNames, setListHashtagNames] = useState([]);
-  const [convertedContent, setConvertedContent] = useState(null);
+  const [convertedContent, setConvertedContent] = useState("");
+  const history = useHistory();
 
   const wrapPostData = () => {
+    console.log("met nha ", listHashtagNames);
+    let currentContentAsHTML = draftToHtml(
+      convertToRaw(editorState.getCurrentContent())
+    );
     const result = {
       title: postTitle?.trim?.(),
-      content: convertedContent,
-      // privacy: postPrivacy,
+      content: currentContentAsHTML,
+      privacy: postPrivacy,
       hashtagNames: listHashtagNames,
     };
     return result;
@@ -46,16 +52,8 @@ const EditorComponent = () => {
       message: null,
     };
   };
-  const convertContentToHTML = () => {
-    let currentContentAsHTML = draftToHtml(
-      convertToRaw(editorState.getCurrentContent())
-    );
-    setConvertedContent(currentContentAsHTML);
-  };
 
   const handleSavePostButtonClick = () => {
-    convertContentToHTML();
-
     const newPost = wrapPostData();
 
     const validation = checkPostData(newPost);
@@ -67,8 +65,7 @@ const EditorComponent = () => {
     forumAPI
       .createForum(newPost)
       .then((res) => {
-        console.log("Thy xinh dep");
-        // history.push(`/forums/${res.data._id}`);
+        history.push(`/forums/${res.data._id}`);
       })
       .catch((error) => {
         message.error("Something goes wrong. Check all fields", 2);

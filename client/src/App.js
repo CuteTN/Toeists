@@ -11,6 +11,7 @@ import {
   SettingsPage,
   ChatPage,
   CreatePostPage,
+  SpecificForumPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -70,8 +71,8 @@ function App() {
             <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
           </PrivateRoute>
           <Route path="/userinfo/:id" exact component={UserInfoPage} />
-          {/* <Route exact path="/post/:id" component={SpecificPostPage} />
-            <Route
+          <Route exact path="/forums/:id" component={SpecificForumPage} />
+          {/*   <Route
               path="/post/:id/:focusedCommentId"
               component={SpecificPostPage}
             /> */}
