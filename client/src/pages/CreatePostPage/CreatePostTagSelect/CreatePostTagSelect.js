@@ -33,7 +33,7 @@ const CreatePostTagSelect = ({ onChange, defaultTags }) => {
       style={{ width: "100%", ...createPostStyle.editorFont }}
     >
       {listHashtags.map((tag, i) => (
-        <Option key={i}>{tag.name}</Option>
+        <Option key={tag?.name ?? i}>{tag?.name}</Option>
       ))}
     </Select>
   );

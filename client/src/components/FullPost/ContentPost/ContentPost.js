@@ -2,8 +2,7 @@ import React from "react";
 import { Row, Tag, Tooltip } from "antd";
 import styles from "./styles";
 
-const HashTagForum = ({ post }) => {
-  console.log(post);
+const ContentPost = ({ post }) => {
   return (
     <div style={styles.item}>
       <Row className="mb-1">
@@ -20,4 +19,4 @@ const HashTagForum = ({ post }) => {
   );
 };
 
-export default HashTagForum;
+export default ContentPost;

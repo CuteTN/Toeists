@@ -37,6 +37,8 @@ import { useDispatch } from "react-redux";
 
 import OwnerInformation from "./OwnerInformation/OwnerInformation";
 import HashTagForum from "./HashTagForum/HashTagForum";
+import TitleForum from "./Title/TitleForum";
+import ReactionComponent from "./ReactionComponent/ReactionComponent";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -312,6 +314,8 @@ function FullPost({ post }) {
       <div style={styles.item}>
         <OwnerInformation post={post} />
         <HashTagForum post={post} />
+        <TitleForum post={post} />
+        <ReactionComponent post={post} />
         {/* <Row className="mb-1">
           {post?.hashtags?.map((item, i) => (
             // eslint-disable-next-line react/jsx-key

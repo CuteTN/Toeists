@@ -24,7 +24,7 @@ const EditorComponent = () => {
   const history = useHistory();
 
   const wrapPostData = () => {
-    console.log("met nha ", listHashtagNames);
+    console.log(listHashtagNames);
     let currentContentAsHTML = draftToHtml(
       convertToRaw(editorState.getCurrentContent())
     );

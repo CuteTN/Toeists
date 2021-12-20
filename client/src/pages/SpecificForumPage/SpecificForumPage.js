@@ -67,7 +67,7 @@ function SpecificForumPage(props) {
                 {/* {post ? <FullPost post={post} /> : <Loading />} */}
                 <FullPost post={post} />
                 {/* put there for anchor link to comments */}
-                <div id="comments">Thyyyyyyy</div>
+                {/* <div id="comments"></div> */}
               </Card>
             </div>
           </div>

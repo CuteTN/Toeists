@@ -65,7 +65,7 @@ function App() {
           <UserInfoPage />
         </Route> */}
           {/* <PrivateRoute exact path="/feed" component={FeedPage} /> */}
-          <PrivateRoute exact path="/post/create" component={CreatePostPage} />
+          <PrivateRoute exact path="/forum/create" component={CreatePostPage} />
           <PrivateRoute path="/userinfo/my">
             <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
           </PrivateRoute>
