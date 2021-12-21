@@ -7,13 +7,14 @@ import HomePage from "./HomePage/HomePage";
 import ChatPage from "./ChatPage/ChatPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
 import SpecificForumPage from "./SpecificForumPage/SpecificForumPage";
+import FeedPage from "./FeedPage/FeedPage";
 
 export {
   // HomePage,
   // AboutPage,
   // AuthPage,
   CreatePostPage,
-  // FeedPage,
+  FeedPage,
   // TestPage,
   // SpecificPostPage,
   UserInfoPage,
