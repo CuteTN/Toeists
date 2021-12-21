@@ -102,7 +102,7 @@ const OwnerInformation = ({ comment, onDelete, isEdit, setIsEdit }) => {
                   strong
                   style={{ fontSize: "1.2rem" }}
                 >
-                  Thy Xinh đẹp
+                  {comment?.creator?.name}
                 </Text>
               </Space>
             </Row>

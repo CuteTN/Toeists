@@ -25,23 +25,18 @@ const MessageHeader = ({
   const { signedInUser } = useAuth();
   const conversationDisplayName = React.useMemo(() => ConversationService.getName(conversation), [conversation])
   const currentMemberInfo = React.useMemo(() => ConversationService.getMemberInfo(conversation, signedInUser?._id), [conversation, signedInUser?._id]);
-  const canAccessSetting = React.useMemo(() => {
-    return conversation?.type === "private" || currentMemberInfo?.role === "admin"
-  }, [conversation])
 
   const menuMore = () => {
     const { hasSeen, hasMuted, hasBlocked } = currentMemberInfo ?? {};
 
     return (
       <Menu disabled={currentMemberInfo == null}>
-        {canAccessSetting &&
-          <Menu.Item key="setting" onClick={showConversationSetting}>
-            <Row align="middle">
-              <SettingOutlined />
-              <Text className="ml-2">Setting</Text>
-            </Row>
-          </Menu.Item>
-        }
+        <Menu.Item key="setting" onClick={showConversationSetting}>
+          <Row align="middle">
+            <SettingOutlined />
+            <Text className="ml-2">Setting</Text>
+          </Row>
+        </Menu.Item>
 
         <Menu.Item key="seen" onClick={toggleSeenState}>
           <Row align="middle">

@@ -1,44 +1,24 @@
 import express from "express";
 import * as controllers from "../controllers/comment.js";
 import { authorizeMdw } from "../middlewares/authorization.js";
+import { checkIsCommentFromVisibleForumMdwFn, checkIsCommentOwner, FORUM_ID_FROM_BODY_EXTRACTOR, FORUM_ID_FROM_TARGETED_DATA_EXTRACTOR } from "../middlewares/comment.js";
 import { findByIdMdwFn } from "../middlewares/findById.js";
 import { Comment } from "../models/comment.js"
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
 
 export const commentsRouter = express.Router();
 
-const checkIsCommentOwner = (comment, req) => {
-  if (!comment.creatorId.equals(req.attached?.decodedToken?.userId))
-    return "Only the comment's creator can access this data."
-}
+commentsRouter.post("/", authorizeMdw, checkIsCommentFromVisibleForumMdwFn(FORUM_ID_FROM_BODY_EXTRACTOR), controllers.createComment );
 
-commentsRouter.get("/", controllers.getComments);
-commentsRouter.post("/", authorizeMdw, controllers.createComment );
+commentsRouter.get("/:id", authorizeMdw, findByIdMdwFn({ model: Comment }), checkIsCommentFromVisibleForumMdwFn(FORUM_ID_FROM_TARGETED_DATA_EXTRACTOR), controllers.getCommentById);
+commentsRouter.put("/:id", authorizeMdw, findByIdMdwFn({ model: Comment, forbiddenChecker: checkIsCommentOwner}), checkIsCommentFromVisibleForumMdwFn(FORUM_ID_FROM_TARGETED_DATA_EXTRACTOR), controllers.updateComment);
+commentsRouter.delete("/:id", authorizeMdw, findByIdMdwFn({ model: Comment, forbiddenChecker: checkIsCommentOwner }), checkIsCommentFromVisibleForumMdwFn(FORUM_ID_FROM_TARGETED_DATA_EXTRACTOR), controllers.deleteComment);
 
-commentsRouter.get("/:id", authorizeMdw, findByIdMdwFn({ model: Comment }), controllers.getCommentById);
-commentsRouter.put("/:id", authorizeMdw, findByIdMdwFn({ model: Comment, forbiddenChecker: checkIsCommentOwner }), controllers.updateComment);
-commentsRouter.delete("/:id", authorizeMdw, findByIdMdwFn({ model: Comment, forbiddenChecker: checkIsCommentOwner }), controllers.deleteComment);
-
-commentsRouter.put("/:id/interact", authorizeMdw, findByIdMdwFn({ model: Comment }), controllers.interactWithComment);
+commentsRouter.put("/:id/interact", authorizeMdw, findByIdMdwFn({ model: Comment }), checkIsCommentFromVisibleForumMdwFn(FORUM_ID_FROM_TARGETED_DATA_EXTRACTOR), controllers.interactWithComment);
 
 const controllerName = "comments";
 export const commentsSwaggerPaths = {
   [`/${controllerName}/`]: {
-    get: createSwaggerPath(
-      "Get all the comments that is visible to the current user. Optional field **forumId** is supported.",
-      [controllerName],
-      [
-        {
-          name: "forumId",
-          in: "query",
-          description: "Filter only comments from a specific forum",
-          schema: SwaggerTypes.string(),
-        }
-      ],
-      null,
-      SwaggerTypes.array(SwaggerTypes.ref("Comment")),
-    ),
-
     post: createSwaggerPath(
       "Create a new Comment.",
       [controllerName],

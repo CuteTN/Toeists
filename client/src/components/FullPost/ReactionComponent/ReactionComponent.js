@@ -3,17 +3,29 @@ import { Row, Space, Tooltip, Typography, message } from "antd";
 import styles from "./styles";
 import { LinkOutlined, HeartOutlined, HeartFilled } from "@ant-design/icons";
 import ShareButton from "../ShareButton/ShareButton";
+import { interactWithForum } from "../../../services/api/forum";
+import { useAuth } from '../../../contexts/authenticationContext'
+import { getInteractionInfoOfUser } from "../../../services/InteractionInfoService";
 
 const { Text } = Typography;
 const ReactionComponent = ({ post }) => {
-  const [isReacted, setIsReacted] = useState(false);
+  const { signedInUser } = useAuth();
+  const [hasUpvoted, setHasUpvoted] = React.useState(false);
+  const [upvotersCount, setUpvotersCount] = React.useState(0);
 
   useEffect(() => {
-    // kiểm tra react chưa
-  }, []);
+    setHasUpvoted(getInteractionInfoOfUser(signedInUser?._id, post?.interactionInfo).hasUpvoted)
+    setUpvotersCount(post?.interactionInfo?.upvoterIds?.length ?? 0);
+  }, [post, signedInUser?._id])
 
-  const handleClick = () => {
-    console.log("Đây bạn ơi");
+  const handleToggleVoteClick = () => {
+    setHasUpvoted(!hasUpvoted);
+    setUpvotersCount(hasUpvoted ? upvotersCount-1 : upvotersCount+1 );
+    interactWithForum(post._id, hasUpvoted ? "unvote" : "upvote")
+      .catch(() => {
+        setHasUpvoted(hasUpvoted);
+        setUpvotersCount(hasUpvoted ? upvotersCount+1 : upvotersCount-1 );
+      })
   };
 
   const copyLink = (id) => {
@@ -22,7 +34,7 @@ const ReactionComponent = ({ post }) => {
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
-        console.log(id);
+        console.error(id);
       });
   };
 
@@ -33,20 +45,20 @@ const ReactionComponent = ({ post }) => {
           <Space size="large">
             <Space>
               <Tooltip title="React">
-                {isReacted ? (
+                {hasUpvoted ? (
                   <HeartFilled
                     className="clickable icon"
-                    onClick={() => handleClick(post?._id)}
+                    onClick={handleToggleVoteClick}
                   />
                 ) : (
                   <HeartOutlined
                     className="clickable icon"
-                    onClick={() => handleClick(post?._id)}
+                    onClick={handleToggleVoteClick}
                   />
                 )}
               </Tooltip>
               <Text strong style={{ fontSize: "1.5rem" }}>
-                {post?.interactionInfo?.upvoterIds?.length}
+                {upvotersCount}
               </Text>
             </Space>
           </Space>

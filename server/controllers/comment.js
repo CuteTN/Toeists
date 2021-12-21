@@ -42,9 +42,9 @@ export const createComment = async (req, res, next) => {
       .status(httpStatusCodes.badRequest)
       .json({ message: "Error while creating a new comment", error });
   }
-};
+}
 
-/** @type {express.RequestHandler} */
+/** @type {express.RequestHandler} @deprecated It is not allowed to retrieve comments by themself */
 export const getComments = async (req, res, next) => {
   const filter = {};
 
