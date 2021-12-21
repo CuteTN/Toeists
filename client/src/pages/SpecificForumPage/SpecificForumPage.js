@@ -4,8 +4,10 @@ import { Layout, Card } from "antd";
 
 import Navbar from "../../components/Navbar/Navbar";
 import FullPost from "../../components/FullPost/FullPost.js";
+import CommentForm from "../../components/CommentForm/CommentForm.js";
 import { fetchAPost } from "../../services/api/forum.js";
 import { useHistory } from "react-router-dom";
+import NumberOfComment from "./NumberOfComment/NumberOfComment.js";
 
 export function shuffle(array) {
   var currentIndex = array.length,
@@ -68,6 +70,13 @@ function SpecificForumPage(props) {
                 <FullPost post={post} />
                 {/* put there for anchor link to comments */}
                 {/* <div id="comments"></div> */}
+
+                <div id="comments"></div>
+                <CommentForm
+                  // onSubmit={handleSubmitComment}
+                  label="Comment to this post"
+                />
+                <NumberOfComment comments={post?.comments} />
               </Card>
             </div>
           </div>
