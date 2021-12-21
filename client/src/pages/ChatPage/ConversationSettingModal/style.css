@@ -7,3 +7,11 @@ label.form-label {
   font-weight: bold;
   font-size: 15px;
 }
+
+.member-setting-row-card {
+  /* width: 100%; */
+}
+
+.member-setting-row-card:hover {
+  background-color: #ffedd6;
+}

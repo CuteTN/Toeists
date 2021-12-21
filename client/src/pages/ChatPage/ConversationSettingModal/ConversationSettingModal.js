@@ -1,7 +1,9 @@
 import React from "react";
 import { Modal, Form, Input, Radio } from "antd";
 import ConversationMemberSettingRow from './ConversationMemberSettingRow'
-import './index.css'
+import './style.css'
+import { ConversationService } from "../../../services/ConversationService";
+import { useAuth } from "../../../contexts/authenticationContext";
 
 /**
  * 
@@ -10,7 +12,10 @@ import './index.css'
  * @returns 
  */
 const ConversationSettingModal = ({ conversation, visible, onCancel, onSubmit }) => {
+  const { signedInUser } = useAuth();
   const [conversationName, setConversationName] = React.useState("");
+  const [conversationMembers, setConversationMembers] = React.useState("");
+  const currentMemberInfo = React.useMemo(() => ConversationService.getMemberInfo(conversation, signedInUser?._id), [conversation, signedInUser?._id]);
 
   React.useEffect(() => {
     setConversationData(visible ? conversation : null);
@@ -19,6 +24,19 @@ const ConversationSettingModal = ({ conversation, visible, onCancel, onSubmit })
   const setConversationData = (conversation) => {
     setConversationName(conversation?.name);
   }
+
+  const deepCloneConversationMembers = (conversationMembers) => {
+    // TODO:
+  }
+  
+  const handleRemoveMember = (memberId) => {
+    // TODO:
+  }
+
+  const handleSetMemberRole = (memberId, newRole) => {
+    // TODO:
+  }
+
 
   const handleOk = () => {
     const conversationData = {
@@ -29,6 +47,7 @@ const ConversationSettingModal = ({ conversation, visible, onCancel, onSubmit })
 
     onSubmit?.(conversationData, Boolean(!conversation));
   }
+
 
   const basicInformationSection = () => {
     return (
@@ -53,7 +72,13 @@ const ConversationSettingModal = ({ conversation, visible, onCancel, onSubmit })
 
         <h1 className="ml-1 form-label">Members list:</h1>
         {conversation?.members.map((member, i) =>
-          <ConversationMemberSettingRow member={member} key={i}/>
+          <ConversationMemberSettingRow 
+            member={member} key={i}
+            conversationType={conversation?.type}
+            currentUserRole={currentMemberInfo?.role} 
+            onRemoveMember={handleRemoveMember}
+            onSetRole={handleSetMemberRole}
+          />
         )}
       </div>
     )
