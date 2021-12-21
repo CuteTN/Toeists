@@ -20,9 +20,7 @@ const { Option } = Select;
 
 function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [inputComment, setInputComment] = useState({
-    content: initContent ?? "",
-  });
+  const [inputComment, setInputComment] = useState(initContent ?? "");
   // const [errors, setErrors] = useState({});
   const [form] = Form.useForm();
   const { signedInUser } = useAuth();
@@ -42,7 +40,7 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
   const onReset = () => {
     form.resetFields();
 
-    setInputComment({ content: "" });
+    setInputComment("");
     setEditorState(EditorState.createEmpty());
   };
 
@@ -57,7 +55,7 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
     let currentContentAsHTML = draftToHtml(
       convertToRaw(editorState.getCurrentContent())
     );
-    setInputComment((pre) => ({ ...pre, content: currentContentAsHTML }));
+    setInputComment(currentContentAsHTML);
   };
 
   return (
@@ -106,7 +104,7 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
                 className="white-button mr-3"
                 size="large"
                 onClick={onReset}
-                disabled={!inputComment?.content?.trim()}
+                disabled={!inputComment}
               >
                 Reset
               </Button>
@@ -114,7 +112,7 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
                 className="green-button"
                 size="large"
                 htmlType="submit"
-                disabled={!inputComment?.content?.trim()}
+                disabled={!inputComment}
               >
                 Submit
               </Button>

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Select } from "antd";
 //api
 import { fetchHashtag } from "../../../services/api/hashtag";
-//orthers
+//others
 import createPostStyle from "../styles.js";
 const { Option } = Select;
 

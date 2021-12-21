@@ -22,15 +22,8 @@ import {
 } from "@ant-design/icons";
 import COLOR from "../../constants/colors";
 import CommentForm from "../CommentForm/CommentForm";
-import {
-  upvoteComment,
-  downvoteComment,
-  unvoteComment,
-  getMyCommentInteractions,
-} from "../../api/comment";
-import MarkdownRenderer from "../Markdown/MarkdownRenderer/MarkdownRenderer";
-import moment from "moment";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
+
+import OwnerInformation from "./OwnerInformation/OwnerInformation";
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -50,7 +43,7 @@ const allInteractionReducer = (state, action) => {
   }
 };
 
-function Comment({
+const Comment = ({
   comment,
   onReply,
   onEdit,
@@ -59,13 +52,11 @@ function Comment({
   isFocus,
   postId,
   interactionCallback,
-}) {
+}) => {
   const [myInteractions, setMyInteractions] = useState({});
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [ellipsis, setEllipsis] = useState("full");
-
-  const [user] = useLocalStorage("user");
 
   const [allInteractions, dispatchInteractions] = useReducer(
     allInteractionReducer,
@@ -88,94 +79,87 @@ function Comment({
   }, [comment]);
 
   const handleUpvoteClick = async (id) => {
-    if (!user) {
-      message.info("You need to log in to upvote this comment!");
-      return;
-    }
-
-    if (myInteractions?.upvote) {
-      unvoteComment(id, postId)
-        .then((res) => {
-          interactionCallback();
-
-          fetchMyInteractions().then(() =>
-            dispatchInteractions({ type: "unupvote" })
-          );
-        })
-        .catch((error) => {
-          message.error("Something goes wrong with comment unvote");
-          console.log(error);
-        });
-    } else {
-      upvoteComment(id, postId)
-        .then((res) => {
-          interactionCallback();
-
-          if (myInteractions?.downvote) {
-            dispatchInteractions({ type: "undownvote" });
-          }
-          fetchMyInteractions().then(() =>
-            dispatchInteractions({ type: "upvote" })
-          );
-        })
-        .catch((error) => {
-          message.error("Something goes wrong with comment upvote");
-          console.log(error);
-        });
-    }
+    // if (!user) {
+    //   message.info("You need to log in to upvote this comment!");
+    //   return;
+    // }
+    // if (myInteractions?.upvote) {
+    //   unvoteComment(id, postId)
+    //     .then((res) => {
+    //       interactionCallback();
+    //       fetchMyInteractions().then(() =>
+    //         dispatchInteractions({ type: "unupvote" })
+    //       );
+    //     })
+    //     .catch((error) => {
+    //       message.error("Something goes wrong with comment unvote");
+    //       console.log(error);
+    //     });
+    // } else {
+    //   upvoteComment(id, postId)
+    //     .then((res) => {
+    //       interactionCallback();
+    //       if (myInteractions?.downvote) {
+    //         dispatchInteractions({ type: "undownvote" });
+    //       }
+    //       fetchMyInteractions().then(() =>
+    //         dispatchInteractions({ type: "upvote" })
+    //       );
+    //     })
+    //     .catch((error) => {
+    //       message.error("Something goes wrong with comment upvote");
+    //       console.log(error);
+    //     });
+    // }
   };
 
   const handleDownvoteClick = async (id) => {
-    if (!user) {
-      message.info("You need to log in to downvote this comment!");
-      return;
-    }
-
-    if (myInteractions?.downvote) {
-      unvoteComment(id, postId)
-        .then((res) => {
-          interactionCallback();
-
-          fetchMyInteractions().then(() =>
-            dispatchInteractions({ type: "undownvote" })
-          );
-        })
-        .catch((error) => {
-          message.error("Something goes wrong with comment unvote");
-          console.log(error);
-        });
-    } else {
-      downvoteComment(id, postId)
-        .then((res) => {
-          interactionCallback();
-
-          if (myInteractions?.upvote) {
-            dispatchInteractions({ type: "unupvote" });
-          }
-          fetchMyInteractions().then(() =>
-            dispatchInteractions({ type: "downvote" })
-          );
-        })
-        .catch((error) => {
-          message.error("Something goes wrong with comment downvote");
-          console.log(error);
-        });
-    }
+    // if (!user) {
+    //   message.info("You need to log in to downvote this comment!");
+    //   return;
+    // }
+    // if (myInteractions?.downvote) {
+    //   unvoteComment(id, postId)
+    //     .then((res) => {
+    //       interactionCallback();
+    //       fetchMyInteractions().then(() =>
+    //         dispatchInteractions({ type: "undownvote" })
+    //       );
+    //     })
+    //     .catch((error) => {
+    //       message.error("Something goes wrong with comment unvote");
+    //       console.log(error);
+    //     });
+    // } else {
+    //   downvoteComment(id, postId)
+    //     .then((res) => {
+    //       interactionCallback();
+    //       if (myInteractions?.upvote) {
+    //         dispatchInteractions({ type: "unupvote" });
+    //       }
+    //       fetchMyInteractions().then(() =>
+    //         dispatchInteractions({ type: "downvote" })
+    //       );
+    //     })
+    //     .catch((error) => {
+    //       message.error("Something goes wrong with comment downvote");
+    //       console.log(error);
+    //     });
+    // }
   };
 
   const fetchMyInteractions = () => {
-    if (!user) return;
-
-    const interactions = getMyCommentInteractions(comment._id)
-      .then((res) => {
-        setMyInteractions(res.data);
-        return res.data;
-      })
-      .catch((error) => {
-        message.error("Something goes wrong with comment interactions");
-        console.log(error);
-      });
-    return interactions;
+    // if (!user) return;
+    // const interactions = getMyCommentInteractions(comment._id)
+    //   .then((res) => {
+    //     setMyInteractions(res.data);
+    //     return res.data;
+    //   })
+    //   .catch((error) => {
+    //     message.error("Something goes wrong with comment interactions");
+    //     console.log(error);
+    //   });
+    // return interactions;
   };
 
   const toggleReply = () => {
@@ -185,35 +169,6 @@ function Comment({
   const handleReply = (newComment) => {
     onReply(comment?._id, newComment);
     setIsReply(false);
-  };
-  const onMoreSelect = ({ key }) => {
-    switch (key) {
-      case "0":
-        setIsEdit(true);
-        break;
-      case "1":
-        handleDelete();
-        break;
-      default:
-        break;
-    }
-  };
-  const showConfirmDeleteComment = (id) => {
-    confirm({
-      title: "Do you want to delete this comment?",
-      icon: <ExclamationCircleOutlined />,
-      content: "You cannot undo this action",
-      onOk() {
-        onDelete(id);
-        message.success("Comment has been deleted");
-      },
-      onCancel() {
-        message.info("Comment is not deleted");
-      },
-    });
-  };
-  const handleDelete = () => {
-    showConfirmDeleteComment(comment?._id);
   };
   const renderEdit = () => {
     const handleDiscard = () => {
@@ -244,48 +199,8 @@ function Comment({
     setIsReply(false);
   };
 
-  const menuMore = (
-    <Menu onClick={onMoreSelect}>
-      <Menu.Item key="0">
-        <Row align="middle">
-          <EditOutlined className="mr-2" />
-          <Text>Edit comment</Text>
-        </Row>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <Row align="middle">
-          <DeleteFilled className="red mr-2" />
-          <Text className="red">Delete comment</Text>
-        </Row>
-      </Menu.Item>
-    </Menu>
-  );
-
   const copyLink = (id) => {
-    // navigator.clipboard
-    //   // .writeText(id) // change to deployment link later
-    //   .then(() => message.success("Link copied to clipboard"))
-    //   .catch((error) => {
-    //     message.error("Something goes wrong copying link");
-    //     console.log(error);
-    //   });
     onCopyCommentLink(id);
-  };
-
-  const isCommentOwner = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    return user?.result?._id.toString() === comment.userId._id;
-  };
-
-  const renderUserInfo = () => {
-    const userInfo = comment?.userId?.userInfo;
-    const education = userInfo?.educations?.[userInfo.educations?.length - 1];
-    const work = userInfo?.works?.[userInfo.works?.length - 1];
-    const educationInfo = education
-      ? `${education?.moreInfo} at ${education?.schoolName}`
-      : null;
-    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
-    return workInfo || educationInfo;
   };
 
   return (
@@ -293,51 +208,8 @@ function Comment({
       className={isFocus ? "bg-green-smoke pt-4" : ""}
       style={{ paddingLeft: 20, paddingRight: 20 }}
     >
-      <Row
-        className={`pb-2`}
-        style={{ justifyContent: "space-between", alignItems: "center" }}
-      >
-        <Row className="align-items-center" style={{ marginBottom: 12 }}>
-          <Avatar
-            className="ml-1 clickable"
-            size={45}
-            src={comment?.userId?.avatarUrl}
-          />
-          <div className="d-inline-flex flex-column ml-3 break-word">
-            <Row style={{ alignItems: "center" }}>
-              <Space size={4}>
-                <Text
-                  className="clickable"
-                  strong
-                  style={{ fontSize: "1.2rem" }}
-                >
-                  {comment?.userId?.name}
-                </Text>
-              </Space>
-            </Row>
-            <Text>{renderUserInfo()}</Text>
-          </div>
-        </Row>
-        <Row className="justify-content-end align-items-center pb-3">
-          <div className="mr-4">
-            <Text className="clickable" underline type="secondary">
-              {`Last edited ${moment(comment?.contentUpdatedAt).fromNow()}`}
-            </Text>
-          </div>
-          {isCommentOwner() && (
-            <Dropdown
-              overlay={menuMore}
-              trigger={["click"]}
-              placement="bottomRight"
-            >
-              <div className="clickable">
-                <EllipsisOutlined className="clickable icon" />
-              </div>
-            </Dropdown>
-          )}
-        </Row>
-      </Row>
-      {!isEdit ? (
+      <OwnerInformation comment={comment} onDelete={onDelete} />
+      {/* {!isEdit ? (
         <div>
           {comment?.quotedCommentId !== undefined ? (
             <div
@@ -363,23 +235,16 @@ function Comment({
                   </Text>
                 )}
               </Row>
-              {/* <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
-                {comment?.quotedCommentId?.content}
-              </Paragraph> */}
               <MarkdownRenderer
                 text={comment?.quotedCommentId?.content}
                 enableDoubleClickFullScreen
               />
 
-              {/* <br />
-          <a className="clickable green bold" href="#" target="_blank" strong>
-            See full comment
-          </a> */}
             </div>
           ) : null}
           <div className="mb-2">
             <div>
-              {/* <Paragraph className="">{comment?.content}</Paragraph> */}
+             
               <MarkdownRenderer
                 text={comment?.content}
                 enableDoubleClickFullScreen
@@ -440,11 +305,11 @@ function Comment({
         </div>
       ) : (
         renderEdit()
-      )}
+      )} */}
 
       <Divider />
     </div>
   );
-}
+};
 
 export default Comment;

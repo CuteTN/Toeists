@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from "react";
-import styles from "./styles.js";
 import { Layout, Card } from "antd";
-
+import { useHistory } from "react-router-dom";
+import {
+  EditorState,
+  ContentState,
+  convertToRaw,
+  convertFromHTML,
+} from "draft-js";
+import draftToHtml from "draftjs-to-html";
+//components
 import Navbar from "../../components/Navbar/Navbar";
 import FullPost from "../../components/FullPost/FullPost.js";
 import CommentForm from "../../components/CommentForm/CommentForm.js";
-import { fetchAPost } from "../../services/api/forum.js";
-import { useHistory } from "react-router-dom";
 import NumberOfComment from "./NumberOfComment/NumberOfComment.js";
-
+import ListComments from "./ListComments/ListComments.js";
+//api
+import { fetchAPost } from "../../services/api/forum.js";
+import { createComment } from "../../services/api/comment";
+//other
+import styles from "./styles.js";
 export function shuffle(array) {
   var currentIndex = array.length,
     randomIndex;
@@ -58,6 +68,36 @@ function SpecificForumPage(props) {
       });
   };
 
+  const fetchComments = async () => {
+    // const { data } = await commentsApi.fetchComments(id);
+    // const sortedData = sort?.function(data);
+    // if (focusedCommentId) {
+    //   const i = sortedData.findIndex((c) => c._id === focusedCommentId);
+    //   console.log(i);
+    //   if (i > -1) {
+    //     const temp = sortedData[0];
+    //     sortedData[0] = sortedData[i];
+    //     sortedData[i] = temp;
+    //   } else {
+    //     history.push(`/post/${id}`);
+    //   }
+    //   setFocusedCommentIndex(i);
+    // }
+    // setComments(sortedData);
+  };
+
+  const handleSubmitComment = async (newComment) => {
+    const result = {
+      content: newComment,
+      forumId: post,
+    };
+    await createComment(result);
+    // if (focusedCommentId) {
+    //   history.push(`/forums/${id}`);
+    //   history.go(0);
+    // } else fetchComments();
+  };
+
   return (
     <>
       <Layout>
@@ -73,10 +113,11 @@ function SpecificForumPage(props) {
 
                 <div id="comments"></div>
                 <CommentForm
-                  // onSubmit={handleSubmitComment}
+                  onSubmit={handleSubmitComment}
                   label="Comment to this post"
                 />
                 <NumberOfComment comments={post?.comments} />
+                <ListComments post={post} />
               </Card>
             </div>
           </div>
