@@ -174,30 +174,7 @@ const SecurityTab = () => {
   };
   const [form, setForm] = useState(formDefault);
   const handleFinish = () => {
-    // authAPI
-    //   .checkPassword(form.currentPassword)
-    //   .then(() => {
-    //     authAPI
-    //       .changePassword(form.newPassword)
-    //       .then((res) => {
-    //         message.success("Password changed successfully.");
-    //         console.log("password changed", res);
-    //       })
-    //       .catch((err) => {
-    //         message.error(err.response.status);
-    //       });
-    //   })
-    //   .catch((err) => {
-    //     switch (err.response.status) {
-    //       case 400:
-    //         message.error("Wrong current password.");
-    //         break;
-    //       case 500:
-    //         message.error("There was an error.");
-    //         break;
-    //       default:
-    //     }
-    //   });
+    // TODO: Change password API
   };
   const handleFinishFailed = (errorInfo) => {
     errorInfo.errorFields.map((err) => {

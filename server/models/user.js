@@ -66,8 +66,8 @@ const userSchema = new mongoose.Schema(
             if (!phoneNumber)
               return true;
 
-            const user = (await this.constructor.find())
-              .filter(u => u?.phoneNumber === phoneNumber)?.[0];
+            const user = (await this.constructor?.find?.() ?? [])
+              .find(u => u?.phoneNumber === phoneNumber);
 
             if (user)
               return this._id.equals(user._id);

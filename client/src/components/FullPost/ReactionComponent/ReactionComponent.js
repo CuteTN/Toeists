@@ -30,7 +30,7 @@ const ReactionComponent = ({ post }) => {
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`http://localhost:3000/forum/${id}`) // change to deployment link later
+      .writeText(`http://localhost:3000/forums/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");

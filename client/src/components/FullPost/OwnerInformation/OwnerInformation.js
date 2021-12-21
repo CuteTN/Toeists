@@ -138,7 +138,7 @@ function OwnerInformation({ post }) {
           <div className="d-inline-flex flex-column ml-3 break-word">
             <Row style={{ alignItems: "center" }}>
               <Space size={4}>
-                <Link to={`/userinfo/${post?.userId}`} target="_blank">
+                <Link to={`/userinfo/${post?.creator?._id}`} target="_blank">
                   <Text
                     className="clickable"
                     strong

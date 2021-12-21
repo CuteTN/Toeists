@@ -60,7 +60,7 @@ const swaggerSchemas = Object.freeze({
     _id: SwaggerTypes.string({ readOnly: true }),
     creatorId: SwaggerTypes.string({ readOnly: true }),
     title: SwaggerTypes.string(),
-    privacy: SwaggerTypes.enum(["private", "public"], { nullable: false, example: "public" }),
+    privacy: SwaggerTypes.enum(["Private", "Public"], { nullable: false, example: "public" }),
     content: SwaggerTypes.object(),
     contentCreatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),
     contentUpdatedAt: SwaggerTypes.date({ readOnly: true }, { readOnly: true }),

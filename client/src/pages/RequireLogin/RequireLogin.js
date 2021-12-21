@@ -13,7 +13,8 @@ function RequireLogin({ restrictedAction }) {
           {`Login or register to ${restrictedAction}`}
         </Title>
         <Row>
-          <Link to="/login">
+          {/* TODO: add route back link */}
+          <Link to="/signin">
             <Button
               style={{ width: buttonWidth }}
               className="greensmoke-button mr-3"

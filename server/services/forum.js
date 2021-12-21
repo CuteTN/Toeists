@@ -16,9 +16,9 @@ export const checkIsForumVisibleByUser = (forum, userId) => {
   }
   catch { }
 
-  switch (forum.privacy) {
-    case "public": return true;
-    case "private": return _userId?.equals(forum?.creatorId);
+  switch (forum.privacy.toUpperCase()) {
+    case "PUBLIC": return true;
+    case "PRIVATE": return _userId?.equals(forum?.creatorId);
     default: return _userId.equals(forum?.creatorId);
   }
 }
