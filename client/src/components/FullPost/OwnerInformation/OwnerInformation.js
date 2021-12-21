@@ -144,7 +144,7 @@ function OwnerInformation({ post }) {
                     strong
                     style={{ fontSize: "1.2rem" }}
                   >
-                    {post?.creator.name}
+                    {post?.creator?.name}
                   </Text>
                 </Link>
               </Space>

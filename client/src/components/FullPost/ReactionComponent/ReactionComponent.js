@@ -5,15 +5,27 @@ import { LinkOutlined, HeartOutlined, HeartFilled } from "@ant-design/icons";
 import ShareButton from "../ShareButton/ShareButton";
 import { interactWithForum } from "../../../services/api/forum";
 import { useAuth } from '../../../contexts/authenticationContext'
+import { getInteractionInfoOfUser } from "../../../services/InteractionInfoService";
 
 const { Text } = Typography;
 const ReactionComponent = ({ post }) => {
   const { signedInUser } = useAuth();
-  // TODO: get actual interaction info of current user
-  const myInteractions = React.useMemo(() => ({}), [post, signedInUser?._id]);
+  const [hasUpvoted, setHasUpvoted] = React.useState(false);
+  const [upvotersCount, setUpvotersCount] = React.useState(0);
+
+  useEffect(() => {
+    setHasUpvoted(getInteractionInfoOfUser(signedInUser?._id, post?.interactionInfo).hasUpvoted)
+    setUpvotersCount(post?.interactionInfo?.upvoterIds?.length ?? 0);
+  }, [post, signedInUser?._id])
 
   const handleToggleVoteClick = () => {
-    // interactWithForum(post._id, "upvote");    
+    setHasUpvoted(!hasUpvoted);
+    setUpvotersCount(hasUpvoted ? upvotersCount-1 : upvotersCount+1 );
+    interactWithForum(post._id, hasUpvoted ? "unvote" : "upvote")
+      .catch(() => {
+        setHasUpvoted(hasUpvoted);
+        setUpvotersCount(hasUpvoted ? upvotersCount+1 : upvotersCount-1 );
+      })
   };
 
   const copyLink = (id) => {
@@ -22,7 +34,7 @@ const ReactionComponent = ({ post }) => {
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
-        console.log(id);
+        console.error(id);
       });
   };
 
@@ -33,20 +45,20 @@ const ReactionComponent = ({ post }) => {
           <Space size="large">
             <Space>
               <Tooltip title="React">
-                {myInteractions ? (
+                {hasUpvoted ? (
                   <HeartFilled
                     className="clickable icon"
-                    onClick={() => handleToggleVoteClick(post?._id)}
+                    onClick={handleToggleVoteClick}
                   />
                 ) : (
                   <HeartOutlined
                     className="clickable icon"
-                    onClick={() => handleToggleVoteClick(post?._id)}
+                    onClick={handleToggleVoteClick}
                   />
                 )}
               </Tooltip>
               <Text strong style={{ fontSize: "1.5rem" }}>
-                {post?.interactionInfo?.upvoterIds?.length}
+                {upvotersCount}
               </Text>
             </Space>
           </Space>
