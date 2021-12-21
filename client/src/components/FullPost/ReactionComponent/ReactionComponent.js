@@ -3,12 +3,15 @@ import { Row, Space, Tooltip, Typography, message } from "antd";
 import styles from "./styles";
 import { LinkOutlined, HeartOutlined } from "@ant-design/icons";
 import ShareButton from "../ShareButton/ShareButton";
+import { interactWithForum } from "../../../services/api/forum";
 
 const { Text } = Typography;
 const ReactionComponent = ({ post }) => {
   const [interactions, setInteractions] = useState({});
 
-  const handleUpvoteClick = async (id) => {};
+  const handleVoteClick = () => {
+    interactWithForum(post._id, )    
+  };
 
   const copyLink = (id) => {
     navigator.clipboard
@@ -29,7 +32,7 @@ const ReactionComponent = ({ post }) => {
               <Tooltip title="React">
                 <HeartOutlined
                   className="clickable icon"
-                  onClick={() => handleUpvoteClick(post?._id)}
+                  onClick={() => handleVoteClick(post?._id)}
                 />
               </Tooltip>
               <Text strong style={{ fontSize: "1.5rem" }}>

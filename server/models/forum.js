@@ -88,7 +88,10 @@ forumSchema.virtual("hashtags", {
 export const FORUM_VIRTUAL_FIELDS = [
   "creator",
   "interactionInfo",
-  "comments",
+  {
+    path: "comments",
+    populate: ["creator", "interactionInfo"],
+  },
   "hashtags",
 ];
 
