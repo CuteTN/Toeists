@@ -11,6 +11,7 @@ import { getUser } from "../../redux/actions/user.js";
 import { isLoginUser, checkBlock } from "../../utils/user";
 import { useAuth } from "../../contexts/authenticationContext";
 import ErrorPage from "./../ErrorPage/ErrorPage";
+import ListPosts from "../FeedPage/ListPosts/ListPosts";
 // import ErrorPage from "../../ErrorPage/ErrorPage";
 const { Content } = Layout;
 
@@ -49,9 +50,9 @@ function UserInfoPage() {
                 <div className="col-md-4">
                   <IntroCard />
                 </div>
-                {/* <div className="col-md-8">
-                <FeedPosts space="user_profile" ownerId={id} />
-              </div> */}
+                <div className="col-md-8">
+                  <ListPosts space="user_profile" ownerId={id} />
+                </div>
               </Row>
             </Content>
           </Layout>
