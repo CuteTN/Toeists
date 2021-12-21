@@ -6,3 +6,4 @@ export const deleteForum = (forumID) =>
   apiService.delete(`api/forums/${forumID}`);
 export const updateForum = (forumID, newForum) =>
   apiService.put(`api/forums/${forumID}`, newForum);
+export const fetchForums = () => apiService.get(`api/forums`);

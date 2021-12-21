@@ -2,7 +2,7 @@ import React from "react";
 import { Layout } from "antd";
 import styles from "./styles.js";
 import FeedMenu from "./FeedMenu/FeedMenu.js";
-import { useAuth } from "../../../contexts/authenticationContext.js";
+import { useAuth } from "../../contexts/authenticationContext.js";
 
 const { Sider } = Layout;
 
