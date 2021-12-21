@@ -18,6 +18,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
 import { useAuth } from "../../contexts/authenticationContext";
+import addUserImage from "../../assets/add-user.png";
 // import { useToken } from "../../context/TokenContext";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
 // import { AUTH } from "../../redux/actionTypes";
@@ -220,7 +221,16 @@ function SignInPage() {
               className="col-md-5 d-md-block d-sm-none d-none"
               style={{ justifyItems: "center" }}
             >
-              <div></div>
+              <div>
+                <img
+                  src={addUserImage}
+                  alt="Register"
+                  height="300"
+                  // className="object-fit"
+                  // height="58"
+                  // className="mr-2"
+                />
+              </div>
             </div>
           </Row>
         </Card>

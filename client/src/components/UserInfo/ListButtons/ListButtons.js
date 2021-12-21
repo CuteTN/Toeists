@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Menu, message, Row, Modal, Input, Alert } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -10,7 +11,7 @@ import { useAuth } from "../../../contexts/authenticationContext.js";
 import styles from "./styles.js";
 
 const { TextArea } = Input;
-
+const { confirm } = Modal;
 const ListButtons = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -18,19 +19,38 @@ const ListButtons = () => {
   const isMyProfile = isLoginUser(user);
   const isFollowed = checkFollow(user);
   const { signedInUser } = useAuth();
+  const [loading, setLoading] = useState(true);
   const [loadingFollow, setLoadingFollow] = useState(false);
-
+  const [txt, setTxt] = useState("");
   const handleFollowUser = async () => {
-    await apiConnection.follow(user?._id);
+    setLoadingFollow(true);
+    await apiConnection.follow(user?._id).then(() => window.location.reload());
     // dispatch(followUser(user?.username));
   };
 
+  useEffect;
+
   const handleUnfollowUser = async () => {
     console.error(user);
+    setLoadingFollow(true);
     await apiConnection
       .unfollow(user?._id)
-      .then(() => message.success({ content: "ABCDEFGH" }))
+      .then(() => window.location.reload())
       .catch(() => message.error({ content: "Something went wrong." }));
+  };
+
+  const showConfirm = () => {
+    confirm({
+      title: "Do you want to block this user?",
+      icon: <ExclamationCircleOutlined />,
+      content: "You cannot undo this action",
+      onOk() {
+        handleBlockUser();
+      },
+      onCancel() {
+        message.info("User is not blocked");
+      },
+    });
   };
 
   const handleBlockUser = async () => {
@@ -38,6 +58,10 @@ const ListButtons = () => {
       .block(user)
       .then(() => history.push("/error404"))
       .catch(() => message.error({ content: "Something went wrong." }));
+  };
+
+  const handleClick = () => {
+    showConfirm();
   };
 
   const FollowButton = () => {
@@ -59,7 +83,7 @@ const ListButtons = () => {
             className="orange-button"
             style={styles.button}
             onClick={handleFollowUser}
-            // loading={loadingFollow}
+            loading={loadingFollow}
           >
             Follow
           </Button>
@@ -74,7 +98,7 @@ const ListButtons = () => {
         <Button
           className="orange-button"
           style={{ ...styles.button, backgroundColor: "red", color: "white" }}
-          onClick={handleBlockUser}
+          onClick={handleClick}
         >
           Block
         </Button>

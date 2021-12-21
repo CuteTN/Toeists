@@ -8,9 +8,11 @@ import FeedPost from "../../../components/FeedPost/FeedPost";
 
 const { Text } = Typography;
 
-function ListPosts({ setCurrentId, hasMarginLeft }) {
+function ListPosts({ ownerId, hasMarginLeft }) {
   const [listPosts, setListPosts] = useState([]);
   /** @type {[]} */
+
+  console.log("Thyyy", ownerId);
 
   useEffect(() => {
     fetchForums()
@@ -33,9 +35,9 @@ function ListPosts({ setCurrentId, hasMarginLeft }) {
             : styles.postsBox
         }
       >
-        {listPosts?.map((post) => (
-          <FeedPost key={post._id} post={post} />
-        ))}
+        {ownerId === undefined
+          ? listPosts?.map((post) => <FeedPost key={post._id} post={post} />)
+          : listPosts?.map((post) => <FeedPost key={post._id} post={post} />)}
       </Row>
     </div>
   );

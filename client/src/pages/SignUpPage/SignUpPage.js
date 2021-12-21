@@ -80,26 +80,26 @@ function SignUpPage() {
 
   const handleFinish = () => {
     if (disableReg.current === false) {
-      const userData = { ...form }
+      const userData = { ...form };
       delete userData.confirmPassword;
 
       setDisableReg(true);
       apiSignUp(userData)
         .then(() => {
-          message.success(`User ${userData.username} has successfully registered`);
+          message.success(
+            `User ${userData.username} has successfully registered`
+          );
         })
-        .catch(err => {
+        .catch((err) => {
           const errors = [];
 
-          Object.values(err?.response?.data?.errors ?? {}).forEach(error => {
-            if (error.message)
-              errors.push(error.message);
+          Object.values(err?.response?.data?.errors ?? {}).forEach((error) => {
+            if (error.message) errors.push(error.message);
           });
 
-          handleFinishFailed(errors)
+          handleFinishFailed(errors);
         })
-        .finally(() => setDisableReg(false))
-        ;
+        .finally(() => setDisableReg(false));
     }
   };
 
@@ -109,8 +109,7 @@ function SignUpPage() {
   };
 
   const handleFinishFailed = (errors) => {
-    if (!errors)
-      return;
+    if (!errors) return;
 
     errors?.forEach?.((err) => {
       message.error(err);
@@ -332,7 +331,7 @@ function SignUpPage() {
                 <img
                   src={addUserImage}
                   alt="Register"
-                  height="450"
+                  height="300"
                   // className="object-fit"
                   // height="58"
                   // className="mr-2"

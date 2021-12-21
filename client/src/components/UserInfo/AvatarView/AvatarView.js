@@ -32,7 +32,7 @@ const AvatarView = () => {
     };
     // const { data } = await apiUser.editImage(image);
     // setBackgroundImage(data);
-  };  
+  };
 
   const EditImageButton = () => {
     return (
@@ -42,7 +42,7 @@ const AvatarView = () => {
           style={styles.editImageBtn}
           onClick={() => hiddenBackgroundFileInput.current.click()}
         >
-          Edit adsadasd
+          Edit
         </Button>
         <input
           type="file"
