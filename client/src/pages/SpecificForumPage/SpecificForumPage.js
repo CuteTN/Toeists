@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Card } from "antd";
 import { useHistory } from "react-router-dom";
-import {
-  EditorState,
-  ContentState,
-  convertToRaw,
-  convertFromHTML,
-} from "draft-js";
-import draftToHtml from "draftjs-to-html";
+import { EditorState } from "draft-js";
 //components
 import Navbar from "../../components/Navbar/Navbar";
 import FullPost from "../../components/FullPost/FullPost.js";
@@ -39,10 +33,11 @@ export function shuffle(array) {
   return array;
 }
 
-function SpecificForumPage(props) {
+const SpecificForumPage = (props) => {
   const history = useHistory();
 
   const { id, focusedCommentId } = props.match.params;
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [post, setPost] = useState(null);
 
   useEffect(() => {
@@ -92,10 +87,7 @@ function SpecificForumPage(props) {
       forumId: post,
     };
     await createComment(result);
-    // if (focusedCommentId) {
-    //   history.push(`/forums/${id}`);
-    //   history.go(0);
-    // } else fetchComments();
+    fetchPost();
   };
 
   return (
@@ -114,10 +106,11 @@ function SpecificForumPage(props) {
                 <div id="comments"></div>
                 <CommentForm
                   onSubmit={handleSubmitComment}
+                  editorState={editorState}
                   label="Comment to this post"
                 />
                 <NumberOfComment comments={post?.comments} />
-                <ListComments post={post} />
+                <ListComments post={post} fetchPost={fetchPost} />
               </Card>
             </div>
           </div>
@@ -125,6 +118,6 @@ function SpecificForumPage(props) {
       </Layout>
     </>
   );
-}
+};
 
 export default SpecificForumPage;

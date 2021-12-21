@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Space, Tooltip, Typography, message } from "antd";
 import styles from "./styles";
-import { LinkOutlined, HeartOutlined } from "@ant-design/icons";
+import { LinkOutlined, HeartOutlined, HeartFilled } from "@ant-design/icons";
 import ShareButton from "../ShareButton/ShareButton";
 
 const { Text } = Typography;
 const ReactionComponent = ({ post }) => {
-  const [interactions, setInteractions] = useState({});
+  const [isReacted, setIsReacted] = useState(false);
 
-  const handleUpvoteClick = async (id) => {};
+  useEffect(() => {
+    // kiểm tra react chưa
+  }, []);
+
+  const handleClick = () => {
+    console.log("Đây bạn ơi");
+  };
 
   const copyLink = (id) => {
     navigator.clipboard
@@ -27,10 +33,17 @@ const ReactionComponent = ({ post }) => {
           <Space size="large">
             <Space>
               <Tooltip title="React">
-                <HeartOutlined
-                  className="clickable icon"
-                  onClick={() => handleUpvoteClick(post?._id)}
-                />
+                {isReacted ? (
+                  <HeartFilled
+                    className="clickable icon"
+                    onClick={() => handleClick(post?._id)}
+                  />
+                ) : (
+                  <HeartOutlined
+                    className="clickable icon"
+                    onClick={() => handleClick(post?._id)}
+                  />
+                )}
               </Tooltip>
               <Text strong style={{ fontSize: "1.5rem" }}>
                 {post?.interactionInfo?.upvoterIds?.length}

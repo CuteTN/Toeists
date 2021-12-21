@@ -27,11 +27,9 @@ import { useAuth } from "../../../contexts/authenticationContext";
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
 
-const OwnerInformation = ({ comment, onDelete }) => {
+const OwnerInformation = ({ comment, onDelete, isEdit, setIsEdit }) => {
   const { signedInUser } = useAuth();
-  const [isEdit, setIsEdit] = useState(false);
 
-  console.log("thyyy", comment);
   const isCommentOwner = () => {
     return signedInUser?._id === comment?.creatorId;
   };

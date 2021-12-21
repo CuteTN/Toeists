@@ -8,7 +8,6 @@ import "./style.css";
 const CreatePostPage = () => {
   const location = useLocation();
   const { post } = location.state ?? {};
-  console.log("thyyy", post);
   return (
     <div className="create-post-page-wrapper">
       <Navbar />

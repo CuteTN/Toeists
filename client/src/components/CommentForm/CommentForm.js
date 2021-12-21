@@ -1,61 +1,35 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { Form, Input, Button, Select, Row, Space, Typography } from "antd";
+import { Form, Button, Row, Typography } from "antd";
 import { useState } from "react";
 import { useAuth } from "../../contexts/authenticationContext";
 import { Editor } from "react-draft-wysiwyg";
-import {
-  EditorState,
-  ContentState,
-  convertToRaw,
-  convertFromHTML,
-} from "draft-js";
+import { EditorState, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from "draftjs-to-html";
 import RequireLogin from "../../pages/RequireLogin/RequireLogin";
 
 const { Text } = Typography;
-const { TextArea } = Input;
 
-const { Option } = Select;
-
-function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [inputComment, setInputComment] = useState(initContent ?? "");
-  // const [errors, setErrors] = useState({});
+function CommentForm({ onSubmit, label, onDiscard, editor }) {
   const [form] = Form.useForm();
   const { signedInUser } = useAuth();
-
-  // const validate = useCallback(() => {
-  //   setErrors((prevErrors) => ({
-  //     ...prevErrors,
-  //     title: commentData?.content ? "" : "Please input content",
-  //   }));
-  //   return Object.values(errors).every((x) => x === "");
-  // }, [commentData]);
-
-  // useEffect(() => {
-  //   validate();
-  // }, [validate]);
+  const [editorState, setEditorState] = useState(editor);
 
   const onReset = () => {
     form.resetFields();
-
-    setInputComment("");
     setEditorState(EditorState.createEmpty());
   };
 
   const handleFinish = () => {
-    onSubmit(inputComment);
+    let currentContentAsHTML = draftToHtml(
+      convertToRaw(editorState.getCurrentContent())
+    );
+    onSubmit(currentContentAsHTML);
     onReset();
   };
 
   const handleEditorChange = (state) => {
     setEditorState(state);
-
-    let currentContentAsHTML = draftToHtml(
-      convertToRaw(editorState.getCurrentContent())
-    );
-    setInputComment(currentContentAsHTML);
   };
 
   return (
@@ -71,7 +45,6 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
         >
           <Form.Item name="userComment" label={label}>
             <Editor
-              // editorStyle={{ height: "350px" }}
               placeholder="Enter some text..."
               editorState={editorState}
               // toolbarClassName="toolbarClassName"
@@ -88,7 +61,6 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
                   alt: { present: true, mandatory: true },
                 },
               }}
-              // wrapperStyle={{ height: "400px", scrollSnapType: "" }}
               editorStyle={{ maxHeight: "100px", minHeight: "100px" }}
             />
           </Form.Item>
@@ -104,7 +76,7 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
                 className="white-button mr-3"
                 size="large"
                 onClick={onReset}
-                disabled={!inputComment}
+                disabled={!editorState}
               >
                 Reset
               </Button>
@@ -112,7 +84,7 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
                 className="green-button"
                 size="large"
                 htmlType="submit"
-                disabled={!inputComment}
+                disabled={!editorState}
               >
                 Submit
               </Button>

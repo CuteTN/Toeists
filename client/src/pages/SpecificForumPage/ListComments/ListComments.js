@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Typography, Row } from "antd";
 import Comment from "../../../components/Comment/Comment";
+//api
+import { deleteComment, updateComment } from "../../../services/api/comment";
 
 const { Title, Text } = Typography;
-const ListComments = ({ post }) => {
+const ListComments = ({ post, fetchPost }) => {
   const [focusedCommentIndex, setFocusedCommentIndex] = useState(-1);
 
   const handleReplyComment = async (commentId, inputComment) => {
@@ -12,12 +14,13 @@ const ListComments = ({ post }) => {
   };
 
   const handleEditComment = async (commentId, newComment) => {
-    // await commentsApi.editComment(commentId, newComment);
-    // fetchComments();
+    await updateComment(commentId, newComment);
+    fetchPost();
   };
 
   const handleDeleteComment = async (commentId) => {
-    // await commentsApi.deleteComment(commentId);
+    await deleteComment(commentId);
+    fetchPost();
     // fetchComments();
   };
 
