@@ -25,7 +25,7 @@ import COLOR from "../../constants/colors";
 // import axios from "axios";
 import { apiService } from "../../services/api";
 import axios from "axios";
-import { signUp as apiSignUp } from "../../services/api/user";
+import { requestAccountActivation as apiRequestAccountActivation, signUp as apiSignUp } from "../../services/api/user";
 
 const { Title, Text } = Typography;
 
@@ -78,6 +78,10 @@ function SignUpPage() {
     setForm({ ...form, gender: value });
   };
 
+  const requestAccountActivation = (userId) => {
+    apiRequestAccountActivation(userId);
+  }
+
   const handleFinish = () => {
     if (disableReg.current === false) {
       const userData = { ...form }
@@ -85,8 +89,9 @@ function SignUpPage() {
 
       setDisableReg(true);
       apiSignUp(userData)
-        .then(() => {
-          message.success(`User ${userData.username} has successfully registered`);
+        .then(data => {
+          requestAccountActivation(data.data._id);
+          message.success(`User ${userData.username} has successfully registered. Please check your email to verify this account.`);
         })
         .catch(err => {
           const errors = [];

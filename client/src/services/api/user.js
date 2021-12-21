@@ -20,5 +20,11 @@ export const invalidateRefreshToken = (refreshToken) =>
 export const getUserConnections = (id) =>
   apiService.get(`api/users/${id}/connections`);
 
-  export const updateUser = (id, updatedInfo) =>
+export const updateUser = (id, updatedInfo) =>
   apiService.put(`api/users/${id}`, updatedInfo);
+
+export const requestAccountActivation = (id) =>
+  apiService.get(`api/users/${id}/activate-account`);
+
+export const activateAccount = (id, activateAccountToken) =>
+  apiService.put(`api/users/${id}/activate-account`, { activateAccountToken });

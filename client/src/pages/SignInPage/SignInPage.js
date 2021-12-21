@@ -42,7 +42,7 @@ function SignInPage() {
   const backUrl = new URLSearchParams(location.search).get("url");
 
   React.useEffect(() => {
-    if (accessToken !== null) routeBack();
+    if (accessToken != null) routeBack();
   }, [accessToken]);
 
   const setDisableSignIn = (b) => {

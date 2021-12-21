@@ -27,6 +27,7 @@ import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
 import { useAuth } from "./contexts/authenticationContext.js";
+import EmailConfirmationPage from "./pages/EmailConfirmationPage/EmailConfirmationPage.js";
 
 // import * as apiAuth from "./api/auth";
 
@@ -65,13 +66,14 @@ function App() {
           {/* <Route exact path="/userinfo">
           <UserInfoPage />
         </Route> */}
-          <PrivateRoute exact path="/feed" component={FeedPage} />
+          <Route exact path="/feed" component={FeedPage} />
           <PrivateRoute exact path="/forum/create" component={CreatePostPage} />
           <PrivateRoute path="/userinfo/my">
             <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
           </PrivateRoute>
           <Route path="/userinfo/:id" exact component={UserInfoPage} />
           <Route exact path="/forums/:id" component={SpecificForumPage} />
+          <Route exact path="/email-confirmation/:token" component={EmailConfirmationPage} />
           {/*   <Route
               path="/post/:id/:focusedCommentId"
               component={SpecificPostPage}

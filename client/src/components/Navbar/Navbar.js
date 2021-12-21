@@ -147,7 +147,7 @@ function Navbar() {
           <Tooltip
             title={
               <div className="text-center">
-                <div>Hoàng Bảo Ngọc</div>
+                <div>{signedInUser?.name ?? "Unknown"}</div>
                 <Dropdown
                   //   overlay={menuStatus}
                   trigger={["click"]}

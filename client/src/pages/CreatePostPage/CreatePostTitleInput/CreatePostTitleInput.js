@@ -10,7 +10,7 @@ function CreatePostTitleInput({ title, setTitle }) {
   return (
     <div>
       <Input
-        placeholder="/* Title */"
+        placeholder="Provide a title for your post..."
         value={title}
         onChange={handleTextChange}
         style={createPostStyle.editorFont}
