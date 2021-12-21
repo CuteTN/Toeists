@@ -3,7 +3,6 @@ import { Row, Tag, Tooltip } from "antd";
 import styles from "./styles";
 
 const HashTagForum = ({ post }) => {
-  console.log(post);
   return (
     <div style={styles.item}>
       <Row className="mb-1">

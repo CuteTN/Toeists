@@ -45,7 +45,6 @@ const EditorComponent = ({ post }) => {
   }, []);
 
   const wrapPostData = () => {
-    console.log(listHashtagNames);
     let currentContentAsHTML = draftToHtml(
       convertToRaw(editorState.getCurrentContent())
     );
