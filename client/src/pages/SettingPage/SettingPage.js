@@ -167,20 +167,31 @@ const GeneralTab = () => {
 };
 
 const SecurityTab = () => {
+  const { signedInUser } = useAuth();
+
   const formDefault = {
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   };
   const [form, setForm] = useState(formDefault);
+
   const handleFinish = () => {
-    // TODO: Change password API
+    authAPI.resetPassword(signedInUser?._id, { 
+      currentPassword: form.currentPassword, 
+      newPassword: form.newPassword,
+    })
+      .then(() => {
+        message.success("Your password has been updated.")
+      })
+      .catch((err) => {
+        const msg = err?.response?.data?.message ?? "Something went wrong."
+        message.error(msg);
+      })
   };
-  const handleFinishFailed = (errorInfo) => {
-    errorInfo.errorFields.map((err) => {
-      message.error(err.errors[0]);
-    });
-  };
+
+  const handleFinishFailed = () => {};
+  
   const handleChange = (e) => {
     setForm({ ...form, [e?.target.name]: e?.target.value });
   };

@@ -1,11 +1,14 @@
 import React from "react";
 import { Typography, Row, Card, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const { Title } = Typography;
 
 const buttonWidth = 100;
 
 function RequireLogin({ restrictedAction }) {
+  const { pathname } = useLocation();
+
+
   return (
     <Card className="white-button mb-4">
       <Row align="middle" justify="space-between">
@@ -13,8 +16,7 @@ function RequireLogin({ restrictedAction }) {
           {`Login or register to ${restrictedAction}`}
         </Title>
         <Row>
-          {/* TODO: add route back link */}
-          <Link to="/signin">
+          <Link to={`/signin?url=${encodeURIComponent(pathname)}`}>
             <Button
               style={{ width: buttonWidth }}
               className="greensmoke-button mr-3"

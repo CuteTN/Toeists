@@ -28,3 +28,6 @@ export const requestAccountActivation = (id) =>
 
 export const activateAccount = (id, activateAccountToken) =>
   apiService.put(`api/users/${id}/activate-account`, { activateAccountToken });
+
+export const resetPassword = (id, { newPassword, currentPassword, resetPasswordToken }) =>
+  apiService.put(`api/users/${id}/reset-password`, { newPassword, currentPassword, resetPasswordToken });
