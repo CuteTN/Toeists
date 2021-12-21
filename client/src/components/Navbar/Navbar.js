@@ -63,7 +63,7 @@ function Navbar() {
   const history = useHistory();
 
   const handlePost = () => {
-    history.push("/post/create");
+    history.push("/forum/create");
   };
 
   const handleFeed = () => {
@@ -252,56 +252,60 @@ function Navbar() {
 
   return (
     <div className="header-wrapper">
-    <Header
-      style={{
-        ...styles.orangeBackground,
-        ...styles.fixedHeader,
-      }}
-    >
-      <Row className="align-items-center justify-content-between">
-        <div
-          className="d-flex align-items-center justify-content-between"
-          style={{ width: isSmallScreen ? "80%" : "50%" }}
-        >
-          <div style={styles.logo}>
-            <Link to="/">
-              <img src={logo} alt="Logo" height="58" className="mr-2" />
-            </Link>
+      <Header
+        style={{
+          ...styles.orangeBackground,
+          ...styles.fixedHeader,
+        }}
+      >
+        <Row className="align-items-center justify-content-between">
+          <div
+            className="d-flex align-items-center justify-content-between"
+            style={{ width: isSmallScreen ? "80%" : "50%" }}
+          >
+            <div style={styles.logo}>
+              <Link to="/">
+                <img src={logo} alt="Logo" height="58" className="mr-2" />
+              </Link>
+            </div>
+            <Input
+              // onPressEnter={handleSearch}
+              allowClear
+              suffix={
+                <SearchOutlined style={{ fontSize: 24, color: COLOR.white }} />
+              }
+              // ref={inputRef}
+              bordered={false}
+              style={{ backgroundColor: COLOR.lightOrange }}
+              // defaultValue={txtInitSearch}
+            />
           </div>
-          <Input
-            // onPressEnter={handleSearch}
-            allowClear
-            suffix={
-              <SearchOutlined style={{ fontSize: 24, color: COLOR.white }} />
-            }
-            // ref={inputRef}
-            bordered={false}
-            style={{ backgroundColor: COLOR.lightOrange }}
-            // defaultValue={txtInitSearch}
-          />
-        </div>
 
-        {/* {user ? ( */}
-        <div className="d-flex">
-          {!isSmallScreen && <MainMenuItems />}
+          {/* {user ? ( */}
+          <div className="d-flex">
+            {!isSmallScreen && <MainMenuItems />}
 
-          <Menu theme="dark" mode="horizontal" style={styles.orangeBackground}>
-            <Dropdown
-              overlay={menuMore}
-              trigger={["click"]}
-              placement="bottomCenter"
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              style={styles.orangeBackground}
             >
-              <EllipsisOutlined
-                style={{
-                  fontSize: 24,
-                  color: COLOR.white,
-                  marginTop: 20,
-                }}
-              />
-            </Dropdown>
-          </Menu>
-        </div>
-        {/* ) : (
+              <Dropdown
+                overlay={menuMore}
+                trigger={["click"]}
+                placement="bottomCenter"
+              >
+                <EllipsisOutlined
+                  style={{
+                    fontSize: 24,
+                    color: COLOR.white,
+                    marginTop: 20,
+                  }}
+                />
+              </Dropdown>
+            </Menu>
+          </div>
+          {/* ) : (
           <>
             <Menu
               style={styles.orangeBackground}
@@ -325,8 +329,8 @@ function Navbar() {
             </Menu>
           </>
         )} */}
-      </Row>
-    </Header>
+        </Row>
+      </Header>
     </div>
   );
 }

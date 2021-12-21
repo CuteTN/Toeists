@@ -1,8 +1,14 @@
 // libs
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { message, Button } from "antd";
-import { EditorState, convertToRaw } from "draft-js";
+import {
+  EditorState,
+  ContentState,
+  convertToRaw,
+  convertFromHTML,
+} from "draft-js";
 import draftToHtml from "draftjs-to-html";
+import { useHistory } from "react-router-dom";
 // components
 import TextEditor from "./TextEditor";
 import CreatePostPrivacySelect from "../CreatePostPrivacySelect/CreatePostPrivacySelect";
@@ -13,19 +19,40 @@ import * as forumAPI from "../../../services/api/forum";
 //others
 import "./style.css";
 
-const EditorComponent = () => {
+const EditorComponent = ({ post }) => {
   const [postTitle, setPostTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [postSpace, setPostSpace] = useState(""); // just text
   const [postPrivacy, setPostPrivacy] = useState("");
   const [listHashtagNames, setListHashtagNames] = useState([]);
-  const [convertedContent, setConvertedContent] = useState(null);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (post) {
+      //check đăng nhập
+      setPostTitle(post?.title ?? "");
+      setPostPrivacy(post?.privacy ?? "");
+      setListHashtagNames(post?.hashtags?.map((tag) => tag?.name));
+      // setEditorState(createMarkup(post?.content));
+      // console.log("ty", convertFromHTML(post?.content));
+      const blocksFromHTML = convertFromHTML(post?.content);
+      const state = ContentState.createFromBlockArray(
+        blocksFromHTML.contentBlocks,
+        blocksFromHTML.entityMap
+      );
+      setEditorState(EditorState.createWithContent(state));
+    }
+  }, []);
 
   const wrapPostData = () => {
+    console.log(listHashtagNames);
+    let currentContentAsHTML = draftToHtml(
+      convertToRaw(editorState.getCurrentContent())
+    );
     const result = {
-      title: postTitle?.trim?.(),
-      content: convertedContent,
-      // privacy: postPrivacy,
+      title: postTitle,
+      content: currentContentAsHTML,
+      privacy: postPrivacy,
       hashtagNames: listHashtagNames,
     };
     return result;
@@ -46,16 +73,8 @@ const EditorComponent = () => {
       message: null,
     };
   };
-  const convertContentToHTML = () => {
-    let currentContentAsHTML = draftToHtml(
-      convertToRaw(editorState.getCurrentContent())
-    );
-    setConvertedContent(currentContentAsHTML);
-  };
 
   const handleSavePostButtonClick = () => {
-    convertContentToHTML();
-
     const newPost = wrapPostData();
 
     const validation = checkPostData(newPost);
@@ -64,20 +83,33 @@ const EditorComponent = () => {
       return;
     }
 
-    forumAPI
-      .createForum(newPost)
-      .then((res) => {
-        console.log("Thy xinh dep");
-        // history.push(`/forums/${res.data._id}`);
-      })
-      .catch((error) => {
-        message.error("Something goes wrong. Check all fields", 2);
-        console.log(error);
-      });
+    if (!post) {
+      forumAPI
+        .createForum(newPost)
+        .then((res) => {
+          history.push(`/forums/${res.data._id}`);
+        })
+        .catch((error) => {
+          message.error("Something goes wrong. Check all fields", 2);
+          console.log(error);
+        });
+    } else {
+      forumAPI
+        .updateForum(post?._id, newPost)
+        .then((res) => {
+          history.push(`/forums/${post?._id}`);
+        })
+        .catch((error) => {
+          message.error("Something goes wrong. Check all fields", 2);
+          console.log(error);
+        });
+    }
   };
   return (
     <div className="editor-component-wrapper">
-      <h2 className="page-title">Create Post</h2>
+      <h2 className="page-title">
+        {post ? "Edit your post" : "Create a post"}
+      </h2>
       <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />
       <div className="input-title">
         <div className="col-12">

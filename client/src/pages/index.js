@@ -6,6 +6,7 @@ import SettingsPage from "./SettingPage/SettingPage";
 import HomePage from "./HomePage/HomePage";
 import ChatPage from "./ChatPage/ChatPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
+import SpecificForumPage from "./SpecificForumPage/SpecificForumPage";
 
 export {
   // HomePage,
@@ -34,4 +35,5 @@ export {
   // StatisticsPage,
   // GroupAdminManagement,
   SettingsPage,
+  SpecificForumPage,
 };
