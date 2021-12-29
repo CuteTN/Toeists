@@ -1,6 +1,5 @@
 /**
- * 
- * @param {[any]} arr 
+ * @param {any[]} arr 
  * @param {Number} limit 
  * @param {Number} page 
  */

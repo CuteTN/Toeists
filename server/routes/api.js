@@ -8,6 +8,7 @@ import { commentsRouter } from "./comment.js";
 import { certificatesRouter } from "./certificate.js";
 import { hashtagsRouter } from "./hashtag.js";
 import { conversationsRouter } from "./conversation.js";
+import { searchRouter } from "./search.js";
 
 export const apiRouter = express.Router();
 
@@ -19,5 +20,6 @@ apiRouter.use("/comments", commentsRouter);
 apiRouter.use("/certificates", certificatesRouter);
 apiRouter.use("/hashtags", hashtagsRouter);
 apiRouter.use("/conversations", conversationsRouter);
+apiRouter.use("/search", searchRouter);
 
 apiRouter.use("/files", filesRouter);

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { UserConnection } from '../models/userConnection.js'
 
 /**
  * @param {string|mongoose.Types.ObjectId} userId 
@@ -44,6 +45,39 @@ export const getAllConnectionsOfUser = (userId, userConnections) => {
 
   return result;
 }
+
+
+/**
+ * @param {string} fromUserId 
+ * @param {string} toUserId 
+ * @param {object[]} userConnections 
+ * @param {"blocking" | "following"} status
+ */
+export const checkUserHasConnectionWith = (fromUserId, toUserId, userConnections, status) => {
+  try {
+    var _fromUserId = new mongoose.Types.ObjectId(fromUserId);
+    var _toUserId = new mongoose.Types.ObjectId(toUserId);
+  }
+  catch { return false }
+
+  return userConnections.some(uc =>
+    _fromUserId.equals(uc.fromUserId) &&
+    _toUserId.equals(uc.toUserId) &&
+    uc.status === status
+  )
+}
+
+
+/**
+ * @param {string} fromUserId 
+ * @param {string} toUserId 
+ * @param {"blocking" | "following"} status
+ */
+export const checkUserHasConnectionWithAsync = async (fromUserId, toUserId, status) => {
+  return await UserConnection.count({ fromUserId, toUserId, status }) > 0;
+}
+
+
 
 /**
  * @typedef {Object} ConnectionOfUser

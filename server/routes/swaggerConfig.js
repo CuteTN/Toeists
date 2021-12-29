@@ -9,6 +9,7 @@ import { commentsSwaggerPaths } from "./comment.js";
 import { certificatesSwaggerPaths } from "./certificate.js";
 import { hashtagsSwaggerPaths } from "./hashtag.js";
 import { conversationsSwaggerPaths } from "./conversation.js";
+import { searchSwaggerPaths } from "./search.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -129,6 +130,19 @@ const swaggerSchemas = Object.freeze({
     conversationId: SwaggerTypes.string(),
     text: SwaggerTypes.string(),
     attachedContent: SwaggerTypes.object(),
+  }),
+
+  SearchUserQuery: SwaggerTypes.object({
+    text: SwaggerTypes.string(),
+    page: SwaggerTypes.number(),
+    pageSize: SwaggerTypes.number(),
+    hashtags: SwaggerTypes.boolean(),
+  }),
+
+  SearchUserResult: SwaggerTypes.object({
+    query: SwaggerTypes.ref("SearchUserQuery"),
+    count: SwaggerTypes.number({ description: "The total number of items before pagination." }),
+    data: SwaggerTypes.ref("User")
   })
 })
 
@@ -142,6 +156,7 @@ const swaggerPaths = Object.freeze({
   ...certificatesSwaggerPaths,
   ...hashtagsSwaggerPaths,
   ...conversationsSwaggerPaths,
+  ...searchSwaggerPaths,
 })
 
 
