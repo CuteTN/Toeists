@@ -143,6 +143,32 @@ const swaggerSchemas = Object.freeze({
     query: SwaggerTypes.ref("SearchUserQuery"),
     count: SwaggerTypes.number({ description: "The total number of items before pagination." }),
     data: SwaggerTypes.ref("User")
+  }),
+
+  SearchForumQuery: SwaggerTypes.object({
+    text: SwaggerTypes.string(),
+    page: SwaggerTypes.number(),
+    pageSize: SwaggerTypes.number(),
+    hashtags: SwaggerTypes.boolean(),
+  }),
+
+  SearchForumResult: SwaggerTypes.object({
+    query: SwaggerTypes.ref("SearchForumQuery"),
+    count: SwaggerTypes.number({ description: "The total number of items before pagination." }),
+    data: SwaggerTypes.ref("Forum")
+  }),
+
+  SearchConversationQuery: SwaggerTypes.object({
+    text: SwaggerTypes.string(),
+    page: SwaggerTypes.number(),
+    pageSize: SwaggerTypes.number(),
+    hashtags: SwaggerTypes.boolean(),
+  }),
+
+  SearchConversationResult: SwaggerTypes.object({
+    query: SwaggerTypes.ref("SearchConversationQuery"),
+    count: SwaggerTypes.number({ description: "The total number of items before pagination." }),
+    data: SwaggerTypes.ref("Conversation")
   })
 })
 
