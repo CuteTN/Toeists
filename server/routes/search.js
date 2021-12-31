@@ -1,13 +1,14 @@
 import express from 'express'
 import * as controllers from '../controllers/search.js'
-import { extractUserTokenMdw } from '../middlewares/authorization.js';
+import { authorizeMdw, extractUserTokenMdw } from '../middlewares/authorization.js';
 import { createSwaggerPath, SwaggerTypes } from '../utils/swagger.js';
 
 export const searchRouter = express.Router();
 
 searchRouter.post("/users/data", extractUserTokenMdw, controllers.searchForUsers);
 searchRouter.post("/forums/data", extractUserTokenMdw, controllers.searchForForums);
-searchRouter.post("/conversations/data", extractUserTokenMdw, controllers.searchForConversations);
+searchRouter.post("/conversations/data", authorizeMdw, controllers.searchForConversations);
+searchRouter.get("/:category/history", authorizeMdw, controllers.getSearchHistory);
 
 const controllerName = "search";
 export const searchSwaggerPaths = {
@@ -54,6 +55,21 @@ export const searchSwaggerPaths = {
       ],
       SwaggerTypes.ref("SearchConversationQuery"),
       SwaggerTypes.ref("SearchConversationResult"),
+    )
+  },
+  [`/${controllerName}/{category}/history`]: {
+    get: createSwaggerPath(
+      "Get search history.",
+      [controllerName],
+      [
+        {
+          in: "path",
+          name: "category",
+          schema: SwaggerTypes.enum(controllers.ACCEPTED_CATEGORIES),
+        }
+      ],
+      null,
+      SwaggerTypes.array(SwaggerTypes.ref("SearchRecord")),
     )
   },
 }

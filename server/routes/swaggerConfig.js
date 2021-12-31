@@ -169,6 +169,12 @@ const swaggerSchemas = Object.freeze({
     query: SwaggerTypes.ref("SearchConversationQuery"),
     count: SwaggerTypes.number({ description: "The total number of items before pagination." }),
     data: SwaggerTypes.ref("Conversation")
+  }),
+
+  SearchRecord: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    category: SwaggerTypes.string(),
+    query: SwaggerTypes.object(),    
   })
 })
 

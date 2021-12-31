@@ -16,6 +16,7 @@ import { getConversationMatchPoint } from '../services/search/searchConversation
 const USER_DEFAULT_PAGESIZE = 5;
 const FORUM_DEFAULT_PAGESIZE = 5;
 const CONVERSATION_DEFAULT_PAGESIZE = 5;
+export const ACCEPTED_CATEGORIES = ["users", "forums", "conversations"];
 
 /**
  * Wrap up, add count, paginate and more? 
@@ -167,4 +168,17 @@ export const searchForConversations = async (req, res, next) => {
   catch (error) {
     return res.status(httpStatusCodes.internalServerError).json({ message: "Something went wrong.", error });
   }
+}
+
+
+/** @type {express.RequestHandler} */
+export const getSearchHistory = async (req, res, next) => {
+  const { userId } = req?.attached?.decodedToken ?? {};
+  const { category } = req.params ?? {};
+
+  if (!ACCEPTED_CATEGORIES.includes(category))
+    return res.status(httpStatusCodes.badRequest).json({ message: "Unknown category. Please view the available categories for details", categories: ACCEPTED_CATEGORIES });
+
+  const searchRecords = await SearchRecord.find({ userId, category }).sort({ createdAt: "desc" });
+  return res.status(httpStatusCodes.ok).json(searchRecords);
 }
