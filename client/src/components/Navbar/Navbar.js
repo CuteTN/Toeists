@@ -35,6 +35,7 @@ import { useDispatch, useSelector } from "react-redux";
 import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
 import { useAuth } from "../../contexts/authenticationContext";
+import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
 // import { useToken } from "../../context/TokenContext";
 // import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
@@ -61,6 +62,15 @@ function Navbar() {
   // const isMobile = useMobile();
   const isSmallScreen = useMediaQuery({ query: "(max-width: 1042px)" }); // return true if right size
   const history = useHistory();
+  const cuteIO = useCuteClientIO();
+
+  React.useEffect(() => {
+    const notiListener = cuteIO.onReceiveAny((event, msg) => {
+      // if (event.startsWith("Notification-"))
+        // MARK:
+        console.log(msg);
+    })
+  }, [cuteIO])
 
   const handlePost = () => {
     history.push("/forum/create");

@@ -70,9 +70,6 @@ export default class CuteClientIO {
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
       onConnected?.(this.#socket);
-      console.info(
-        `[IO] Connected to socket ${this.#socketId}`
-      );
 
       this.socket.once("System-AcceptBrowserId", (msg) => {
         // DANGER: async accross tabs here

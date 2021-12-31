@@ -115,6 +115,9 @@ export class AuthenticationService {
   static saveTokens({ accessToken, refreshToken }) {
     TokenService.accessToken = accessToken;
     TokenService.refreshToken = refreshToken;
+
+    // DIRTY: It's a bad idea to reload the window here because it's not the right purpose of this function
+    window.location.reload();
   }
 }
 

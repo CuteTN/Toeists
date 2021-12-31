@@ -1,5 +1,6 @@
 import express from "express";
 import { UserConnection } from "../models/userConnection.js";
+import { sendNoti_FollowUser } from "../services/notification/userConnection.js";
 import {} from "../types/index.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
@@ -9,6 +10,7 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
  */
 const setUserConnectionFn = (status) => async (req, res, next) => {
   const fromUserId = req.attached.decodedToken.userId;
+  const fromUser = req.attached.user;
   const { toUserId } = req.body;
 
   if (!toUserId)
@@ -40,10 +42,18 @@ const setUserConnectionFn = (status) => async (req, res, next) => {
         userConnectionToUpdate,
         { new: true, runValidators: true }
       );
+
+      if (status === "following")
+        await sendNoti_FollowUser(fromUser, toUserId);
+
       return res.status(httpStatusCodes.ok).json(updatedUserConnection);
     } else {
       const userConnectionDoc = new UserConnection(userConnectionToUpdate);
       await userConnectionDoc.save();
+
+      if (status === "following")
+        await sendNoti_FollowUser(fromUser, toUserId);
+
       return res.status(httpStatusCodes.ok).json(userConnectionDoc);
     }
   } catch (error) {
