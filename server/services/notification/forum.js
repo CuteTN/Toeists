@@ -24,7 +24,7 @@ export const sendNoti_CreateForum = async (creator, forum) => {
         receiverId: receiverId,
         title: "New forum",
         text: `${creatorName} (${username}) has posted a new forum: "${title}"`,
-        kind: "User_CreateForum",
+        kind: "Forum_CreateForum",
         url: `/forums/${forumId}`
       })
     }
@@ -56,7 +56,7 @@ export const sendNoti_UpdateForum = async (creator, forum) => {
         receiverId: receiverId,
         title: "Forum update",
         text: `${creatorName} (${username}) has updated their forum: "${title}"`,
-        kind: "User_UpdateForum",
+        kind: "Forum_UpdateForum",
         url: `/forums/${forumId}`
       })
     }

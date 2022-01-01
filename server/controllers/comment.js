@@ -6,6 +6,7 @@ import { alterInteractionInfo } from "../services/interactionInfo.js";
 import mongoose from "mongoose";
 import { Forum } from "../models/forum.js";
 import { sendNoti_UpvoteMedia } from "../services/notification/interactionInfo.js";
+import { sendNoti_CreateComment, sendNoti_UpdateComment } from "../services/notification/comment.js";
 
 /** @type {express.RequestHandler} */
 export const createComment = async (req, res, next) => {
@@ -36,6 +37,8 @@ export const createComment = async (req, res, next) => {
   try {
     const createdComment = await Comment.create(newComment);
     await createdComment.populate(COMMENT_VIRTUAL_FIELDS);
+
+    await sendNoti_CreateComment(req.attached.user, forum);
     return res.status(httpStatusCodes.ok).json(createdComment);
   } catch (error) {
     await InteractionInfo.findByIdAndDelete(interactionInfo._id);
@@ -92,6 +95,9 @@ export const updateComment = async (req, res, next) => {
       { new: true, runValidators: true }
     ).populate(COMMENT_VIRTUAL_FIELDS);
 
+    const forum = await Forum.findById(updatedComment.forumId);
+    if (forum)
+      await sendNoti_UpdateComment(req.attached.user, forum);
     return res.status(httpStatusCodes.ok).json(updatedComment);
   } catch {
     return res

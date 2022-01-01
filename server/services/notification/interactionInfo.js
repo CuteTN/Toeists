@@ -29,7 +29,7 @@ export const sendNoti_UpvoteMedia = async (interactor, media, mediaType, forumId
       receiverId: mediaOwnerId,
       title: "New upvote",
       text: notiText,
-      kind: "UserConnection_FollowUser",
+      kind: "InteractionInfo_FollowUser",
       url: `/forums/${forumId}`
     })
 }
