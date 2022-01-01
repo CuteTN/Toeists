@@ -9,7 +9,7 @@ export const sendNotificationToUser = async (notification) => {
   try {
     const { receiverId, kind } = notification;
     const notificationDoc = await Notification.create(notification);
-    cuteIO.sendToUser(receiverId, "Notification-" + kind, notificationDoc);
+    cuteIO.sendToUser(receiverId.toString(), "Notification-" + kind, notificationDoc);
   }
   catch(error) { console.error("Notification error: ", error); }
 };

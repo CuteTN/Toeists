@@ -112,9 +112,15 @@ export class AuthenticationService {
     }
   }
 
-  static saveTokens({ accessToken, refreshToken }) {
+  static saveTokens({ accessToken, refreshToken, username, userId }) {
     TokenService.accessToken = accessToken;
     TokenService.refreshToken = refreshToken;
+
+    // DIRTY: storing username and userId is only for testing purposes
+    if(username) localStorage.setItem("username", username);
+    else localStorage.removeItem("username");
+    if(userId) localStorage.setItem("userId", userId);
+    else localStorage.removeItem("userId");
 
     // DIRTY: It's a bad idea to reload the window here because it's not the right purpose of this function
     window.location.reload();

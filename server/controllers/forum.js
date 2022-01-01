@@ -13,6 +13,8 @@ import {
   removeDuplication,
 } from "../utils/arraySet.js";
 import { checkIsForumVisibleByUser } from "../services/forum.js";
+import { sendNoti_CreateForum, sendNoti_UpdateForum } from "../services/notification/forum.js";
+import { sendNoti_UpvoteMedia } from "../services/notification/interactionInfo.js";
 
 /** @type {express.RequestHandler} */
 export const createForum = async (req, res, next) => {
@@ -45,6 +47,7 @@ export const createForum = async (req, res, next) => {
   try {
     const createdForum = await Forum.create(newForum);
     await createdForum.populate(FORUM_VIRTUAL_FIELDS);
+    await sendNoti_CreateForum(req.attached.user, createdForum)
     return res.status(httpStatusCodes.ok).json(createdForum);
   } catch (error) {
     await InteractionInfo.findByIdAndDelete(interactionInfo._id);
@@ -115,6 +118,7 @@ export const updateForum = async (req, res, next) => {
       { new: true, runValidators: true }
     ).populate(FORUM_VIRTUAL_FIELDS);
 
+    await sendNoti_UpdateForum(req.attached.user, updatedForum)
     return res.status(httpStatusCodes.ok).json(updatedForum);
   } catch (error) {
     // revert hashtag update
@@ -166,6 +170,9 @@ export const interactWithForum = async (req, res, next) => {
     alterInteractionInfo(interactionInfo, userId, interactionInfoType);
 
     await interactionInfo.save();
+
+    if(interactionInfoType === "upvote")
+      await sendNoti_UpvoteMedia(req.attached.user, forum, "forum", forum._id, forum.title);
     return res.status(httpStatusCodes.ok).json(forum);
   } catch (error) {
     return res

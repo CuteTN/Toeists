@@ -66,7 +66,7 @@ function Navbar() {
 
   React.useEffect(() => {
     const notiListener = cuteIO.onReceiveAny((event, msg) => {
-      // if (event.startsWith("Notification-"))
+      if (event.startsWith("Notification-"))
         // MARK:
         console.log(msg);
     })

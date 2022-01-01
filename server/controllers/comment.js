@@ -5,6 +5,7 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { alterInteractionInfo } from "../services/interactionInfo.js";
 import mongoose from "mongoose";
 import { Forum } from "../models/forum.js";
+import { sendNoti_UpvoteMedia } from "../services/notification/interactionInfo.js";
 
 /** @type {express.RequestHandler} */
 export const createComment = async (req, res, next) => {
@@ -125,12 +126,20 @@ export const interactWithComment = async (req, res, next) => {
     const comment = req.attached.targetedData;
     await comment.populate(COMMENT_VIRTUAL_FIELDS);
 
-    const { interactionInfo } = comment;
+    const { interactionInfo, forumId } = comment;
+
+    const forum = await Forum.findById(forumId)
+    if (!forum)
+      return res.status(httpStatusCodes.notFound).json({ message: "The forum of this comment does not exist." });
 
     const { userId } = req.attached.decodedToken;
     alterInteractionInfo(interactionInfo, userId, interactionInfoType);
 
     await interactionInfo.save();
+
+    if(interactionInfoType === "upvote")
+      await sendNoti_UpvoteMedia(req.attached.user, comment, "comment", forumId, forum.title);
+
     return res.status(httpStatusCodes.ok).json(comment);
   } catch (error) {
     return res.sendStatus(httpStatusCodes.internalServerError).json({
