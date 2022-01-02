@@ -10,6 +10,7 @@ import { certificatesSwaggerPaths } from "./certificate.js";
 import { hashtagsSwaggerPaths } from "./hashtag.js";
 import { conversationsSwaggerPaths } from "./conversation.js";
 import { searchSwaggerPaths } from "./search.js";
+import { notificationsSwaggerPaths } from "./notification.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -114,14 +115,14 @@ const swaggerSchemas = Object.freeze({
     hasSeen: SwaggerTypes.boolean({ readOnly: true }),
     hasMuted: SwaggerTypes.boolean({ readOnly: true }),
   }),
-  
+
   Conversation: SwaggerTypes.object({
     _id: SwaggerTypes.string({ readOnly: true }),
-    name: SwaggerTypes.string({ example: "Class A1"}),    
+    name: SwaggerTypes.string({ example: "Class A1" }),
     memberIds: SwaggerTypes.array(SwaggerTypes.ref("UserIdentifier"), { writeOnly: true }),
     members: SwaggerTypes.array(SwaggerTypes.ref("ConversationMember"), { readOnly: true }),
     type: SwaggerTypes.enum(["private", "group"]),
-  }), 
+  }),
 
   Message: SwaggerTypes.object({
     _id: SwaggerTypes.string({ readOnly: true }),
@@ -174,7 +175,17 @@ const swaggerSchemas = Object.freeze({
   SearchRecord: SwaggerTypes.object({
     _id: SwaggerTypes.string({ readOnly: true }),
     category: SwaggerTypes.string(),
-    query: SwaggerTypes.object(),    
+    query: SwaggerTypes.object(),
+  }),
+
+  Notification: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }),
+    receiverId: SwaggerTypes.ref("UserIdentifier"),
+    title: SwaggerTypes.string(),
+    text: SwaggerTypes.string(),
+    url: SwaggerTypes.string(),
+    kind: SwaggerTypes.string(),
+    isSeen: SwaggerTypes.boolean(),
   })
 })
 
@@ -189,6 +200,7 @@ const swaggerPaths = Object.freeze({
   ...hashtagsSwaggerPaths,
   ...conversationsSwaggerPaths,
   ...searchSwaggerPaths,
+  ...notificationsSwaggerPaths,
 })
 
 

@@ -9,6 +9,7 @@ import { certificatesRouter } from "./certificate.js";
 import { hashtagsRouter } from "./hashtag.js";
 import { conversationsRouter } from "./conversation.js";
 import { searchRouter } from "./search.js";
+import { notificationsRouter } from "./notification.js";
 
 export const apiRouter = express.Router();
 
@@ -21,5 +22,6 @@ apiRouter.use("/certificates", certificatesRouter);
 apiRouter.use("/hashtags", hashtagsRouter);
 apiRouter.use("/conversations", conversationsRouter);
 apiRouter.use("/search", searchRouter);
+apiRouter.use("/notifications", notificationsRouter);
 
 apiRouter.use("/files", filesRouter);
