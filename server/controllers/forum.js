@@ -60,7 +60,10 @@ export const createForum = async (req, res, next) => {
 
 /** @type {express.RequestHandler} */
 export const getForums = async (req, res, next) => {
-  const forums = await Forum.find().populate(FORUM_VIRTUAL_FIELDS);
+  const filter = {};
+  if (req.query.creatorId) filter.creatorId = req.query.creatorId;
+
+  const forums = await Forum.find(filter).populate(FORUM_VIRTUAL_FIELDS);
 
   // NOTE: Can be null-ish
   const userId = req.attached?.decodedToken?.userId

@@ -22,7 +22,8 @@ export const createUser = async (req, res, next) => {
   newUserDto.hashedPassword = hashedPassword;
   delete newUserDto.password;
 
-  newUserDto.isActivated = false;
+  // DIRTY: Should set this thing to false, but for now, it's all about the convenience in testing
+  newUserDto.isActivated = true;
 
   // if the user email was already used for another INACTIVATED user, just delete that user right away
   const existingUser = await User.findOne({ email: newUserDto.email });

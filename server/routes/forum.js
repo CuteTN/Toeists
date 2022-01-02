@@ -1,6 +1,7 @@
 import express from "express";
 import * as controllers from "../controllers/forum.js";
 import { authorizeMdw, extractUserTokenMdw } from "../middlewares/authorization.js";
+import { autoTransformToUserIdsMdwFn } from "../middlewares/autoTransformToUserIds.js";
 import { findByIdMdwFn } from "../middlewares/findById.js";
 import { Forum } from "../models/forum.js"
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
@@ -12,7 +13,7 @@ const checkIsForumOwner = (forum, req) => {
     return "Only the forum's creator can access this data."
 }
 
-forumsRouter.get("/", extractUserTokenMdw, controllers.getForums);
+forumsRouter.get("/", autoTransformToUserIdsMdwFn([(req) => req.query, "creatorId"]), extractUserTokenMdw, controllers.getForums);
 forumsRouter.post("/", authorizeMdw, controllers.createForum );
 
 forumsRouter.get("/:id", extractUserTokenMdw, findByIdMdwFn({ model: Forum }), controllers.getForumById);
@@ -25,9 +26,16 @@ const controllerName = "forums";
 export const forumsSwaggerPaths = {
   [`/${controllerName}/`]: {
     get: createSwaggerPath(
-      "Get all the forums that is visible to the current user.",
+      "Get all the forums that is visible to the current user. If the creatorId is provided, the system would filter the forums of that creator only.",
       [controllerName],
-      null,
+      [
+        {
+          name: "creatorId",
+          in: "query",
+          required: false,
+          schema: SwaggerTypes.ref("UserIdentifier"),
+        }
+      ],
       null,
       SwaggerTypes.array(SwaggerTypes.ref("Forum")),
     ),
