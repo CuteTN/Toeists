@@ -5,7 +5,7 @@ import { httpStatusCodes } from '../utils/httpStatusCode.js'
 /** @type {express.RequestHandler} */
 export const getAllNotifications = async (req, res, next) => {
   const receiverId = req.attached.decodedToken.userId;
-  const notifications = await Notification.find({ receiverId });
+  const notifications = await Notification.find({ receiverId }).sort({ createdAt: "desc" });
   return res.status(httpStatusCodes.ok).json(notifications);
 }
 

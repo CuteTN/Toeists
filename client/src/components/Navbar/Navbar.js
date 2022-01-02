@@ -21,9 +21,10 @@ import {
   EditFilled,
   MessageFilled,
   LogoutOutlined,
+  LoginOutlined,
   EllipsisOutlined,
   SettingOutlined,
-  PicLeftOutlined,
+  RocketOutlined,
   GlobalOutlined,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
@@ -36,227 +37,255 @@ import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
 import { useAuth } from "../../contexts/authenticationContext";
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
-// import { useLocalStorage } from "../../hooks/useLocalStorage";
-// import { useToken } from "../../context/TokenContext";
-// import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
-
-// import {
-//   addUserNotifications,
-//   refreshNotifications,
-//   setSeenNotification,
-//   getUserNotifications,
-// } from "../../redux/actions/notifications";
-// import * as apiConversation from "../../api/conversation";
-// import NotificationList from "./NotificationList/NotificationList";
-// import { useMessage } from "../../hooks/useMessage";
-// import { renderStatus, statusList } from "../../utils/userStatus";
-// import { setMyStatus } from "../../api/userStatus";
-// import { useFriendsStatus } from "../../context/FriendsStatusContext";
-// import { useCurrentUser } from "../../context/CurrentUserContext";
+import { fetchNotifications } from "../../services/api/notification";
+import { getConversations } from "../../services/api/conversation";
+import { ConversationService } from "../../services/ConversationService";
 
 const { Header } = Layout;
 const { Text } = Typography;
 
 function Navbar() {
   const { signedInUser } = useAuth();
-  // const isMobile = useMobile();
   const isSmallScreen = useMediaQuery({ query: "(max-width: 1042px)" }); // return true if right size
   const history = useHistory();
   const cuteIO = useCuteClientIO();
 
-  React.useEffect(() => {
-    const notiListener = cuteIO.onReceiveAny((event, msg) => {
-      if (event.startsWith("Notification-"))
-        // MARK:
-        console.log(msg);
+  const [notifications, setNotifications] = React.useState();
+  const [conversations, setConversations] = React.useState();
+
+  const numberOfUnseenNotifications = React.useMemo(() => {
+    if (!(notifications && signedInUser))
+      return null;
+
+    let res = 0;
+    notifications.forEach(noti => res += noti.isSeen ? 0 : 1);
+
+    return res || null;
+  }, [signedInUser, notifications])
+
+  const numberOfUnseenConversations = React.useMemo(() => {
+    if (!(conversations && signedInUser))
+      return null
+
+    let res = 0;
+    conversations.forEach(conv => {
+      const memInfo = ConversationService.getMemberInfo(conv, signedInUser?._id);
+      res += memInfo.hasSeen ? 0 : 1;
     })
+
+    return res || null;
+  }, [signedInUser, conversations])
+
+  React.useEffect(() => {
+    fetchNotifications().then(res => {
+      setNotifications(res.data);
+    })
+    getConversations().then(res => {
+      setConversations(res.data);
+    })
+
+    const unsub = cuteIO.onReceiveAny((event, msg) => {
+      if (event.startsWith("Notification-")) {
+        fetchNotifications().then(res => {
+          setNotifications(res.data);
+        })
+      }
+
+      if (event.startsWith("Message-")) {
+        getConversations().then(res => {
+          setConversations(res.data);
+        })
+      }
+    })
+
+    return unsub;
   }, [cuteIO])
 
-  const handlePost = () => {
+  //#region Click handlers
+  const handleForumClick = () => {
     history.push("/forum/create");
   };
 
-  const handleFeed = () => {
+  const handleFeedClick = () => {
     history.push("/feed");
   };
 
-  const handleMessage = () => {
+  const handleMessageClick = () => {
     history.push("/chat");
   };
+
+  const handleAvatarClick = () => {
+    history.push(`/userinfo/${signedInUser?._id}`)
+  }
 
   const handleSignOutClick = () => {
     AuthenticationService.signOut();
   };
 
-  const handleSettings = async () => {
+  const handleSignInClick = () => {
+    history.push("/signin");
+  }
+
+  const handleRegisterClick = () => {
+    history.push("/signup");
+  }
+
+  const handleSettingsClick = async () => {
     history.push("/settings");
   };
+  //#endregion
 
   const MainMenuItems = () => {
     return (
       <Menu
         style={styles.orangeBackground}
         theme="dark"
-        mode={!isSmallScreen ? "horizontal" : "vertical"}
-        // defaultSelectedKeys={[selectedMenu]}
+        mode={(!isSmallScreen) ? "horizontal" : "vertical"}
       >
         <Menu.Item
           key="feed"
           className="navitem pickitem text-center"
-          onClick={handleFeed}
+          onClick={handleFeedClick}
         >
-          <Tooltip title="Feed" placement="bottom">
+          <Tooltip title="News feed" placement="bottom">
             <GlobalOutlined style={{ fontSize: 24, color: COLOR.white }} />
           </Tooltip>
         </Menu.Item>
 
-        <Menu.Item key="noti" className="navitem notpickitem text-center">
-          <Dropdown
-            // overlay={NotificationList({
-            //   handleClickNotificationItem,
-            //   notifications,
-            // })}
-            trigger={["click"]}
-            placement="bottomRight"
+        {signedInUser &&
+          <Menu.Item
+            key="noti"
+            className="navitem notpickitem text-center"
           >
-            <Badge count={0} showZero>
-              <Tooltip title="Notifications" placement="bottom">
-                <BellFilled
-                  className="clickable"
-                  // onClick={handleNoti}
-                  style={{ fontSize: 24, color: COLOR.white }}
-                />
+            <Dropdown
+              // overlay={NotificationList({
+              //   handleClickNotificationItem,
+              //   notifications,
+              // })}
+              // trigger={["click"]}
+              placement="bottomRight"
+            >
+              <Badge count={numberOfUnseenNotifications} showZero>
+                <Tooltip title="Notifications" placement="bottom">
+                  <BellFilled
+                    className="clickable"
+                    // onClick={handleNoti}
+                    style={{ fontSize: 24, color: COLOR.white }}
+                  />
+                </Tooltip>
+              </Badge>
+            </Dropdown>
+          </Menu.Item>
+        }
+
+        {signedInUser &&
+          <Menu.Item
+            key="forum"
+            className="navitem pickitem text-center"
+            onClick={handleForumClick}
+          >
+            <Tooltip title="Create a forum" placement="bottom">
+              <EditFilled style={{ fontSize: 24, color: COLOR.white }} />
+            </Tooltip>
+          </Menu.Item>
+        }
+
+        {signedInUser &&
+          <Menu.Item
+            key="message"
+            className="text-center navitem pickitem"
+            onClick={handleMessageClick}
+          >
+            <Badge count={numberOfUnseenConversations}>
+              <Tooltip title="Message" placement="bottom">
+                <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
               </Tooltip>
             </Badge>
-          </Dropdown>
-        </Menu.Item>
+          </Menu.Item>
+        }
 
-        <Menu.Item
-          key="edit"
-          className="navitem pickitem text-center"
-          onClick={handlePost}
-        >
-          <Tooltip title="Post" placement="bottom">
-            <EditFilled style={{ fontSize: 24, color: COLOR.white }} />
-          </Tooltip>
-        </Menu.Item>
-
-        <Menu.Item
-          key="message"
-          className="text-center navitem pickitem"
-          onClick={handleMessage}
-        >
-          <Badge count={0}>
-            <Tooltip title="Message" placement="bottom">
-              <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
-            </Tooltip>
-          </Badge>
-        </Menu.Item>
-
-        <Menu.Item key="avatar" className="text-center navitem notpickitem">
-          <Tooltip
-            title={
-              <div className="text-center">
-                <div>{signedInUser?.name ?? "Unknown"}</div>
-                <Dropdown
-                  //   overlay={menuStatus}
-                  trigger={["click"]}
-                  placement="bottomRight"
-                >
-                  <Tooltip title="Status" placement="right">
-                    <GrStatusGoodSmall
-                      className="icon"
-                      style={
-                        {
-                          // color: renderStatus(
-                          //   friendsStatusManager.getStatus(currentUser?._id)
-                          // ),
+        {signedInUser &&
+          <Menu.Item key="avatar" className="text-center navitem notpickitem">
+            <Tooltip
+              title={
+                <div className="text-center">
+                  <div>{signedInUser?.name ?? "Unknown"}</div>
+                  <Dropdown
+                    //   overlay={menuStatus}
+                    trigger={["click"]}
+                    placement="bottomRight"
+                  >
+                    <Tooltip title="Status" placement="right">
+                      <GrStatusGoodSmall
+                        className="icon"
+                        style={
+                          {
+                            // color: renderStatus(
+                            //   friendsStatusManager.getStatus(currentUser?._id)
+                            // ),
+                          }
                         }
-                      }
-                    />
-                  </Tooltip>
-                </Dropdown>
-              </div>
-            }
-            placement="bottom"
-          >
-            {/* <Avatar
-              size="large"
-              //   alt={Hoàng Bảo Ngọc}
-              //   src={currentUser?.avatarUrl}
+                      />
+                    </Tooltip>
+                  </Dropdown>
+                </div>
+              }
+              placement="bottom"
             >
-              Hoàng Bảo Ngọc
-            </Avatar> */}
-            <Avatar
-              size="large"
-              alt={signedInUser?.name}
-              // src={signedInUser?.avatarUrl}
-              onClick={() => history.push(`/userinfo/${signedInUser?._id}`)}
-            >
-              {signedInUser?.name}
-            </Avatar>
-          </Tooltip>
-        </Menu.Item>
+              <Avatar
+                size="large"
+                alt={signedInUser?.name}
+                onClick={handleAvatarClick}
+              >
+                {signedInUser?.name}
+              </Avatar>
+            </Tooltip>
+          </Menu.Item>
+        }
       </Menu>
     );
   };
 
-  //#region menuMore
-
-  //   const menuStatus = (
-  //     <Menu>
-  //       {statusList.map((item, i) => (
-  //         <Menu.Item key={i}>
-  //           <Row align="middle" style={{ color: item.color }}>
-  //             <GrStatusGoodSmall className="mr-2" />
-  //             <Text>{item.status}</Text>
-  //           </Row>
-  //         </Menu.Item>
-  //       ))}
-  //     </Menu>
-  //   );
-
   const menuMore = (
     <Menu>
-      {isSmallScreen && <MainMenuItems />}
-      <Menu.Item key="settings" onClick={() => handleSettings()}>
-        <Row align="middle">
-          <SettingOutlined className="mr-lg-2" />
-          <Text>Settings</Text>
-        </Row>
-      </Menu.Item>
+      {isSmallScreen && MainMenuItems()}
 
-      {/* <Dropdown
-        overlay={menuStatus}
-        trigger={["click"]}
-        placement="bottomRight"
-      >
-        <Tooltip title="Status" placement="right">
-          <GrStatusGoodSmall className="clickable icon" />
-        </Tooltip>
-      </Dropdown> */}
+      {signedInUser &&
+        <Menu.Item key="settings" onClick={() => handleSettingsClick()}>
+          <Row align="middle">
+            <SettingOutlined className="mr-lg-2" />
+            <Text>Settings</Text>
+          </Row>
+        </Menu.Item>
+      }
 
-      <Menu.Item key="logout" onClick={handleSignOutClick}>
-        <Row align="middle">
-          <LogoutOutlined className=" red mr-2" />
-          <Text>Logout</Text>
-        </Row>
-      </Menu.Item>
-    </Menu>
-  );
+      {signedInUser &&
+        <Menu.Item key="logout" onClick={handleSignOutClick}>
+          <Row align="middle">
+            <LogoutOutlined className=" red mr-lg-2" />
+            <Text>Sign out</Text>
+          </Row>
+        </Menu.Item>
+      }
 
-  const menuAuth = (
-    <Menu className="bg-green-smoke">
-      <Menu.Item key="signin" className="text-center">
-        <Link to="/signin">
-          <Text>Sign in</Text>
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="signup" className="text-center">
-        <Link to="/signup">
-          <Text>Register</Text>
-        </Link>
-      </Menu.Item>
+      {(!signedInUser) &&
+        <Menu.Item key="register" onClick={handleRegisterClick}>
+          <Row align="middle">
+            <RocketOutlined className="mr-lg-2" />
+            <Text>Register</Text>
+          </Row>
+        </Menu.Item>
+      }
+
+      {(!signedInUser) &&
+        <Menu.Item key="login" onClick={handleSignInClick}>
+          <Row align="middle">
+            <LoginOutlined className="mr-lg-2" />
+            <Text>Sign in</Text>
+          </Row>
+        </Menu.Item>
+      }
+
     </Menu>
   );
 
@@ -287,13 +316,13 @@ function Navbar() {
               // ref={inputRef}
               bordered={false}
               style={{ backgroundColor: COLOR.lightOrange }}
-              // defaultValue={txtInitSearch}
+            // defaultValue={txtInitSearch}
             />
           </div>
 
           {/* {user ? ( */}
           <div className="d-flex">
-            {!isSmallScreen && <MainMenuItems />}
+            {(!isSmallScreen) && <MainMenuItems/>}
 
             <Menu
               theme="dark"
@@ -315,30 +344,6 @@ function Navbar() {
               </Dropdown>
             </Menu>
           </div>
-          {/* ) : (
-          <>
-            <Menu
-              style={styles.orangeBackground}
-              theme="dark"
-              mode={!isSmallScreen ? "horizontal" : "vertical"}
-              defaultSelectedKeys={[selectedMenu]}
-            >
-              {!isSmallScreen ? (
-                menuAuth
-              ) : (
-                <Dropdown
-                  overlay={menuAuth}
-                  trigger={["click"]}
-                  placement="bottomCenter"
-                >
-                  <EllipsisOutlined
-                    style={{ fontSize: 24, color: COLOR.white }}
-                  />
-                </Dropdown>
-              )}
-            </Menu>
-          </>
-        )} */}
         </Row>
       </Header>
     </div>
