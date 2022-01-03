@@ -6,14 +6,13 @@ import http from "http";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-import { apiRouter, rootRouter } from "./routes/index.js";
+import { apiRouter, rootRouter, systemRouter } from "./routes/index.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import UsersStatusManager from "./services/userStatus.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import swaggerUI from 'swagger-ui-express'
 import { getAppSwaggerSpecs } from "./routes/swaggerConfig.js";
 import nodemailer from 'nodemailer'
-import xoauth2 from 'xoauth2'
 
 dotenv.config();
 
@@ -80,6 +79,7 @@ app.use("/api-doc/", swaggerUI.serve, swaggerUI.setup(swaggerSpecs,
 ));
 
 app.use("/api", apiRouter);
+app.use("/system", systemRouter);
 
 const SERVER_PORT = process.env.SERVER_PORT || 5000;
 const DATABASE_URL = process.env.DATABASE_URL;

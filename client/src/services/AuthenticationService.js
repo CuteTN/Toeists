@@ -1,6 +1,7 @@
 import { invalidateRefreshToken, refreshToken, signIn } from "./api/user";
 import { TokenService } from "./TokenService";
 import { EventEmitter } from 'events'
+import { requestReloadBrowser } from "./api/system";
 
 export class AuthenticationService {
   static #onSignedInEvent = new EventEmitter();
@@ -123,7 +124,9 @@ export class AuthenticationService {
     else localStorage.removeItem("userId");
 
     // DIRTY: It's a bad idea to reload the window here because it's not the right purpose of this function
-    window.location.reload();
+    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+    if (browserId)
+      requestReloadBrowser(browserId);
   }
 }
 

@@ -32,6 +32,8 @@ export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnecti
           socket => { setSocketId(socket.id); }
         );
 
+        cuteIO.onReceive("System-RequestReload", () => window.location.reload());
+
         onNewConnection?.(cuteIO);
         return cuteIO;
       }
