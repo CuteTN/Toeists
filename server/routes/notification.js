@@ -13,7 +13,10 @@ const checkIsForumOwner = (notification, req) => {
 }
 
 notificationsRouter.get("/", authorizeMdw, controllers.getAllNotifications);
+notificationsRouter.put("/mark-all-as-seen", authorizeMdw, controllers.setAllNotificationsAsSeen);
 notificationsRouter.put("/:id/set-seen-state", authorizeMdw, findByIdMdwFn({ model: Notification, forbiddenChecker: checkIsForumOwner }), controllers.setNotificationSeenState);
+notificationsRouter.delete("/seen", authorizeMdw, controllers.deleteSeenNotifications);
+notificationsRouter.delete("/:id", authorizeMdw, findByIdMdwFn({ model: Notification, forbiddenChecker: checkIsForumOwner }), controllers.deleteNotification);
 
 const controllerName = "notifications";
 export const notificationsSwaggerPaths = {
@@ -24,6 +27,16 @@ export const notificationsSwaggerPaths = {
       null,
       null,
       SwaggerTypes.array(SwaggerTypes.ref("Notification")),
+    )
+  },
+
+  [`/${controllerName}/mark-all-as-seen`]: {
+    put: createSwaggerPath(
+      "Mark all notifications of the current user as seen.",
+      [controllerName],
+      null,
+      null,
+      null,
     )
   },
 
@@ -47,6 +60,26 @@ export const notificationsSwaggerPaths = {
       ],
       null,
       SwaggerTypes.ref("Notification"),
+    )
+  },
+
+  [`/${controllerName}/seen`]: {
+    delete: createSwaggerPath(
+      "Clear all seen notifications of the current user.",
+      [controllerName],
+      null,
+      null,
+      null,
+    )
+  },
+
+  [`/${controllerName}/{id}`]: {
+    delete: createSwaggerPath(
+      "Remove a notification.",
+      [controllerName],
+      null,
+      null,
+      null,
     )
   },
 }

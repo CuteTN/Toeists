@@ -40,6 +40,7 @@ import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 import { fetchNotifications } from "../../services/api/notification";
 import { getConversations } from "../../services/api/conversation";
 import { ConversationService } from "../../services/ConversationService";
+import NotificationList from "./NotificationList/NotificationList";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -85,7 +86,7 @@ function Navbar() {
     })
 
     const unsub = cuteIO.onReceiveAny((event, msg) => {
-      if (event.startsWith("Notification-")) {
+      if (event.startsWith("Notification-") || event === "System-NotificationsUpdate") {
         fetchNotifications().then(res => {
           setNotifications(res.data);
         })
@@ -130,7 +131,7 @@ function Navbar() {
     history.push("/signup");
   }
 
-  const handleSettingsClick = async () => {
+  const handleSettingsClick = () => {
     history.push("/settings");
   };
   //#endregion
@@ -151,32 +152,6 @@ function Navbar() {
             <GlobalOutlined style={{ fontSize: 24, color: COLOR.white }} />
           </Tooltip>
         </Menu.Item>
-
-        {signedInUser &&
-          <Menu.Item
-            key="noti"
-            className="navitem notpickitem text-center"
-          >
-            <Dropdown
-              // overlay={NotificationList({
-              //   handleClickNotificationItem,
-              //   notifications,
-              // })}
-              // trigger={["click"]}
-              placement="bottomRight"
-            >
-              <Badge count={numberOfUnseenNotifications} showZero>
-                <Tooltip title="Notifications" placement="bottom">
-                  <BellFilled
-                    className="clickable"
-                    // onClick={handleNoti}
-                    style={{ fontSize: 24, color: COLOR.white }}
-                  />
-                </Tooltip>
-              </Badge>
-            </Dropdown>
-          </Menu.Item>
-        }
 
         {signedInUser &&
           <Menu.Item
@@ -201,6 +176,30 @@ function Navbar() {
                 <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
               </Tooltip>
             </Badge>
+          </Menu.Item>
+        }
+
+        {signedInUser &&
+          <Menu.Item
+            key="noti"
+            className="navitem notpickitem text-center"
+          >
+            <Dropdown
+              overlay={NotificationList({
+                notifications,
+              })}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <Badge count={numberOfUnseenNotifications} showZero>
+                <Tooltip title="Notifications" placement="bottom">
+                  <BellFilled
+                    className="clickable"
+                    style={{ fontSize: 24, color: COLOR.white }}
+                  />
+                </Tooltip>
+              </Badge>
+            </Dropdown>
           </Menu.Item>
         }
 
@@ -248,7 +247,7 @@ function Navbar() {
 
   const menuMore = (
     <Menu>
-      {isSmallScreen && MainMenuItems()}
+      {isSmallScreen && <MainMenuItems/>}
 
       {signedInUser &&
         <Menu.Item key="settings" onClick={() => handleSettingsClick()}>
@@ -322,7 +321,7 @@ function Navbar() {
 
           {/* {user ? ( */}
           <div className="d-flex">
-            {(!isSmallScreen) && <MainMenuItems/>}
+            {(!isSmallScreen) && <MainMenuItems />}
 
             <Menu
               theme="dark"
