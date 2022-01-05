@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Input, Menu, Modal, Row } from 'antd';
+import { Alert, Button, Input, Menu, Modal, Row } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import { fetchWordInfo } from '../../services/api/dictionary';
 import WordDefinitionList from './WordDefinitionList';
@@ -7,6 +7,7 @@ import WordDefinitionList from './WordDefinitionList';
 const DictionaryModal = ({ visible, initWord, onCancel }) => {
   const [word, setWord] = React.useState("");
   const [wordDefinitions, setWordDefinitions] = React.useState(null);
+  const [searchError, setSearchError] = React.useState(null);
 
   React.useEffect(() => {
     if (visible) {
@@ -16,9 +17,11 @@ const DictionaryModal = ({ visible, initWord, onCancel }) => {
   }, [visible, initWord])
 
   // React.useEffect(() => {
+  //   setIsLoading(true);
+
   //   const timeout = setTimeout(() => {
   //     handleFetchWordInfo(word);
-  //   }, 1000);
+  //   }, 100);
 
   //   return () => clearTimeout(timeout);
   // }, [word]);
@@ -26,10 +29,21 @@ const DictionaryModal = ({ visible, initWord, onCancel }) => {
   const handleFetchWordInfo = (word) => {
     if (word)
       fetchWordInfo(word)
-        .then(res => setWordDefinitions(res.data))
-        .catch(() => setWordDefinitions(null))
-    else
+        .then(res => {
+          setWordDefinitions(res.data)
+          setSearchError(null);
+        })
+        .catch(err => {
+          setWordDefinitions(null);
+          switch (err?.response?.status) {
+            case 404: setSearchError("No definitions found! Please check your spelling."); break;
+            default: setSearchError("Unknown problem encountered! Please try again later.");
+          }
+        })
+    else {
+      setSearchError("Please enter your word first!");
       setWordDefinitions(null);
+    }
   }
 
   return (
@@ -51,11 +65,8 @@ const DictionaryModal = ({ visible, initWord, onCancel }) => {
         placeholder='Enter a word to look it up!'
         onSearch={() => handleFetchWordInfo(word)}
       />
-      {wordDefinitions ?
-        <WordDefinitionList wordDefinitions={wordDefinitions} />
-        :
-        word? <Text>{"We couldn't find any definitions of your word."}</Text> : <></>
-      }
+      {wordDefinitions && <WordDefinitionList wordDefinitions={wordDefinitions} />}
+      {searchError && <Alert type='error' message={searchError} />}
     </Modal>
   );
 }

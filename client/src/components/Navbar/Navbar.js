@@ -41,6 +41,8 @@ import { fetchNotifications } from "../../services/api/notification";
 import { getConversations } from "../../services/api/conversation";
 import { ConversationService } from "../../services/ConversationService";
 import NotificationList from "./NotificationList/NotificationList";
+import { GiArchiveResearch } from "react-icons/gi";
+import { useDictionary } from "../DictionaryProvider/DictionaryProvider";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -50,6 +52,7 @@ function Navbar() {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 1042px)" }); // return true if right size
   const history = useHistory();
   const cuteIO = useCuteClientIO();
+  const dictionary = useDictionary();
 
   const [notifications, setNotifications] = React.useState();
   const [conversations, setConversations] = React.useState();
@@ -111,6 +114,10 @@ function Navbar() {
     history.push("/feed");
   };
 
+  const handleDictionaryClick = () => {
+    dictionary.openDictionaryModal();
+  }
+
   const handleMessageClick = () => {
     history.push("/chat");
   };
@@ -150,6 +157,16 @@ function Navbar() {
         >
           <Tooltip title="News feed" placement="bottom">
             <GlobalOutlined style={{ fontSize: 24, color: COLOR.white }} />
+          </Tooltip>
+        </Menu.Item>
+
+        <Menu.Item
+          key="dictionary"
+          className="navitem pickitem text-center"
+          onClick={handleDictionaryClick}
+        >
+          <Tooltip title="Show dictionary" placement="bottom">
+            <GiArchiveResearch style={{ fontSize: 24, color: COLOR.white }} />
           </Tooltip>
         </Menu.Item>
 

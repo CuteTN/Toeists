@@ -1,11 +1,23 @@
 import React from 'react';
-import { message } from 'antd';
+import { notification } from 'antd';
 import { fetchWordInfo } from '../../services/api/dictionary';
 import DictionaryModal from './DictionaryModal';
+import { CgSearchFound } from 'react-icons/all';
+import COLOR from '../../constants/colors';
 
-const MESSAGE_KEY = "dictionary-suggest"
+const NOTI_KEY = "dictionary-suggest"
 
-const DictionaryProvider = ({children}) => {
+const DictionaryContext = React.createContext();
+
+/**
+ * @returns {{ openDictionaryModal: (word: string) => void, closeDictionaryModal: () => void }}
+ */
+export const useDictionary = () => {
+  return React.useContext(DictionaryContext)
+}
+
+const DictionaryProvider = ({ children }) => {
+  const messageTimeoutKey = React.useRef(0);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [modalInitWord, setModalInitWord] = React.useState();
 
@@ -14,38 +26,61 @@ const DictionaryProvider = ({children}) => {
     setIsModalVisible(true);
   }
 
-  const handleModalCancel = () => {
+  const handleCloseModal = () => {
     setIsModalVisible(false);
   }
 
   const handleMouseUp = () => {
     const selectedText = window.getSelection().toString().trim();
-    if(selectedText) {
-      message.destroy(MESSAGE_KEY);
+    if(modalInitWord?.toLowerCase() === selectedText.toLowerCase())
+      return;
 
-      fetchWordInfo(selectedText)
-        .then(() => {
-          message.info({
-            key: MESSAGE_KEY,
-            content: `Click here to view the definitions of "${selectedText}".`,
-            onClick: () => {
-              message.destroy(MESSAGE_KEY);
-              handleOpenModal(selectedText);
-            },
+    clearTimeout(messageTimeoutKey.current);
+
+    if (selectedText) {
+      messageTimeoutKey.current = setTimeout(() => {
+        notification.destroy(NOTI_KEY);
+
+        fetchWordInfo(selectedText)
+          .then(() => {
+            notification.open({
+              key: NOTI_KEY,
+              placement: "bottomRight",
+              type: "success",
+              duration: 2,
+              message: `"${selectedText}"`,
+              description: `Click here to view the definitions for this word.`,
+              icon: <CgSearchFound style={{ color: COLOR.orange }}/>,
+              onClick: () => {
+                notification.destroy(NOTI_KEY);
+                handleOpenModal(selectedText);
+              },
+              style: {
+                cursor: "pointer",
+                backgroundColor: COLOR.orangeSmoke,
+              }
+            })
           })
-        })
+      }, 100)
     }
   }
 
   return (
-    <div onMouseUp={handleMouseUp} >
-      {children}
-      <DictionaryModal
-        visible={isModalVisible}
-        initWord={modalInitWord}
-        onCancel={handleModalCancel}
-      />
-    </div>
+    <DictionaryContext.Provider
+      value={{
+        openDictionaryModal: handleOpenModal,
+        closeDictionaryModal: handleCloseModal,
+      }}
+    >
+      <div onMouseUp={handleMouseUp}>
+        {children}
+        <DictionaryModal
+          visible={isModalVisible}
+          initWord={modalInitWord}
+          onCancel={handleCloseModal}
+        />
+      </div>
+    </DictionaryContext.Provider>
   )
 }
 
