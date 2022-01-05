@@ -51,7 +51,7 @@ function UserInfoPage() {
                   <IntroCard />
                 </div>
                 <div className="col-md-8">
-                  <ListPosts space="user_profile" ownerId={id} />
+                  <ListPosts space="user_profile" creatorId={id} />
                 </div>
               </Row>
             </Content>

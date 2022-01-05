@@ -8,23 +8,20 @@ import FeedPost from "../../../components/FeedPost/FeedPost";
 
 const { Text } = Typography;
 
-function ListPosts({ ownerId, hasMarginLeft }) {
+function ListPosts({ creatorId, hasMarginLeft }) {
   const [listPosts, setListPosts] = useState([]);
   /** @type {[]} */
 
-  console.log("Thyyy", ownerId);
-
   useEffect(() => {
-    fetchForums()
+    fetchForums(creatorId)
       .then((res) => {
-        console.log("report", res.data);
         if (res.data instanceof Array) setListPosts(res.data);
         else setListPosts([]);
       })
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [creatorId]);
 
   return (
     <div>
@@ -35,7 +32,7 @@ function ListPosts({ ownerId, hasMarginLeft }) {
             : styles.postsBox
         }
       >
-        {ownerId === undefined
+        {creatorId === undefined
           ? listPosts?.map((post) => <FeedPost key={post._id} post={post} />)
           : listPosts?.map((post) => <FeedPost key={post._id} post={post} />)}
       </Row>
