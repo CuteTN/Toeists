@@ -10,7 +10,7 @@ import {
   Avatar,
   Badge,
   Tooltip,
-  notification,
+  notification as notificationAntd,
   Button,
 } from "antd";
 import styles from "./styles";
@@ -37,7 +37,7 @@ import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
 import { useAuth } from "../../contexts/authenticationContext";
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
-import { fetchNotifications } from "../../services/api/notification";
+import { fetchNotifications, setNotificationSeenState } from "../../services/api/notification";
 import { getConversations } from "../../services/api/conversation";
 import { ConversationService } from "../../services/ConversationService";
 import NotificationList from "./NotificationList/NotificationList";
@@ -93,6 +93,11 @@ function Navbar() {
         fetchNotifications().then(res => {
           setNotifications(res.data);
         })
+
+        if (event.startsWith("Notification-")) {
+          // NOTE: msg is notification data.
+          showNoti(msg);
+        }
       }
 
       if (event.startsWith("Message-")) {
@@ -141,7 +146,33 @@ function Navbar() {
   const handleSettingsClick = () => {
     history.push("/settings");
   };
+
+  const handleNotiPopupClick = (noti) => {
+    notificationAntd.destroy(noti._id);
+    history.push(noti?.url);
+    setNotificationSeenState(noti?._id, true);
+  }
   //#endregion
+
+  const showNoti = (noti) => {
+    if (!noti)
+      return;
+
+    notificationAntd.open({
+      key: noti._id,
+      placement: "bottomRight",
+      type: "success",
+      duration: 5,
+      message: noti.title,
+      description: noti.text,
+      icon: <BellFilled style={{ color: COLOR.orange }}/>,
+      onClick: () => handleNotiPopupClick(noti),
+      style: {
+        cursor: "pointer",
+        backgroundColor: COLOR.orangeSmoke,
+      }
+    })
+  }
 
   const MainMenuItems = () => {
     return (
