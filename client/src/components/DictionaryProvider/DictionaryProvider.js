@@ -32,7 +32,7 @@ const DictionaryProvider = ({ children }) => {
 
   const handleMouseUp = () => {
     const selectedText = window.getSelection().toString().trim();
-    if(modalInitWord?.toLowerCase() === selectedText.toLowerCase())
+    if(modalInitWord?.toLowerCase() === selectedText.toLowerCase() && isModalVisible)
       return;
 
     clearTimeout(messageTimeoutKey.current);
@@ -48,7 +48,7 @@ const DictionaryProvider = ({ children }) => {
               placement: "bottomRight",
               type: "success",
               duration: 2,
-              message: `"${selectedText}"`,
+              message: `What is "${selectedText}"?`,
               description: `Click here to view the definitions for this word.`,
               icon: <CgSearchFound style={{ color: COLOR.orange }}/>,
               onClick: () => {
@@ -61,7 +61,7 @@ const DictionaryProvider = ({ children }) => {
               }
             })
           })
-      }, 100)
+      }, 200)
     }
   }
 
