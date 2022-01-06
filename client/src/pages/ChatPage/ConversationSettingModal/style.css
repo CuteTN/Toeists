@@ -9,9 +9,13 @@ label.form-label {
 }
 
 .member-setting-row-card {
-  /* width: 100%; */
+  display: grid;  
+  justify-self:center;
+  margin-top: 5px;
+  grid-template-columns: 95% 5%;
+  border: 1px solid rgb(235, 233, 233);
 }
 
 .member-setting-row-card:hover {
-  background-color: #ffedd6;
+ 
 }

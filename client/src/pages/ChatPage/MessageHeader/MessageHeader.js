@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Row, Typography } from "antd";
+import { Dropdown, Menu, Row, Typography, Card } from "antd";
 import React from "react";
 import { ConversationService } from "../../../services/ConversationService";
 import {
@@ -23,8 +23,14 @@ const MessageHeader = ({
   showConversationSetting,
 }) => {
   const { signedInUser } = useAuth();
-  const conversationDisplayName = React.useMemo(() => ConversationService.getName(conversation), [conversation])
-  const currentMemberInfo = React.useMemo(() => ConversationService.getMemberInfo(conversation, signedInUser?._id), [conversation, signedInUser?._id]);
+  const conversationDisplayName = React.useMemo(
+    () => ConversationService.getName(conversation),
+    [conversation]
+  );
+  const currentMemberInfo = React.useMemo(
+    () => ConversationService.getMemberInfo(conversation, signedInUser?._id),
+    [conversation, signedInUser?._id]
+  );
 
   const menuMore = () => {
     const { hasSeen, hasMuted, hasBlocked } = currentMemberInfo ?? {};
@@ -52,26 +58,28 @@ const MessageHeader = ({
           </Row>
         </Menu.Item>
 
-        {conversation?.type === "private" &&
+        {conversation?.type === "private" && (
           <Menu.Item key="blocked" onClick={toggleBlockedState}>
             <Row align="middle">
               <StopOutlined />
               <Text className="ml-2">{hasBlocked ? "Unblock" : "Block"}</Text>
             </Row>
           </Menu.Item>
-        }
+        )}
       </Menu>
-    )
-  }
+    );
+  };
 
   return (
-    <div className="row message-header-wrapper">
-      <div className="col-11 conversation-name">
-        <h1> {conversationDisplayName} </h1>
+    <div className="message-header-wrapper">
+      <div className="message-title">
+        <h2>
+          <font color="orange"> {conversationDisplayName} </font>{" "}
+        </h2>
       </div>
 
-      <div className="col-1">
-        <Menu theme="dark" mode="horizontal">
+      <div className="message-setting">
+        <Menu mode="horizontal">
           <Dropdown
             overlay={menuMore}
             trigger={["click"]}
@@ -80,7 +88,7 @@ const MessageHeader = ({
             <EllipsisOutlined
               style={{
                 fontSize: 24,
-                color: COLOR.white,
+                color: COLOR.black,
                 marginTop: 20,
               }}
             />
@@ -88,6 +96,6 @@ const MessageHeader = ({
         </Menu>
       </div>
     </div>
-  )
+  );
 };
 export default MessageHeader;

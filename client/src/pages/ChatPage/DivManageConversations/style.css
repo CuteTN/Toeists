@@ -1,4 +1,17 @@
 .div-manage-conversations-wrapper {
-  background-color: #377a58;
+  width: 100%;
+  place-self: center ;
+  display:flex;
+  margin-left: 40px;
+  /* grid-template-columns: 20% 50% auto; */
   grid-area: manage-conversations;
+}
+.title-chat{
+  justify-self:center;
+ margin-top: 5px;
+ margin-left: 10px;
+ }
+.button-add {
+   margin-top: 10px;
+   padding-left: 80px;
 }

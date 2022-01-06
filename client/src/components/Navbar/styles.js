@@ -28,20 +28,7 @@ const styles = {
   orangeBackground: {
     background: COLOR.orange,
   },
-  squareInitials: {
-    alignSelf: "center",
-    backgroundColor: COLOR.black,
-    display: "flex",
-    flexDirection: "column",
-    fontSize: "large",
-    fontWeight: "bold",
-    height: 40,
-    justifyContent: "center",
-    minHeight: 40,
-    minWidth: 40,
-    width: 40,
-    textAlign: "center",
-  },
+
 };
 
 export default styles;
