@@ -1,17 +1,23 @@
 .list-conversations-wrapper{
-  background-color: #968692;
   grid-area: list-friend;
 }
 
-.list-conversations-wrapper .conversation-card-not-seen {
-  background-color: #ffedd6;
-  color: #f89823;
-  font-weight: bold;
+.search-conversation{
+  background-color:#FAC380;
 }
-
 .conversation-card {
-  background-color: antiquewhite;
-  border: 2px solid #968692;
-  cursor: pointer;
-  /* height: 50px; */
+  display:flex;
+  width: 100%;
+}
+.message-card {
+  padding-left: 20px;
+  width: 88%;
+}
+.message-card-last-message{
+  color: rgb(78, 78, 78);
+  text-align: left;
+  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+   text-overflow: ellipsis;
 }
