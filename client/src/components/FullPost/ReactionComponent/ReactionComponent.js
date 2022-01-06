@@ -44,7 +44,7 @@ const ReactionComponent = ({ post }) => {
         <Row>
           <Space size="large">
             <Space>
-              <Tooltip title="React">
+              <Tooltip title={hasUpvoted ? "Unvote" : "Upvote"}>
                 {hasUpvoted ? (
                   <HeartFilled
                     className="clickable icon"

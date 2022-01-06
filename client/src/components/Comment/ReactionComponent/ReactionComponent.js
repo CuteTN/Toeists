@@ -19,11 +19,11 @@ const ReactionComponent = ({ comment }) => {
 
   const handleToggleVoteClick = () => {
     setHasUpvoted(!hasUpvoted);
-    setUpvotersCount(hasUpvoted ? upvotersCount-1 : upvotersCount+1 );
+    setUpvotersCount(hasUpvoted ? upvotersCount - 1 : upvotersCount + 1);
     interactWithComment(comment._id, hasUpvoted ? "unvote" : "upvote")
       .catch(() => {
         setHasUpvoted(hasUpvoted);
-        setUpvotersCount(hasUpvoted ? upvotersCount+1 : upvotersCount-1 );
+        setUpvotersCount(hasUpvoted ? upvotersCount + 1 : upvotersCount - 1);
       })
   };
 
@@ -33,7 +33,7 @@ const ReactionComponent = ({ comment }) => {
         <Row>
           <Space size="large">
             <Space>
-              <Tooltip title="React">
+              <Tooltip title={hasUpvoted ? "Unvote" : "Upvote"}>
                 {hasUpvoted ? (
                   <HeartFilled
                     className="clickable icon"

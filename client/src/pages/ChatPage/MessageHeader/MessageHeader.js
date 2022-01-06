@@ -79,21 +79,19 @@ const MessageHeader = ({
       </div>
 
       <div className="message-setting">
-        <Menu mode="horizontal">
-          <Dropdown
-            overlay={menuMore}
-            trigger={["click"]}
-            placement="bottomRight"
-          >
-            <EllipsisOutlined
-              style={{
-                fontSize: 24,
-                color: COLOR.black,
-                marginTop: 20,
-              }}
-            />
-          </Dropdown>
-        </Menu>
+        <Dropdown
+          overlay={menuMore}
+          trigger={["click"]}
+          placement="bottomRight"
+        >
+          <EllipsisOutlined
+            style={{
+              fontSize: 24,
+              color: COLOR.black,
+              marginTop: 20,
+            }}
+          />
+        </Dropdown>
       </div>
     </div>
   );

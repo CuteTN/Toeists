@@ -71,21 +71,19 @@ const ConversationMemberSettingRow = ({
         {nickname && <Text>({nickname})</Text>}
 
         <div>
-          <Menu mode="horizontal">
-            <Dropdown
-              overlay={menuMore}
-              trigger={["click"]}
-              placement="bottomRight"
-            >
-              <EllipsisOutlined
-                style={{
-                  fontSize: 24,
-                  color: COLOR.black,
-                  marginTop: 10,
-                }}
-              />
-            </Dropdown>
-          </Menu>
+          <Dropdown
+            overlay={menuMore}
+            trigger={["click"]}
+            placement="bottomRight"
+          >
+            <EllipsisOutlined
+              style={{
+                fontSize: 24,
+                color: COLOR.black,
+                marginTop: 10,
+              }}
+            />
+          </Dropdown>
         </div>
 
         {/* <CrownTwoTone twoToneColor={role === "admin" ? "#ffa008" : "#2b2b2b"} /> */}
