@@ -25,10 +25,11 @@ const InputChat = ({ onMessagePressSend }) => {
         value={text}
         onChange={handleInputTextChange}
         onPressEnter={handleMessagePressSend}
+        style={{ color: "orange" }}
       ></Input>
       <Tooltip title="Send">
         <SendOutlined
-          style={{ marginTop: 4 }}
+          style={{ marginTop: 7 }}
           className="clickable icon ml-4 mr-2"
           onClick={() => handleMessagePressSend()}
         />
