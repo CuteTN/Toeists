@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal, Form, Input, Radio } from "antd";
+import React, { useState } from "react";
+import { Modal, Input, Select } from "antd";
 import ConversationMemberSettingRow from "./ConversationMemberSettingRow";
 import "./style.css";
 import { ConversationService } from "../../../services/ConversationService";
@@ -11,6 +11,8 @@ import { useAuth } from "../../../contexts/authenticationContext";
  * @param {(conversationData: object) => string} param0.onSubmit returns an error message if necessary
  * @returns
  */
+
+const { Option } = Select;
 const ConversationSettingModal = ({
   conversation,
   visible,
@@ -20,6 +22,8 @@ const ConversationSettingModal = ({
   const { signedInUser } = useAuth();
   const [conversationName, setConversationName] = React.useState("");
   const [conversationMembers, setConversationMembers] = React.useState("");
+  const [listMembers, setListMembers] = useState([]);
+  const [listFollowingFriends, setListFollowingFriends] = useState([]);
   const currentMemberInfo = React.useMemo(
     () => ConversationService.getMemberInfo(conversation, signedInUser?._id),
     [conversation, signedInUser?._id]
@@ -28,6 +32,10 @@ const ConversationSettingModal = ({
   React.useEffect(() => {
     setConversationData(visible ? conversation : null);
   }, [visible, conversation]);
+
+  React.useEffect(() => {
+    // TODO: fetch list following fr hay gì đó
+  }, []);
 
   const setConversationData = (conversation) => {
     setConversationName(conversation?.name);
@@ -43,6 +51,10 @@ const ConversationSettingModal = ({
 
   const handleSetMemberRole = (memberId, newRole) => {
     // TODO:
+  };
+
+  const handleChangeUserToAdd = (value, options) => {
+    setListMembers(options?.map((item) => item.key));
   };
 
   const handleOk = () => {
@@ -67,6 +79,27 @@ const ConversationSettingModal = ({
           value={conversationName}
           onChange={(event) => setConversationName(event.target.value)}
         />
+      </div>
+    );
+  };
+
+  const addMember = () => {
+    return (
+      <div>
+        <hr className="mt-4" />
+        <h1 className="ml-1 form-label">Add Member</h1>
+        <Select
+          mode="multiple"
+          placeholder="Add member"
+          allowClear
+          value={listMembers}
+          onChange={handleChangeUserToAdd}
+          style={{ width: "100%" }}
+        >
+          {listFollowingFriends?.map((item) => (
+            <Option key={item._id}>{item.name}</Option>
+          ))}
+        </Select>
       </div>
     );
   };
@@ -102,6 +135,7 @@ const ConversationSettingModal = ({
       onOk={handleOk}
     >
       {basicInformationSection()}
+      {addMember()}
       {memberListSection(conversation)}
     </Modal>
   );
