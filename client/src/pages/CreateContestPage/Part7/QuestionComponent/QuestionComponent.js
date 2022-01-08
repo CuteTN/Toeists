@@ -33,6 +33,7 @@ const QuestionComponent = () => {
 
   return (
     <div className="question-component-wrapper">
+      <p className="title-question">Paragraph</p>
       <Input.TextArea
         name="question"
         placeholder="Question"

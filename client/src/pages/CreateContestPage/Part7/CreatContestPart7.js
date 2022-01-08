@@ -43,6 +43,13 @@ const CreatContestPart7 = () => {
               <div className="functional-button">
                 <Button
                   className="orange-button"
+                  style={{ fontWeight: "bold", margin: 15 }}
+                  onClick={handleClick}
+                >
+                  ADD QUESTION
+                </Button>
+                <Button
+                  className="orange-button"
                   style={{ fontWeight: "bold" }}
                   onClick={handleCreate}
                 >
