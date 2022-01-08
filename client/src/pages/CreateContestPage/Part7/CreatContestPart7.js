@@ -9,7 +9,7 @@ import styles from "../styles";
 import "../style.css";
 
 const { Text } = Typography;
-const CreatContestPart2 = () => {
+const CreatContestPart7 = () => {
   const [listQuestion, setListQuestion] = useState([
     <QuestionComponent key={0} />,
   ]);
@@ -32,7 +32,7 @@ const CreatContestPart2 = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 6</Text>
+                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 7</Text>
                 </div>
               </div>
               <hr />
@@ -41,13 +41,6 @@ const CreatContestPart2 = () => {
               ))}
 
               <div className="functional-button">
-                <Button
-                  className="orange-button"
-                  style={{ fontWeight: "bold", marginRight: 10 }}
-                  onClick={handleClick}
-                >
-                  ADD QUESTION
-                </Button>
                 <Button
                   className="orange-button"
                   style={{ fontWeight: "bold" }}
@@ -63,4 +56,4 @@ const CreatContestPart2 = () => {
     </div>
   );
 };
-export default CreatContestPart2;
+export default CreatContestPart7;
