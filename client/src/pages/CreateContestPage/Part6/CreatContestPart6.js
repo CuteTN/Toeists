@@ -9,7 +9,7 @@ import styles from "../styles";
 import "../style.css";
 
 const { Text } = Typography;
-const CreatContestPart2 = () => {
+const CreatContestPart6 = () => {
   const [listQuestion, setListQuestion] = useState([
     <QuestionComponent key={0} />,
   ]);
@@ -63,4 +63,4 @@ const CreatContestPart2 = () => {
     </div>
   );
 };
-export default CreatContestPart2;
+export default CreatContestPart6;

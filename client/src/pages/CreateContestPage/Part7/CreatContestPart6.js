@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { Card, Typography, Button } from "antd";
 // components
 import { Navbar } from "../../../components";
-import QuestionComponent from "../Part5/QuestionComponent/QuestionComponent";
+import QuestionComponent from "./QuestionComponent/QuestionComponent";
 //others
 import styles from "../styles";
 import "../style.css";
 
 const { Text } = Typography;
-const CreatContestPart5 = () => {
+const CreatContestPart2 = () => {
   const [listQuestion, setListQuestion] = useState([
     <QuestionComponent key={0} />,
   ]);
@@ -32,7 +32,7 @@ const CreatContestPart5 = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 5</Text>
+                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 6</Text>
                 </div>
               </div>
               <hr />
@@ -63,4 +63,4 @@ const CreatContestPart5 = () => {
     </div>
   );
 };
-export default CreatContestPart5;
+export default CreatContestPart2;
