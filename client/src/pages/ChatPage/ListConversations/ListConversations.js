@@ -6,7 +6,30 @@ import { ConversationCard } from "./ConversationCard";
 import COLOR from "../../../constants/colors";
 import "./style.css";
 import styles from "./styles.js";
+import { searchForConversations } from "../../../services/api/search";
 const ListConversations = ({ conversations, onConversationClick }) => {
+  const [searchText, setSearchText] = React.useState("");
+
+  const [searchedConversations, setSearchedConversations] = React.useState(null);
+
+  const shownConversations = React.useMemo(() => {
+    return searchedConversations ?? conversations 
+  }, [conversations, searchedConversations])
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (searchText)
+        searchForConversations(searchText, 5)
+          .then(res => {
+            setSearchedConversations(res.data.data);
+          })
+      else
+        setSearchedConversations(null);
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [searchText, conversations])
+
   const handleConversationClick = React.useCallback(
     (conversation) => {
       onConversationClick?.(conversation);
@@ -14,7 +37,7 @@ const ListConversations = ({ conversations, onConversationClick }) => {
     [onConversationClick]
   );
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   return (
     <div className="list-conversations-wrapper">
@@ -23,6 +46,8 @@ const ListConversations = ({ conversations, onConversationClick }) => {
           className="search-container"
           onPressEnter={() => handleSearch()}
           allowClear
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
           suffix={
             <SearchOutlined
               onClick={() => handleSearch()}
@@ -36,7 +61,7 @@ const ListConversations = ({ conversations, onConversationClick }) => {
           defaultValue={""}
         />
       </div>
-      {conversations?.map((c, i) => (
+      {shownConversations?.map((c, i) => (
         <ConversationCard
           key={i}
           conversation={c}

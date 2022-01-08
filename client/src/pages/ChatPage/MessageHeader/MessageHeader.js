@@ -14,6 +14,7 @@ const { Text } = Typography;
 import "./style.css";
 import COLOR from "../../../constants/colors";
 import { useAuth } from "../../../contexts/authenticationContext";
+import ConversationAvatar from "../ConversationAvatar/ConversationAvatar";
 
 const MessageHeader = ({
   conversation,
@@ -72,11 +73,12 @@ const MessageHeader = ({
 
   return (
     <div className="message-header-wrapper">
-      <div className="message-title">
-        <h2>
+      <Row className="message-title mt-4">
+        <ConversationAvatar conversation={conversation} avatarSize={40} maxAvatarCount={3}/>
+        <h2 className="ml-2">
           <font color="orange"> {conversationDisplayName} </font>{" "}
         </h2>
-      </div>
+      </Row>
 
       <div className="message-setting">
         <Dropdown

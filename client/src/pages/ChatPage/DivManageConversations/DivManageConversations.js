@@ -3,6 +3,7 @@ import { Avatar, Button } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 //others
 import "./style.css";
+import { RiWechatLine } from "react-icons/all";
 
 const DivManageConversations = () => (
   <div className="div-manage-conversations-wrapper">
@@ -10,8 +11,9 @@ const DivManageConversations = () => (
       <Avatar
         style={{ marginLeft: 10 }}
         size={50}
-        src="https://res.klook.com/image/upload/v1596021224/blog/a5nzbvlpm0gfyniy6s7r.jpg"
-      />
+      >
+        <RiWechatLine size={40}/>
+      </Avatar>
     </div>
     <div>
       <h3 className="title-chat">Chats</h3>

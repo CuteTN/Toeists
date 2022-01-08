@@ -79,7 +79,7 @@ function Navbar() {
         conv,
         signedInUser?._id
       );
-      res += memInfo.hasSeen ? 0 : 1;
+      res += (memInfo.hasSeen || memInfo.hasMuted) ? 0 : 1;
     });
 
     return res || null;

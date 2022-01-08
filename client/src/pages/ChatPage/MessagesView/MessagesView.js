@@ -1,16 +1,17 @@
 // lib
 import React, { useEffect, useState } from "react";
 import moment from "moment";
-import { message as messageAntd, Modal, Tooltip } from "antd";
+import { message as messageAntd, Modal, Tooltip, Avatar } from "antd";
 import { DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 // context
 import { useAuth } from "../../../contexts/authenticationContext";
 //others
 import "./style.css";
-import Avatar from "antd/lib/avatar/avatar";
 import { useMessage } from "../../../hooks/useMessage";
 import useOnScreen from "../../../hooks/useOnScreen";
 import { FaAngleDoubleDown } from "react-icons/all";
+import { useHistory } from "react-router-dom";
+import { ConversationService } from "../../../services/ConversationService";
 
 const NEW_MESSAGE_MESSAGE_KEY = "NEW_MESSAGE_MESSAGE_KEY";
 
@@ -21,9 +22,14 @@ const MessagesView = ({ conversation }) => {
   const messageHandler = useMessage();
   const messagesPrevLengthRef = React.useRef();
   const isJustSentRef = React.useRef(false);
+  const history = useHistory();
 
   /** @type {any[]} */
   const messages = React.useMemo(() => conversation?.messages, [conversation]);
+
+  /** @type {any[]} */
+  const seeners = React.useMemo(() => ConversationService.getSeeners(conversation), [conversation]);
+
 
   const [toBeDeletedMessages, setToBeDeletedMessages] = useState([]);
 
@@ -39,6 +45,7 @@ const MessagesView = ({ conversation }) => {
 
   useEffect(() => {
     scrollToBottom();
+    isJustSentRef.current = false;
   }, [conversation?._id])
 
   useEffect(() => {
@@ -69,7 +76,7 @@ const MessagesView = ({ conversation }) => {
           icon: <FaAngleDoubleDown className="mr-2" />,
           onClick: () => {
             scrollToBottom(true),
-            messageAntd.destroy(NEW_MESSAGE_MESSAGE_KEY);
+              messageAntd.destroy(NEW_MESSAGE_MESSAGE_KEY);
           }
         })
       }
@@ -82,15 +89,30 @@ const MessagesView = ({ conversation }) => {
     return message?.senderId === signedInUser?._id;
   };
 
-  const handleDeleteMessage = () => {
-    Modal.confirm({
-      title: "Do you want to delete this message?",
-      icon: <ExclamationCircleOutlined />,
-      content: "You cannot undo this action",
-      onOk() { },
-      onCancel() { },
-    });
-  };
+  const handleUserAvatarClick = (user) => {
+    if (user?._id)
+      history.push(`/userinfo/${user._id}`)
+  }
+
+  const ListSeeners = () => {
+    return (
+      <div className="d-flex flex-row-reverse" style={{ width: "100%", marginTop: -30, }}>
+        <Avatar.Group className="m-1 mr-2">
+          {seeners?.map((member, i) =>
+            <div key={i} onClick={e => handleUserAvatarClick(member?.member)}>
+              <Avatar
+                src={member?.member?.avatarUrl}
+                size={25}
+                style={{ cursor: "pointer" }}
+              >
+                {member?.member?.username}
+              </Avatar>
+            </div>
+          )}
+        </Avatar.Group>
+      </div>
+    )
+  }
 
   return (
     <div className="message-form-wrapper">
@@ -116,12 +138,15 @@ const MessagesView = ({ conversation }) => {
             <div key={msg._id} className="message-row other-message ">
               <div className="message-content">
                 <Tooltip placement="bottom">
-                  <Avatar
-                    src={membersDict?.[msg.senderId]?.member?.avatarUrl}
-                    size={40}
-                  >
-                    {membersDict?.[msg.senderId]?.member?.username}
-                  </Avatar>
+                  <div onClick={() => handleUserAvatarClick(membersDict?.[msg.senderId]?.member)}>
+                    <Avatar
+                      src={membersDict?.[msg.senderId]?.member?.avatarUrl}
+                      size={40}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {membersDict?.[msg.senderId]?.member?.username}
+                    </Avatar>
+                  </div>
                 </Tooltip>
                 <div className="d-flex" style={{ marginLeft: -10 }}>
                   <Tooltip
@@ -140,9 +165,10 @@ const MessagesView = ({ conversation }) => {
           <br />
         </div>
       ))}
+      {ListSeeners()}
       <div
         ref={bottomDivRef}
-        style={{ marginTop: -200 }}
+        style={{ marginTop: -250 }}
       />
     </div>
   );

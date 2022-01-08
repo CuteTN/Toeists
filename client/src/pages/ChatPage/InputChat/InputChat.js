@@ -25,7 +25,6 @@ const InputChat = ({ onMessagePressSend }) => {
         value={text}
         onChange={handleInputTextChange}
         onPressEnter={handleMessagePressSend}
-        style={{ color: "orange" }}
       ></Input>
       <Tooltip title="Send">
         <SendOutlined
