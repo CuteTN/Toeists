@@ -6,7 +6,9 @@ import SettingsPage from "./SettingPage/SettingPage";
 import HomePage from "./HomePage/HomePage";
 import ChatPage from "./ChatPage/ChatPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
-import CreateContentPage from "./CreateContentPage/CreateContentPage";
+import CreateContestPage from "./CreateContestPage/CreateContestPage";
+import CreatContestPart5 from "./CreateContestPage/Part5/CreatContestPart5";
+import CreatContestPart6 from "./CreateContestPage/Part6/CreatContestPart6";
 import SpecificForumPage from "./SpecificForumPage/SpecificForumPage";
 import FeedPage from "./FeedPage/FeedPage";
 
@@ -15,7 +17,9 @@ export {
   // AboutPage,
   // AuthPage,
   CreatePostPage,
-  CreateContentPage,
+  CreateContestPage,
+  CreatContestPart5,
+  CreatContestPart6,
   FeedPage,
   // TestPage,
   // SpecificPostPage,
