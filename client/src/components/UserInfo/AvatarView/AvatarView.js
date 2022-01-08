@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Image, Typography, message, Row } from "antd";
+import { Avatar, Button, Image, Typography, message, Row, Menu, Dropdown } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { convertFileToBase64 } from "../../../utils/image.js";
 import styles from "./styles.js";
-import { AiFillEdit } from "react-icons/all";
+import { AiFillEdit, BsTrash, BsUpload } from "react-icons/all";
 import COLOR from "../../../constants/colors.js";
 import { getUser } from "../../../redux/actions/user"
 import { uploadUserAvatar } from "../../../services/uploadUserAvatar.js";
 import { useAuth } from "../../../contexts/authenticationContext.js";
-import { BLANK_AVATAR_URL } from "../../../constants/resources.js";
+import Text from "antd/lib/typography/Text";
+import confirm from "antd/lib/modal/confirm";
 
 const { Title } = Typography;
 
@@ -17,35 +18,66 @@ const AvatarView = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const avatarUrl = React.useMemo(() => user?.avatarUrl ?? BLANK_AVATAR_URL, [user])
-
   const displayName = user?.name ?? "";
 
   const avatarFileInputRef = React.useRef(null);
   const handleAvatarChange = (e) => {
-    const selectedFile = e.target.files[0]; 
+    const selectedFile = e.target.files[0];
     uploadUserAvatar(user._id, user.avatarUrl, selectedFile)
       .then(() => dispatch(getUser(user._id)));
   };
 
-  const EditAvatarButton = () => {
+  const handleUploadAvatar = () => {
+    avatarFileInputRef.current.click()
+  }
+
+  const handleDeleteAvatar = () => {
+    confirm({
+      title: "Remove avatar",
+      content: "Are you sure to remove this avatar?",
+      onOk: () => {
+        uploadUserAvatar(user?._id, user?.avatarUrl, null)
+          .then(() => dispatch(getUser(user?._id)));
+      },
+    })
+  }
+
+  const UpdateAvatarMenu = () => {
+    return (
+      <Menu>
+        <Menu.Item key="upload" onClick={handleUploadAvatar}>
+          <Row align="middle">
+            <BsUpload size={20} className="mr-lg-2" />
+            <Text>Upload a new avatar</Text>
+          </Row>
+        </Menu.Item>
+
+        <Menu.Item key="remove" onClick={handleDeleteAvatar}>
+          <Row align="middle">
+            <BsTrash size={20} className="mr-lg-2" color="red" />
+            <Text style={{ color: "red" }}>Remove this avatar</Text>
+          </Row>
+        </Menu.Item>
+      </Menu>
+    )
+  }
+
+  const UpdateAvatarButton = () => {
     return (
       <div>
         <Button
           className="orange-button mr-2"
           style={styles.editImageBtn}
-          onClick={() => avatarFileInputRef.current.click()}
         >
-          <AiFillEdit size={36} style={{ color: COLOR.white, position: "absolute", top: 5, left: 5 }} />
+          <Dropdown
+            trigger={["click"]}
+            placement="bottomLeft"
+            overlay={UpdateAvatarMenu()}
+          >
+            <AiFillEdit size={36} style={{ color: COLOR.white, position: "absolute", top: 5, left: 5 }} />
+          </Dropdown>
         </Button>
-        <input
-          type="file"
-          name="myImage"
-          accept="image/png, image/gif, image/jpeg"
-          ref={avatarFileInputRef}
-          style={{ display: "none" }}
-          onChange={handleAvatarChange}
-        ></input>
+
       </div>
     );
   };
@@ -61,14 +93,26 @@ const AvatarView = () => {
           style={{ position: "absolute", bottom: "-10%" }}
         >
           <div style={{ position: "relative", marginBottom: 8 }}>
-            <div>
+            <div >
               <Avatar
-                src={avatarUrl}
+                src={user?.avatarUrl}
                 size={200}
                 style={styles.avatar}
-              />
+              >
+                {user?.username}
+              </Avatar>
+
+              <input
+                type="file"
+                name="myImage"
+                accept="image/png, image/gif, image/jpeg"
+                ref={avatarFileInputRef}
+                style={{ display: "none" }}
+                onChange={handleAvatarChange}
+              ></input>
+
               {signedInUser?._id === user?._id &&
-                <EditAvatarButton />
+                <UpdateAvatarButton />
               }
             </div>
           </div>
