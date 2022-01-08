@@ -1,0 +1,13 @@
+.question-component-wrapper{
+    display: block; 
+    margin-bottom: 50px;
+}
+
+.title-question{
+    text-align: start;
+    font-size: 18px;
+    font-weight: 500;
+}
+.add-button{
+    margin: 10px;
+}

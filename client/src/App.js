@@ -17,6 +17,7 @@ import {
   CreatContestPart5,
   CreatContestPart6,
   CreatContestPart7,
+  CreatContestPart1,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -73,6 +74,11 @@ function App() {
               exact
               path="/content/create"
               component={CreateContestPage}
+            />
+            <PrivateRoute
+              exact
+              path="/content/create/part1"
+              component={CreatContestPart1}
             />
             <PrivateRoute
               exact
