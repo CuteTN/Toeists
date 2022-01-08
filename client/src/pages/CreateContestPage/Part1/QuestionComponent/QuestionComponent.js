@@ -40,7 +40,7 @@ const QuestionComponent = () => {
       <div>
         <Input
           name="answer1"
-          style={{ width: 500 }}
+          style={{ width: 480 }}
           placeholder="Correct Answer"
         />
       </div>
