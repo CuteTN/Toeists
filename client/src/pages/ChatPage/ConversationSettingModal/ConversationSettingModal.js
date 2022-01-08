@@ -34,7 +34,7 @@ const ConversationSettingModal = ({
   }, [visible, conversation]);
 
   React.useEffect(() => {
-    // TODO: fetch list following fr hay gì đó
+    // TODO: fetch list following fr hay gì đó -> setListFollowingFriends
   }, []);
 
   const setConversationData = (conversation) => {

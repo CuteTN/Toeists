@@ -13,6 +13,7 @@ import {
   CreatePostPage,
   SpecificForumPage,
   FeedPage,
+  CreateContentPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -46,10 +47,7 @@ function App() {
   return (
     <div className={styles.App}>
       <DictionaryProvider>
-        <CuteClientIOProvider
-          serverUri={BACKEND_URL}
-          token={accessToken}
-        >
+        <CuteClientIOProvider serverUri={BACKEND_URL} token={accessToken}>
           {/*<FriendsStatusProvider userId={user?.result?._id}> */}
           <Switch>
             <Route exact path="/" component={HomePage} />
@@ -63,10 +61,23 @@ function App() {
           <UserInfoPage />
         </Route> */}
             <Route exact path="/feed" component={FeedPage} />
-            <PrivateRoute exact path="/forum/create" component={CreatePostPage} />
+            <PrivateRoute
+              exact
+              path="/forum/create"
+              component={CreatePostPage}
+            />
+            <PrivateRoute
+              exact
+              path="/content/create"
+              component={CreateContentPage}
+            />
             <Route path="/userinfo/:id" exact component={UserInfoPage} />
             <Route exact path="/forums/:id" component={SpecificForumPage} />
-            <Route exact path="/email-confirmation/:token" component={EmailConfirmationPage} />
+            <Route
+              exact
+              path="/email-confirmation/:token"
+              component={EmailConfirmationPage}
+            />
             {/*   <Route
               path="/post/:id/:focusedCommentId"
               component={SpecificPostPage}

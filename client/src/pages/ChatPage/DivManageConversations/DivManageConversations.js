@@ -8,20 +8,19 @@ const DivManageConversations = () => (
   <div className="div-manage-conversations-wrapper">
     <div>
       <Avatar
+        style={{ marginLeft: 10 }}
         size={50}
         src="https://res.klook.com/image/upload/v1596021224/blog/a5nzbvlpm0gfyniy6s7r.jpg"
       />
     </div>
     <div>
-      <h3 className="title-chat">Messages</h3>
+      <h3 className="title-chat">Chats</h3>
     </div>
     <div className="button-add">
       <Button
         className="d-flex justify-content-center align-items-center orange-button mr-5"
         icon={<PlusCircleOutlined />}
-      >
-        Add
-      </Button>
+      ></Button>
     </div>
   </div>
 );
