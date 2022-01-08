@@ -15,7 +15,7 @@ const QuestionComponent = () => {
         <Input.TextArea
           name="question"
           placeholder="Question"
-          style={{ height: 100 }}
+          style={{ height: 70 }}
         />
         <div className="answer">
           <Input name="answer1" placeholder="Correct Answer" />

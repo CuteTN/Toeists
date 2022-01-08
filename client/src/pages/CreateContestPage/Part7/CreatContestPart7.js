@@ -46,7 +46,7 @@ const CreatContestPart7 = () => {
                   style={{ fontWeight: "bold", margin: 15 }}
                   onClick={handleClick}
                 >
-                  ADD QUESTION
+                  ADD PARAGRAPH
                 </Button>
                 <Button
                   className="orange-button"
