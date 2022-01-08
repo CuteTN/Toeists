@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import { Card, Typography, Button } from "antd";
 // components
 import { Navbar } from "../../../components";
+import QuestionComponent from "../Part5/QuestionComponent/QuestionComponent";
 //others
 import styles from "../styles";
 import "../style.css";
-import QuestionComponent from "../Part5/QuestionComponent/QuestionComponent";
 
 const { Text } = Typography;
 const CreatContestPart6 = () => {
   const [listQuestion, setListQuestion] = useState([
-    <QuestionComponent isPart5={true} key={0} />,
+    <QuestionComponent key={0} />,
   ]);
 
   const handleClick = () => {};
