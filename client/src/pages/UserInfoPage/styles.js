@@ -15,7 +15,7 @@ const styles = {
     // marginRight: 128,
   },
   avatarView: {
-    minHeight: "50vh",
+    minHeight: "30vh",
     background: "white",
     marginTop: 64,
     // marginLeft: 128,

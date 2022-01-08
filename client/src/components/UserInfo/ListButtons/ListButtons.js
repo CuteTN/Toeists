@@ -48,7 +48,6 @@ const ListButtons = () => {
         handleBlockUser();
       },
       onCancel() {
-        message.info("User is not blocked");
       },
     });
   };
@@ -92,7 +91,7 @@ const ListButtons = () => {
     return <></>;
   };
 
-  const ReportButton = () => {
+  const BlockButton = () => {
     if (!isMyProfile) {
       return (
         <Button
@@ -134,7 +133,7 @@ const ListButtons = () => {
         style={{
           marginLeft: 16,
           marginRight: 32,
-          marginTop: 32,
+          marginTop: 8,
           justifyContent: "space-between",
         }}
       >
@@ -142,7 +141,7 @@ const ListButtons = () => {
         <div style={{ marginBottom: 62, maxWidth: "60vw" }} />
         <Row style={{ marginTop: 16 }}>
           <FollowButton></FollowButton>
-          <ReportButton></ReportButton>
+          <BlockButton></BlockButton>
         </Row>
       </Row>
     </>

@@ -37,7 +37,8 @@ function UserInfoPage() {
             <Content
               className="container"
               style={{
-                padding: 8,
+                paddingTop: 0,
+                paddingBottom: 8,
               }}
             >
               <AvatarView />
