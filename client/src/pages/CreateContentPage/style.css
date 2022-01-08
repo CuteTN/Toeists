@@ -1,0 +1,11 @@
+
+.create-content-page-wrapper{
+    display: flex;
+    /* text-align:center;
+    margin: 0 auto;
+    background-color:#F2F2F2;
+    grid-template-rows: 64px auto;
+    grid-template-areas: 
+    "header"
+    "editor"; */
+}

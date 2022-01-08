@@ -6,6 +6,7 @@ import SettingsPage from "./SettingPage/SettingPage";
 import HomePage from "./HomePage/HomePage";
 import ChatPage from "./ChatPage/ChatPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
+import CreateContentPage from "./CreateContentPage/CreateContentPage";
 import SpecificForumPage from "./SpecificForumPage/SpecificForumPage";
 import FeedPage from "./FeedPage/FeedPage";
 
@@ -14,6 +15,7 @@ export {
   // AboutPage,
   // AuthPage,
   CreatePostPage,
+  CreateContentPage,
   FeedPage,
   // TestPage,
   // SpecificPostPage,

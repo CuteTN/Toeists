@@ -26,6 +26,7 @@ import {
   SettingOutlined,
   RocketOutlined,
   GlobalOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
@@ -37,7 +38,10 @@ import COLOR from "../../constants/colors";
 import { AuthenticationService } from "../../services/AuthenticationService";
 import { useAuth } from "../../contexts/authenticationContext";
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
-import { fetchNotifications, setNotificationSeenState } from "../../services/api/notification";
+import {
+  fetchNotifications,
+  setNotificationSeenState,
+} from "../../services/api/notification";
 import { getConversations } from "../../services/api/conversation";
 import { ConversationService } from "../../services/ConversationService";
 import NotificationList from "./NotificationList/NotificationList";
@@ -58,41 +62,45 @@ function Navbar() {
   const [conversations, setConversations] = React.useState();
 
   const numberOfUnseenNotifications = React.useMemo(() => {
-    if (!(notifications && signedInUser))
-      return null;
+    if (!(notifications && signedInUser)) return null;
 
     let res = 0;
-    notifications.forEach(noti => res += noti.isSeen ? 0 : 1);
+    notifications.forEach((noti) => (res += noti.isSeen ? 0 : 1));
 
     return res || null;
-  }, [signedInUser, notifications])
+  }, [signedInUser, notifications]);
 
   const numberOfUnseenConversations = React.useMemo(() => {
-    if (!(conversations && signedInUser))
-      return null
+    if (!(conversations && signedInUser)) return null;
 
     let res = 0;
-    conversations.forEach(conv => {
-      const memInfo = ConversationService.getMemberInfo(conv, signedInUser?._id);
+    conversations.forEach((conv) => {
+      const memInfo = ConversationService.getMemberInfo(
+        conv,
+        signedInUser?._id
+      );
       res += memInfo.hasSeen ? 0 : 1;
-    })
+    });
 
     return res || null;
-  }, [signedInUser, conversations])
+  }, [signedInUser, conversations]);
 
   React.useEffect(() => {
-    fetchNotifications().then(res => {
+    fetchNotifications().then((res) => {
       setNotifications(res.data);
-    })
-    getConversations().then(res => {
+    });
+    getConversations().then((res) => {
       setConversations(res.data);
-    })
+    });
 
     const unsub = cuteIO.onReceiveAny((event, msg) => {
-      if (event.startsWith("Notification-") || event === "System-NotificationsUpdate") {
-        fetchNotifications().then(res => {
+      if (
+        event.startsWith("Notification-") ||
+        event === "System-NotificationsUpdate"
+      ) {
+        fetchNotifications().then((res) => {
           setNotifications(res.data);
-        })
+        });
 
         if (event.startsWith("Notification-")) {
           // NOTE: msg is notification data.
@@ -101,18 +109,22 @@ function Navbar() {
       }
 
       if (event.startsWith("Message-")) {
-        getConversations().then(res => {
+        getConversations().then((res) => {
           setConversations(res.data);
-        })
+        });
       }
-    })
+    });
 
     return unsub;
-  }, [cuteIO])
+  }, [cuteIO]);
 
   //#region Click handlers
   const handleForumClick = () => {
     history.push("/forum/create");
+  };
+
+  const handleContentClick = () => {
+    history.push("/content/create");
   };
 
   const handleFeedClick = () => {
@@ -121,15 +133,15 @@ function Navbar() {
 
   const handleDictionaryClick = () => {
     dictionary.openDictionaryModal();
-  }
+  };
 
   const handleMessageClick = () => {
     history.push("/chat");
   };
 
   const handleAvatarClick = () => {
-    history.push(`/userinfo/${signedInUser?._id}`)
-  }
+    history.push(`/userinfo/${signedInUser?._id}`);
+  };
 
   const handleSignOutClick = () => {
     AuthenticationService.signOut();
@@ -137,11 +149,11 @@ function Navbar() {
 
   const handleSignInClick = () => {
     history.push("/signin");
-  }
+  };
 
   const handleRegisterClick = () => {
     history.push("/signup");
-  }
+  };
 
   const handleSettingsClick = () => {
     history.push("/settings");
@@ -151,12 +163,11 @@ function Navbar() {
     notificationAntd.destroy(noti._id);
     history.push(noti?.url);
     setNotificationSeenState(noti?._id, true);
-  }
+  };
   //#endregion
 
   const showNoti = (noti) => {
-    if (!noti)
-      return;
+    if (!noti) return;
 
     notificationAntd.open({
       key: noti._id,
@@ -165,21 +176,21 @@ function Navbar() {
       duration: 5,
       message: noti.title,
       description: noti.text,
-      icon: <BellFilled style={{ color: COLOR.orange }}/>,
+      icon: <BellFilled style={{ color: COLOR.orange }} />,
       onClick: () => handleNotiPopupClick(noti),
       style: {
         cursor: "pointer",
         backgroundColor: COLOR.orangeSmoke,
-      }
-    })
-  }
+      },
+    });
+  };
 
   const MainMenuItems = () => {
     return (
       <Menu
         style={styles.orangeBackground}
         theme="dark"
-        mode={(!isSmallScreen) ? "horizontal" : "vertical"}
+        mode={!isSmallScreen ? "horizontal" : "vertical"}
       >
         <Menu.Item
           key="feed"
@@ -201,7 +212,7 @@ function Navbar() {
           </Tooltip>
         </Menu.Item>
 
-        {signedInUser &&
+        {signedInUser && (
           <Menu.Item
             key="forum"
             className="navitem pickitem text-center"
@@ -211,9 +222,21 @@ function Navbar() {
               <EditFilled style={{ fontSize: 24, color: COLOR.white }} />
             </Tooltip>
           </Menu.Item>
-        }
+        )}
 
-        {signedInUser &&
+        {signedInUser && (
+          <Menu.Item
+            key="content"
+            className="navitem pickitem text-center"
+            onClick={handleContentClick}
+          >
+            <Tooltip title="Create a content" placement="bottom">
+              <FormOutlined style={{ fontSize: 24, color: COLOR.white }} />
+            </Tooltip>
+          </Menu.Item>
+        )}
+
+        {signedInUser && (
           <Menu.Item
             key="message"
             className="text-center navitem pickitem"
@@ -225,13 +248,10 @@ function Navbar() {
               </Tooltip>
             </Badge>
           </Menu.Item>
-        }
+        )}
 
-        {signedInUser &&
-          <Menu.Item
-            key="noti"
-            className="navitem notpickitem text-center"
-          >
+        {signedInUser && (
+          <Menu.Item key="noti" className="navitem notpickitem text-center">
             <Dropdown
               overlay={NotificationList({
                 notifications,
@@ -249,9 +269,9 @@ function Navbar() {
               </Badge>
             </Dropdown>
           </Menu.Item>
-        }
+        )}
 
-        {signedInUser &&
+        {signedInUser && (
           <Menu.Item key="avatar" className="text-center navitem notpickitem">
             <Tooltip
               title={
@@ -289,51 +309,50 @@ function Navbar() {
               </Avatar>
             </Tooltip>
           </Menu.Item>
-        }
+        )}
       </Menu>
     );
   };
 
   const menuMore = (
     <Menu>
-      {isSmallScreen && <MainMenuItems/>}
+      {isSmallScreen && <MainMenuItems />}
 
-      {signedInUser &&
+      {signedInUser && (
         <Menu.Item key="settings" onClick={() => handleSettingsClick()}>
           <Row align="middle">
             <SettingOutlined className="mr-lg-2" />
             <Text>Settings</Text>
           </Row>
         </Menu.Item>
-      }
+      )}
 
-      {signedInUser &&
+      {signedInUser && (
         <Menu.Item key="logout" onClick={handleSignOutClick}>
           <Row align="middle">
             <LogoutOutlined className=" red mr-lg-2" />
             <Text>Sign out</Text>
           </Row>
         </Menu.Item>
-      }
+      )}
 
-      {(!signedInUser) &&
+      {!signedInUser && (
         <Menu.Item key="register" onClick={handleRegisterClick}>
           <Row align="middle">
             <RocketOutlined className="mr-lg-2" />
             <Text>Register</Text>
           </Row>
         </Menu.Item>
-      }
+      )}
 
-      {(!signedInUser) &&
+      {!signedInUser && (
         <Menu.Item key="login" onClick={handleSignInClick}>
           <Row align="middle">
             <LoginOutlined className="mr-lg-2" />
             <Text>Sign in</Text>
           </Row>
         </Menu.Item>
-      }
-
+      )}
     </Menu>
   );
 
@@ -364,13 +383,13 @@ function Navbar() {
               // ref={inputRef}
               bordered={false}
               style={{ backgroundColor: COLOR.lightOrange }}
-            // defaultValue={txtInitSearch}
+              // defaultValue={txtInitSearch}
             />
           </div>
 
           {/* {user ? ( */}
           <div className="d-flex">
-            {(!isSmallScreen) && <MainMenuItems />}
+            {!isSmallScreen && <MainMenuItems />}
 
             <Menu
               theme="dark"
