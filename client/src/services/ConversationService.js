@@ -17,7 +17,7 @@ export class ConversationService {
   static getLastMessage(conversation) {
     if (!conversation?.messages?.length)
       return null;
-    return conversation.messages[0];
+    return conversation.messages[conversation?.messages?.length-1];
   }
 
   static getMemberInfo(conversation, userId) {

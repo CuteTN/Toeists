@@ -100,13 +100,6 @@ const MessagesView = ({ conversation }) => {
             <div key={msg.toString()} className="message-row you-message">
               <div className="message-content">
                 <div className="d-flex align-msgs-center">
-                  <Tooltip title="Delete">
-                    <DeleteOutlined
-                      className="clickable icon mr-2"
-                      style={{ marginTop: 15 }}
-                      onClick={() => handleDeleteMessage()}
-                    />
-                  </Tooltip>
                   <Tooltip
                     title={moment(msg.createdAt).format("MMMM Do YYYY")}
                     placement="top"
