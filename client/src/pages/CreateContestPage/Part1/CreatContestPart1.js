@@ -1,9 +1,9 @@
 // libs
 import React, { useState } from "react";
-import { Card, Typography, Button, Image } from "antd";
+import { Card, Typography, Button } from "antd";
 // components
 import { Navbar } from "../../../components";
-import QuestionComponent from "./QuestionComponent/QuestionComponent";
+import QuestionComponent from "../Part5/QuestionComponent/QuestionComponent";
 //others
 import styles from "../styles";
 import "../style.css";
@@ -13,6 +13,7 @@ const CreatContestPart1 = () => {
   const [listQuestion, setListQuestion] = useState([
     <QuestionComponent key={0} />,
   ]);
+
   const handleClick = () => {};
   const handleCreate = () => {};
 
@@ -31,13 +32,14 @@ const CreatContestPart1 = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 5</Text>
+                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 1</Text>
                 </div>
               </div>
               <hr />
               {listQuestion.map((component, i) => (
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}
+
               <div className="functional-button">
                 <Button
                   className="orange-button"
