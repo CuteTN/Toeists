@@ -29,6 +29,7 @@ import { deleteForum } from "../../../services/api/forum";
 import moment from "moment";
 //others
 import styles from "./styles";
+import { BLANK_AVATAR_URL } from "../../../constants/resources";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -133,8 +134,10 @@ function OwnerInformation({ post }) {
           <Avatar
             className="ml-1 clickable"
             size={45}
-            src="https://res.klook.com/image/upload/v1596021224/blog/a5nzbvlpm0gfyniy6s7r.jpg"
-          />
+            src={post?.creator?.avatarUrl}
+          >
+            {post?.creator?.username}
+          </Avatar>
           <div className="d-inline-flex flex-column ml-3 break-word">
             <Row style={{ alignItems: "center" }}>
               <Space size={4}>

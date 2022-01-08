@@ -92,8 +92,10 @@ const OwnerInformation = ({ comment, onDelete, isEdit, setIsEdit }) => {
           <Avatar
             className="ml-1 clickable"
             size={45}
-            src="https://res.klook.com/image/upload/v1596021224/blog/a5nzbvlpm0gfyniy6s7r.jpg"
-          />
+            src={comment?.creator?.avatarUrl}
+          >
+            {comment?.creator?.username}
+          </Avatar>
           <div className="d-inline-flex flex-column ml-3 break-word">
             <Row style={{ alignItems: "center" }}>
               <Space size={4}>

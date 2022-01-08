@@ -1,0 +1,1 @@
+export const BLANK_AVATAR_URL = "https://cdn.pixabay.com/photo/2016/08/31/11/54/user-1633249_960_720.png"

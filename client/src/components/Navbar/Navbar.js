@@ -301,10 +301,11 @@ function Navbar() {
             >
               <Avatar
                 size="large"
-                alt={signedInUser?.name}
+                alt={signedInUser?.username}
+                src={signedInUser?.avatarUrl}
                 onClick={handleAvatarClick}
               >
-                {signedInUser?.name}
+                {signedInUser?.username}
               </Avatar>
             </Tooltip>
           </Menu.Item>

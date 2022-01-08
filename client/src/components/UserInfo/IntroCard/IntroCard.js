@@ -38,7 +38,7 @@ const IntroCard = () => {
         className="row justify-content-center align-items-center"
         style={styles.bio}
       >
-        <Text>Nắng bỏ đi nắng k về nữa </Text>
+        <Text>{user?.description}</Text>
       </Row>
       <Divider style={{ justifySelf: "start" }}></Divider>
       <div className="row" style={styles.lineinfo}>

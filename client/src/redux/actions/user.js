@@ -8,7 +8,7 @@ export const getUser = (uid, history) => async (dispatch) => {
       .getUserById(uid)
       .then((res) => dispatch({ type: FETCH_USER, payload: res.data }))
       .catch((error) => {
-        if (error.response?.status === 404) history.push("/error404");
+        if (error.response?.status === 404) history?.push("/error404");
       });
   } catch (error) {
     console.log(error);

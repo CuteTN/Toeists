@@ -3,16 +3,19 @@ import COLOR from "../../../constants/colors";
 const styles = {
   editImageBtn: {
     position: "absolute",
-    right: "5%",
-    bottom: "30%",
+    top: "80%",
+    left: "70%",
+    backgroundColor: COLOR.orange,
+    height: 50,
+    width: 50,
+    borderRadius: "50%",
   },
   avatar: {
-    background: COLOR.white,
-  },
-  editAvatarBtn: {
-    position: "absolute",
-    right: "5%",
-    bottom: "0%",
+    // background: COLOR.white,
+    borderRadius: "50%", 
+    borderColor: COLOR.orange, 
+    borderWidth:4, 
+    borderStyle: "solid"
   },
   displayName: {
     // position: "absolute",
