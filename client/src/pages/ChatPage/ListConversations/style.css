@@ -1,4 +1,6 @@
 .list-conversations-wrapper{
+  display: grid;
+  grid-template-rows: auto auto;
   grid-area: list-friend;
 }
 
@@ -27,4 +29,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.list-conversation{
+  overflow-y: scroll;
 }
