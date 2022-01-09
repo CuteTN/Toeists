@@ -32,11 +32,11 @@ const DictionaryProvider = ({ children }) => {
 
   const handleMouseUp = () => {
     const selectedText = window.getSelection().toString().trim();
+    
     if(modalInitWord?.toLowerCase() === selectedText.toLowerCase() && isModalVisible)
-      return;
-
+    return;
     clearTimeout(messageTimeoutKey.current);
-
+    
     if (selectedText) {
       messageTimeoutKey.current = setTimeout(() => {
         notification.destroy(NOTI_KEY);
@@ -61,7 +61,7 @@ const DictionaryProvider = ({ children }) => {
               }
             })
           })
-      }, 200)
+      }, 500)
     }
   }
 
