@@ -9,13 +9,25 @@ import FunctionalButton from "../FunctionalButton/FunctionalButton";
 //others
 import styles from "../styles";
 import "../style.css";
+import { usePatch } from "../../../hooks/usePatch";
 
 const { Text } = Typography;
 const CreatContestPart5 = () => {
-  const [listQuestions, setListQuestions] = useState([1,2]);
+  const [contest, setContest, patchContest] = usePatch({
+    title: "",
+    part: 5,
+    resource: {
+      questions: [{}]
+    }
+  }) 
 
-  const handleAddQuestion = () => { };
-  const handleCreate = () => { };
+  const handleQuestionChange = (id, question) => {
+    patchContest(["resource", "questions", id], question);
+  }
+
+  const handleAddQuestion = () => { 
+    patchContest(["resource", "questions"], prev => [...prev??[], {}])
+  };
 
   return (
     <div className="create-post-page-wrapper">
@@ -24,14 +36,17 @@ const CreatContestPart5 = () => {
         <div className="col-md-8 mb-4">
           <div>
             <Card>
-              <TitleContest part={"Part 5"} />
-              {listQuestions.map((question, i) => (
+              <TitleContest part={"Part 5"} onTitleChange={v => patchContest(["title"], v)}/>
+              {contest?.resource?.questions.map((question, i) => (
                 <React.Fragment key={i}>
-                  <QuestionComponent questionId={i} />,
+                  <QuestionComponent questionId={i} onQuestionChange={handleQuestionChange} />,
                 </React.Fragment>
               ))}
 
-              <FunctionalButton />
+              <FunctionalButton 
+                onAddContentClick={handleAddQuestion}
+                contest={contest}
+              />
             </Card>
           </div>
         </div>

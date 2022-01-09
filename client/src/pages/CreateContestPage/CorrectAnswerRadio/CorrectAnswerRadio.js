@@ -7,7 +7,7 @@ import "../style.css";
 const { Text } = Typography;
 const CorrectAnswerRadio = ({ amount, onChange }) => {
   const listAnswer = ["A", "B", "C", "D"];
-  const [value, setValue] = React.useState(1);
+  const [value, setValue] = React.useState(null);
 
   React.useEffect(() => {
     onChange?.(value);

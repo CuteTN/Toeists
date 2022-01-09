@@ -15,7 +15,7 @@ export const scanAndMoveContestAnswers = (contestPart) => {
           delete q.answer
         }
         else
-          throw "Each question must contain the 'answer' field."
+          throw "There are unanswered questions."
       })
     })
   else
@@ -27,7 +27,7 @@ export const scanAndMoveContestAnswers = (contestPart) => {
         delete q.answer
       }
       else
-        throw "Each question must contain the 'answer' field."
+        throw "There are unanswered questions."
     })
 
   contestPart.answers = answers;
@@ -35,8 +35,12 @@ export const scanAndMoveContestAnswers = (contestPart) => {
 
 
 export const validateContestPart = (contestPart) => {
+  if (!contestPart?.title)
+    throw "The 'title' field is required."
+
   if (!(contestPart?.part && contestPart?.resource && contestPart?.answers && contestPart?.title))
-    throw "The 'part', 'resource', 'answers', 'title' fields are required.";
+    throw "Not enough information";
+
 
   const part = parseInt(contestPart.part)
   contestPart.part = part;
@@ -123,8 +127,8 @@ const validateContestPart3 = (contestPart) => {
     p.questions.forEach(q => {
       if (!q?.question)
         throw "each question must have a 'question' field"
-      if ((!Array.isArray(q?.options)) || (q.options.length !== 4))
-        throw "each question must have an array of options with exactly 4 elements."
+      if ((!Array.isArray(q?.options)) || (q.options.filter(o => o).length !== 4))
+        throw "each question must have exactly 4 options."
     })
   })
 
@@ -144,8 +148,8 @@ const validateContestPart4 = (contestPart) => {
     p.questions.forEach(q => {
       if (!q?.question)
         throw "each question must have a 'question' field"
-      if ((!Array.isArray(q?.options)) || (q.options.length !== 4))
-        throw "each question must have an array of options with exactly 4 elements."
+      if ((!Array.isArray(q?.options)) || (q.options.filter(o => o).length !== 4))
+        throw "each question must have exactly 4 options."
     })
   })
 
@@ -161,8 +165,8 @@ const validateContestPart5 = (contestPart) => {
   resource.questions.forEach(q => {
     if (!q?.question)
       throw "each question must have a 'question' field"
-    if ((!Array.isArray(q?.options)) || (q.options.length !== 4))
-      throw "each question must have an array of options with exactly 4 elements."
+    if ((!Array.isArray(q?.options)) || (q.options.filter(o => o).length !== 4))
+      throw "each question must have exactly 4 options."
   })
 
   return true;
@@ -179,8 +183,8 @@ const validateContestPart6 = (contestPart) => {
       throw "each paragraph must contain a 'paragraph' field."
 
     p.questions.forEach(q => {
-      if ((!Array.isArray(q?.options)) || (q.options.length !== 4))
-        throw "each question must have an array of options with exactly 4 elements."
+      if ((!Array.isArray(q?.options)) || (q.options.filter(o => o).length !== 4))
+        throw "each question must have exactly 4 options."
     })
   })
 
@@ -200,8 +204,8 @@ const validateContestPart7 = (contestPart) => {
     p.questions.forEach(q => {
       if (!q?.question)
         throw "each question must have a 'question' field"
-      if ((!Array.isArray(q?.options)) || (q.options.length !== 4))
-        throw "each question must have an array of options with exactly 4 elements."
+      if ((!Array.isArray(q?.options)) || (q.options.filter(o => o).length !== 4))
+        throw "each question must have exactly 4 options."
     })
   })
 

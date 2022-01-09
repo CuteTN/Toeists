@@ -5,11 +5,11 @@ import { Typography, Input } from "antd";
 import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
 //others
 import "./style.css";
-import { useSetField } from "../../../../hooks/useSetField";
+import { usePatch } from "../../../../hooks/usePatch";
 
 const { Text } = Typography;
 const QuestionComponent = ({ questionId, onQuestionChange }) => {
-  const [question, setQuestion, setQuestionField] = useSetField({
+  const [question, setQuestion, patchQuestion] = usePatch({
     question: "",
     options: ["","","",""],
     answer: "",
@@ -19,9 +19,9 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
     onQuestionChange?.(questionId, question)
   }, [question])
 
-  const handleInputChange = (e, pathList) => {
+  const handleInputChange = (e, targetPathList) => {
     const value = e.target.value;
-    setQuestionField(pathList, value);
+    patchQuestion(targetPathList, value);
   }
 
   return (
@@ -31,13 +31,14 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
         name="question"
         placeholder="Question"
         style={{ height: 100 }}
+        onChange={e => handleInputChange(e, ["question"])}
       />
       <div className="answer">
         <Input name="optionA" placeholder="Option A" onChange={e => handleInputChange(e, ["options", 0])}/>
         <Input name="optionB" placeholder="Option B" onChange={e => handleInputChange(e, ["options", 1])}/>
         <Input name="optionC" placeholder="Option C" onChange={e => handleInputChange(e, ["options", 2])}/>
         <Input name="optionD" placeholder="Option D" onChange={e => handleInputChange(e, ["options", 3])}/>
-        <CorrectAnswerRadio amount={4} onChange={v => setQuestionField(["answer"], v)}/>
+        <CorrectAnswerRadio amount={4} onChange={v => patchQuestion(["answer"], v)}/>
       </div>
     </div>
   );

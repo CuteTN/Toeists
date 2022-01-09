@@ -2,7 +2,6 @@ import React from 'react';
 
 /** @link https://stackoverflow.com/questions/18936915/dynamically-set-property-of-nested-object */
 /**
- * 
  * @param {object} obj 
  * @param {(string|number)[]} pathList 
  * @param {any} value 
@@ -18,7 +17,8 @@ function setPath(obj, pathList, value) {
     schema = schema[elem];
   }
 
-  schema[pathList[len - 1]] = value;
+  const oldValue = schema[pathList[len - 1]];
+  schema[pathList[len - 1]] = typeof value === "function" ? value(oldValue) : value
   return { ...obj };
 }
 
@@ -29,7 +29,7 @@ function setPath(obj, pathList, value) {
  * @param {T} init 
  * @returns {[T, React.Dispatch<T>, DispatchField]}
  */
-export const useSetField = (init) => {
+export const usePatch = (init) => {
   const [state, setState] = React.useState(init);
 
   /** @type {DispatchField} */
