@@ -3,6 +3,7 @@ import React from "react";
 import { Input, Typography } from "antd";
 //others
 import "../style.css";
+
 const { Text } = Typography;
 const TitleContest = ({ part }) => {
   return (

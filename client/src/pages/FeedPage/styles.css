@@ -19,4 +19,5 @@
 .mainContent {
   grid-area: mainContent;
   overflow-y: scroll;
+  background: #F0F0F0;
 }

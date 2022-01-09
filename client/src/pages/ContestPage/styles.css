@@ -11,6 +11,7 @@
 .sidebar {
   grid-area: sidebar;
   overflow-y: scroll;
+ 
 }
 
 .mainContent {

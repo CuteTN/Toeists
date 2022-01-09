@@ -40,11 +40,6 @@ const QuestionComponent = () => {
       </div>
       <div>
         <CorrectAnswerRadio amount={4} />
-        {/* <Input
-          name="answer1"
-          style={{ width: 480 }}
-          placeholder="Correct Answer"
-        /> */}
       </div>
     </div>
   );

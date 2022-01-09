@@ -1,5 +1,4 @@
 import COLOR from "../../constants/colors";
-
 const styles = {
   item: {
     background: COLOR.white,

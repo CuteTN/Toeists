@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Row, Typography } from "antd";
 import styles from "./styles";
-import { useHistory } from "react-router-dom";
-
-import FeedPost from "../../../components/FeedPost/FeedPost";
+import Contest from "../../../components/Contest/Contest";
 
 const { Text } = Typography;
 
@@ -11,8 +9,8 @@ function ListContests({ creatorId, hasMarginLeft }) {
   const [listContests, setListContests] = useState([]);
   /** @type {[]} */
   const qs = {
-    part: "part 5",
-    title: "Thy Thy Thy Thy Thy Thy Thy Thy",
+    part: "Part 5",
+    title: "Một cái title gì đó không biết nữa",
     listQS: [
       {
         question: "đahạdhsdddddddddddddddddddđ",
@@ -26,7 +24,6 @@ function ListContests({ creatorId, hasMarginLeft }) {
       },
     ],
   };
-  const list = [qs, qs, qs];
   useEffect(() => {}, [creatorId]);
 
   return (
@@ -38,11 +35,7 @@ function ListContests({ creatorId, hasMarginLeft }) {
             : styles.postsBox
         }
       >
-        {creatorId === undefined
-          ? listContests?.map((post) => <FeedPost key={post._id} post={post} />)
-          : listContests?.map((post) => (
-              <FeedPost key={post._id} post={post} />
-            ))}
+        <Contest contest={qs} />
       </Row>
     </div>
   );

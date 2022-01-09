@@ -2,11 +2,9 @@ import React from "react";
 import { Layout } from "antd";
 import Navbar from "../../components/Navbar/Navbar";
 import FeedSidebar from "../../components/FeedSidebar/FeedSidebar";
-import ListPosts from "../FeedPage/ListPosts/ListPosts";
+import ListContests from "./ListContests/ListContests";
 import styles from "./styles.js";
 import "./styles.css";
-
-const { Content } = Layout;
 
 const ContestPage = () => {
   return (
@@ -20,7 +18,7 @@ const ContestPage = () => {
             id="scrollableDiv"
             style={{ minWidth: "86vw" }}
           >
-            <ListPosts space="news_feed" hasMarginLeft />
+            <ListContests space="news_feed" hasMarginLeft />
           </div>
         </div>
       </Layout>
