@@ -4,9 +4,11 @@ import { Card, Typography, Button } from "antd";
 // components
 import { Navbar } from "../../../components";
 import QuestionComponent from "./QuestionComponent/QuestionComponent";
+import FunctionalButton from "../FunctionalButton/FunctionalButton";
 //others
 import styles from "../styles";
 import "../style.css";
+import TitleContest from "../Title/TitleContest";
 
 const { Text } = Typography;
 const CreatContestPart7 = () => {
@@ -24,38 +26,11 @@ const CreatContestPart7 = () => {
         <div className="col-md-8 mb-4">
           <div>
             <Card>
-              <div className="row">
-                <div
-                  style={{
-                    paddingLeft: 24,
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 7</Text>
-                </div>
-              </div>
-              <hr />
+              <TitleContest part={"Part 7"} />
               {listQuestion.map((component, i) => (
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}
-
-              <div className="functional-button">
-                <Button
-                  className="orange-button"
-                  style={{ fontWeight: "bold", margin: 15 }}
-                  onClick={handleClick}
-                >
-                  ADD PARAGRAPH
-                </Button>
-                <Button
-                  className="orange-button"
-                  style={{ fontWeight: "bold" }}
-                  onClick={handleCreate}
-                >
-                  CREATE
-                </Button>
-              </div>
+              <FunctionalButton />
             </Card>
           </div>
         </div>

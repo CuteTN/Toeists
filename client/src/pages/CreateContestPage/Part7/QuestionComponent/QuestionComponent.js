@@ -1,6 +1,6 @@
 // libs
 import React, { useState } from "react";
-import { Typography, Input, Button } from "antd";
+import { Typography, Input, Button, Image } from "antd";
 // components
 
 //others
@@ -34,11 +34,24 @@ const QuestionComponent = () => {
   return (
     <div className="question-component-wrapper">
       <p className="title-question">Paragraph</p>
-      <Input.TextArea
-        name="question"
-        placeholder="Question"
-        style={{ height: 300 }}
-      />
+      <div className="paragraph-image">
+        <Input.TextArea
+          name="question"
+          placeholder="Question"
+          style={{ height: 300 }}
+        />
+        <Image
+          src="https://shophoavip.com/uploads/noidung/images/shophoavip12/hoa-oai-huong-lavender/lavender.jpg"
+          style={{
+            maxHeight: "40vh",
+            width: "100%",
+            objectFit: "revert",
+            height: "auto",
+            display: "block",
+          }}
+        ></Image>
+      </div>
+
       <div className="answer">
         {listQuestion.map((component, i) => (
           <React.Fragment key={i}>{component}</React.Fragment>
