@@ -79,7 +79,7 @@ function Navbar() {
         conv,
         signedInUser?._id
       );
-      res += (memInfo.hasSeen || memInfo.hasMuted) ? 0 : 1;
+      res += memInfo.hasSeen || memInfo.hasMuted ? 0 : 1;
     });
 
     return res || null;
@@ -124,7 +124,7 @@ function Navbar() {
   };
 
   const handleContentClick = () => {
-    history.push("/content/create");
+    history.push("/contest/create");
   };
 
   const handleFeedClick = () => {

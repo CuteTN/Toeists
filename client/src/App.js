@@ -15,13 +15,13 @@ import {
   FeedPage,
   ContestPage,
   CreateContestPage,
-  CreatContestPart5,
-  CreatContestPart6,
-  CreatContestPart7,
-  CreatContestPart1,
-  CreatContestPart2,
-  CreatContestPart3,
-  CreatContestPart4,
+  CreateContestPart5,
+  CreateContestPart6,
+  CreateContestPart7,
+  CreateContestPart1,
+  CreateContestPart2,
+  CreateContestPart3,
+  CreateContestPart4,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -74,43 +74,43 @@ function App() {
             />
             <PrivateRoute
               exact
-              path="/content/create"
+              path="/contest/create"
               component={CreateContestPage}
             />
             <PrivateRoute
               exact
-              path="/content/create/part1"
-              component={CreatContestPart1}
+              path="/contest/create/part1"
+              component={CreateContestPart1}
             />
             <PrivateRoute
               exact
-              path="/content/create/part2"
-              component={CreatContestPart2}
+              path="/contest/create/part2"
+              component={CreateContestPart2}
             />
             <PrivateRoute
               exact
-              path="/content/create/part3"
-              component={CreatContestPart3}
+              path="/contest/create/part3"
+              component={CreateContestPart3}
             />
             <PrivateRoute
               exact
-              path="/content/create/part4"
-              component={CreatContestPart4}
+              path="/contest/create/part4"
+              component={CreateContestPart4}
             />
             <PrivateRoute
               exact
-              path="/content/create/part5"
-              component={CreatContestPart5}
+              path="/contest/create/part5"
+              component={CreateContestPart5}
             />
             <PrivateRoute
               exact
-              path="/content/create/part6"
-              component={CreatContestPart6}
+              path="/contest/create/part6"
+              component={CreateContestPart6}
             />
             <PrivateRoute
               exact
-              path="/content/create/part7"
-              component={CreatContestPart7}
+              path="/contest/create/part7"
+              component={CreateContestPart7}
             />
             <Route path="/userinfo/:id" exact component={UserInfoPage} />
             <Route exact path="/forums/:id" component={SpecificForumPage} />

@@ -21,7 +21,7 @@ const CreateContestPage = () => {
   ];
 
   const handleClick = (id) => {
-    history.push(`/content/create/part${id}`);
+    history.push(`/contest/create/part${id}`);
   };
   return (
     <div className="create-contest-page-wrapper">
