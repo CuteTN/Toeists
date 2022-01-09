@@ -12,12 +12,10 @@ import "../style.css";
 
 const { Text } = Typography;
 const CreatContestPart5 = () => {
-  const [listQuestion, setListQuestion] = useState([
-    <QuestionComponent key={0} />,
-  ]);
+  const [listQuestions, setListQuestions] = useState([1,2]);
 
-  const handleClick = () => {};
-  const handleCreate = () => {};
+  const handleAddQuestion = () => { };
+  const handleCreate = () => { };
 
   return (
     <div className="create-post-page-wrapper">
@@ -27,8 +25,10 @@ const CreatContestPart5 = () => {
           <div>
             <Card>
               <TitleContest part={"Part 5"} />
-              {listQuestion.map((component, i) => (
-                <React.Fragment key={i}>{component}</React.Fragment>
+              {listQuestions.map((question, i) => (
+                <React.Fragment key={i}>
+                  <QuestionComponent questionId={i} />,
+                </React.Fragment>
               ))}
 
               <FunctionalButton />

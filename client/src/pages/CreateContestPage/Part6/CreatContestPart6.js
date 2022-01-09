@@ -32,7 +32,7 @@ const CreatContestPart6 = () => {
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}
 
-              <FunctionalButton />
+              <FunctionalButton hasParagraphs/>
             </Card>
           </div>
         </div>

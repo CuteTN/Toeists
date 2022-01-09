@@ -5,7 +5,7 @@ import { Button, Typography } from "antd";
 import "../style.css";
 
 const { Text } = Typography;
-const FunctionalButton = ({ part }) => {
+const FunctionalButton = ({ part, hasParagraphs = false }) => {
   const handleClick = () => {};
   const handleCreate = () => {};
   return (
@@ -15,7 +15,7 @@ const FunctionalButton = ({ part }) => {
         style={{ fontWeight: "bold", margin: 15 }}
         onClick={handleClick}
       >
-        ADD QUESTION
+        {hasParagraphs? "ADD PARAGRAPH" : "ADD QUESTION"}
       </Button>
       <Button
         className="orange-button"

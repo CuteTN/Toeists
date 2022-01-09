@@ -30,7 +30,7 @@ const CreatContestPart7 = () => {
               {listQuestion.map((component, i) => (
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}
-              <FunctionalButton />
+              <FunctionalButton hasParagraphs/>
             </Card>
           </div>
         </div>
