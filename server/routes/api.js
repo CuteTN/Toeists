@@ -10,6 +10,7 @@ import { hashtagsRouter } from "./hashtag.js";
 import { conversationsRouter } from "./conversation.js";
 import { searchRouter } from "./search.js";
 import { notificationsRouter } from "./notification.js";
+import { contestPartRouter } from "./contestPart.js";
 
 export const apiRouter = express.Router();
 
@@ -23,5 +24,6 @@ apiRouter.use("/hashtags", hashtagsRouter);
 apiRouter.use("/conversations", conversationsRouter);
 apiRouter.use("/search", searchRouter);
 apiRouter.use("/notifications", notificationsRouter);
+apiRouter.use("/contest-parts", contestPartRouter);
 
 apiRouter.use("/files", filesRouter);

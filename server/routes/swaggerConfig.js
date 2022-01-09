@@ -11,6 +11,7 @@ import { hashtagsSwaggerPaths } from "./hashtag.js";
 import { conversationsSwaggerPaths } from "./conversation.js";
 import { searchSwaggerPaths } from "./search.js";
 import { notificationsSwaggerPaths } from "./notification.js";
+import { contestPartsSwaggerPaths } from "./contestPart.js";
 
 const swaggerSchemas = Object.freeze({
   User: SwaggerTypes.object({
@@ -186,6 +187,15 @@ const swaggerSchemas = Object.freeze({
     url: SwaggerTypes.string(),
     kind: SwaggerTypes.string(),
     isSeen: SwaggerTypes.boolean(),
+  }),
+
+  ContestPart: SwaggerTypes.object({
+    _id: SwaggerTypes.string({ readOnly: true }), 
+    creatorId: SwaggerTypes.string({ readOnly: true }),
+    title: SwaggerTypes.string(),
+    part: SwaggerTypes.number(),
+    resource: SwaggerTypes.object(),
+    answers: SwaggerTypes.array(SwaggerTypes.enum(['A', 'B', 'C', 'D'])),
   })
 })
 
@@ -201,6 +211,7 @@ const swaggerPaths = Object.freeze({
   ...conversationsSwaggerPaths,
   ...searchSwaggerPaths,
   ...notificationsSwaggerPaths,
+  ...contestPartsSwaggerPaths,
 })
 
 

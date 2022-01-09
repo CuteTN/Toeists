@@ -214,7 +214,6 @@ export const checkCanSendPrivateMessage = async (conversation) => {
 
     const member1 = conversation.members?.[0];
     const member2 = conversation.members?.[1];
-    console.log(member1, member2);
 
   if (!(member1 && member2))
     return false;
