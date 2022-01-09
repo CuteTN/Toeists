@@ -26,7 +26,7 @@ const CreatContestPart2 = () => {
         <div className="col-md-8 mb-4">
           <div>
             <Card>
-              <TitleContest part={"Part 1"} />
+              <TitleContest part={"Part 2"} />
               {listQuestion.map((component, i) => (
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}

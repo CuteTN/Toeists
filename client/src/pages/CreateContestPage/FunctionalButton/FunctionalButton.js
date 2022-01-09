@@ -15,7 +15,7 @@ const FunctionalButton = ({ part }) => {
         style={{ fontWeight: "bold", margin: 15 }}
         onClick={handleClick}
       >
-        ADD PARAGRAPH
+        ADD QUESTION
       </Button>
       <Button
         className="orange-button"

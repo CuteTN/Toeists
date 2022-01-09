@@ -15,10 +15,11 @@ const QuestionComponent = () => {
         style={{ height: 100 }}
       />
       <div className="answer">
-        <Input name="answer1" placeholder="Correct Answer" />
+        <Input name="answer1" placeholder="Answer 1" />
         <Input name="answer2" placeholder="Answer 2" />
         <Input name="answer3" placeholder="Answer 3" />
         <Input name="answer4" placeholder="Answer 4" />
+        <Input name="answer1" placeholder="Correct Answer" />
       </div>
     </div>
   );

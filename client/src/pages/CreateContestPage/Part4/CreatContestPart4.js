@@ -11,7 +11,7 @@ import "../style.css";
 import TitleContest from "../Title/TitleContest";
 
 const { Text } = Typography;
-const CreatContestPart2 = () => {
+const CreatContestPart4 = () => {
   const [listQuestion, setListQuestion] = useState([
     <QuestionComponent key={0} />,
   ]);
@@ -26,7 +26,7 @@ const CreatContestPart2 = () => {
         <div className="col-md-8 mb-4">
           <div>
             <Card>
-              <TitleContest part={"Part 1"} />
+              <TitleContest part={"Part 4"} />
               {listQuestion.map((component, i) => (
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}
@@ -38,4 +38,4 @@ const CreatContestPart2 = () => {
     </div>
   );
 };
-export default CreatContestPart2;
+export default CreatContestPart4;
