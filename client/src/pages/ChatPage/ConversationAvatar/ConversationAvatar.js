@@ -1,6 +1,6 @@
 import { Avatar, Tooltip } from 'antd';
 import React from 'react';
-import { GoPerson, FaLock } from 'react-icons/all'
+import { GoPerson, RiVipCrown2Fill } from 'react-icons/all'
 import { useHistory } from 'react-router-dom';
 import COLOR from '../../../constants/colors';
 import { ConversationService } from '../../../services/ConversationService';
@@ -33,13 +33,18 @@ const ConversationAvatar = ({ conversation, avatarSize, maxAvatarCount }) => {
   const CrowdedGroupAvatar = () => {
     return (
       <Avatar.Group maxCount={maxAvatarCount} size={avatarSize}>
-        {otherMembers.map((member, i) =>
+        {conversation?.members?.map((member, i) =>
           <Tooltip key={i} title={`${member?.member?.name} (${member?.member?.username})`}>
             <div onClick={e => handleUserAvatarClick(e, member?.member)}>
               <Avatar
                 src={member?.member?.avatarUrl}
                 size={avatarSize}
-                style={{ cursor: "pointer" }}
+                style={{ 
+                  cursor: "pointer",
+                  borderColor: COLOR.yellow,
+                  borderWidth: 3,
+                  borderStyle: member?.role === "admin"? "solid" : "none",
+                }}
               >
                 {member?.member?.username}
               </Avatar>
@@ -60,9 +65,9 @@ const ConversationAvatar = ({ conversation, avatarSize, maxAvatarCount }) => {
             src={member?.member?.avatarUrl}
             size={avatarSize}
             style={{
-              borderColor: COLOR.orange,
+              borderColor: COLOR.darkOrange,
               borderStyle: "solid",
-              cursor: "pointer" 
+              cursor: "pointer"
             }}
           >
             {member?.member?.username}

@@ -1,5 +1,6 @@
 import { apiService } from "./index";
 
+export const getAllUsers = () => apiService.get("api/users")
 export const getUserById = (id) => apiService.get(`api/users/${id}`);
 
 export const SIGN_IN_ROUTE = '/api/users/sign-in'

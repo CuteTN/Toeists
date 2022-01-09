@@ -123,16 +123,15 @@ const ChatPage = () => {
   }
 
   const handleConversationModalSettingSubmit = (data, isCreating) => {
-    const toastKey = "update-conversation-" + Date.now();
-
     if (isCreating);
     // TODO: Create a conversation
     else {
-      message.loading({ key: toastKey, content: "Updating conversation..." })
       conversationApis.updateConversation(data._id, data)
-        .then(() => { message.success({ content: "The conversation was successfully updated." }) })
         .catch(() => { message.error({ content: "Something went wrong." }) })
-        .finally(() => { message.destroy(toastKey); })
+
+      if (data.type === "group")
+        conversationApis.setMembersThenRoleInConversation(data._id, data.members)
+          .catch(() => { message.error({ content: "Something went wrong." }) })
     }
 
     hideConversationSetting();

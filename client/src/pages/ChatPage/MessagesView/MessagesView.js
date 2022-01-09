@@ -12,6 +12,7 @@ import useOnScreen from "../../../hooks/useOnScreen";
 import { FaAngleDoubleDown } from "react-icons/all";
 import { useHistory } from "react-router-dom";
 import { ConversationService } from "../../../services/ConversationService";
+import COLOR from "../../../constants/colors";
 
 const NEW_MESSAGE_MESSAGE_KEY = "NEW_MESSAGE_MESSAGE_KEY";
 
@@ -142,7 +143,12 @@ const MessagesView = ({ conversation }) => {
                     <Avatar
                       src={membersDict?.[msg.senderId]?.member?.avatarUrl}
                       size={40}
-                      style={{ cursor: "pointer" }}
+                      style={{ 
+                        cursor: "pointer",
+                        borderColor: COLOR.yellow,
+                        borderWidth: 3,
+                        borderStyle: membersDict?.[msg.senderId]?.role === "admin"? "solid" : "none",
+                      }}
                     >
                       {membersDict?.[msg.senderId]?.member?.username}
                     </Avatar>

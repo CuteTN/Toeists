@@ -23,8 +23,10 @@ const AvatarView = () => {
   const avatarFileInputRef = React.useRef(null);
   const handleAvatarChange = (e) => {
     const selectedFile = e.target.files[0];
-    uploadUserAvatar(user._id, user.avatarUrl, selectedFile)
-      .then(() => dispatch(getUser(user._id)));
+
+    if (selectedFile)
+      uploadUserAvatar(user._id, user.avatarUrl, selectedFile)
+        .then(() => dispatch(getUser(user._id)));
   };
 
   const handleUploadAvatar = () => {
@@ -47,14 +49,14 @@ const AvatarView = () => {
       <Menu>
         <Menu.Item key="upload" onClick={handleUploadAvatar}>
           <Row align="middle">
-            <BsUpload size={20} className="mr-lg-2" />
+            <BsUpload size={20} className="mr-2" />
             <Text>Upload a new avatar</Text>
           </Row>
         </Menu.Item>
 
         <Menu.Item key="remove" onClick={handleDeleteAvatar}>
           <Row align="middle">
-            <BsTrash size={20} className="mr-lg-2" color="red" />
+            <BsTrash size={20} className="mr-2" color="red" />
             <Text style={{ color: "red" }}>Remove this avatar</Text>
           </Row>
         </Menu.Item>
@@ -105,7 +107,7 @@ const AvatarView = () => {
               <input
                 type="file"
                 name="myImage"
-                accept="image/png, image/gif, image/jpeg"
+                accept="image/*"
                 ref={avatarFileInputRef}
                 style={{ display: "none" }}
                 onChange={handleAvatarChange}
