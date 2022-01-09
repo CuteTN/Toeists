@@ -2,6 +2,7 @@ import { apiService } from "./index";
 
 const CONVERSATION_ROUTE = "/api/conversations";
 
+export const createConversation = (conversation) => apiService.post(CONVERSATION_ROUTE, conversation);
 export const getConversations = () => apiService.get(CONVERSATION_ROUTE);
 export const getConversationById = (id) => apiService.get(`${CONVERSATION_ROUTE}/${id}`);
 export const getPrivateConversationByPartnerId = (partnerId) => apiService.get(`${CONVERSATION_ROUTE}/private/${partnerId}`);
@@ -16,6 +17,15 @@ export const setMembersThenRoleInConversation = async (conversationId, memberInf
   const memberIds = memberInfos.map(({ memberId }) => memberId );
   await setMemberOfConversation(conversationId, memberIds);
   await updateMemberRolesOfConversation(conversationId, memberInfos);
+}
+
+export const createConversationThenSetRoles = async (conversation) => {
+  if (!conversation?.members)
+    return;
+
+  conversation.memberIds = conversation?.members.map(({memberId}) => memberId)
+  const id = (await createConversation(conversation)).data._id;
+  await updateMemberRolesOfConversation(id, conversation.members);
 }
 
 // updating self information

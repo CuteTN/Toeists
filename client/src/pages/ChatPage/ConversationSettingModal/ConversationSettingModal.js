@@ -40,7 +40,7 @@ const ConversationSettingModal = ({
 
   React.useEffect(() => {
     setConversationData(visible ? conversation : null);
-  }, [visible, conversation?._id]);
+  }, [visible, conversation?._id], signedInUser?._id);
 
   React.useEffect(() => {
     getAllUsers().then(res => {
@@ -51,7 +51,17 @@ const ConversationSettingModal = ({
 
   const setConversationData = (conversation) => {
     setConversationName(conversation?.name);
-    setConversationMembers(deepCloneConversationMembers(conversation?.members) ?? [])
+
+    if (conversation)
+      setConversationMembers(deepCloneConversationMembers(conversation?.members) ?? [])
+    else
+      setConversationMembers([
+        {
+          memberId: signedInUser?._id,
+          member: signedInUser,
+          role: 'admin',
+        }
+      ])
   };
 
   const deepCloneConversationMembers = (original) => {
@@ -77,10 +87,6 @@ const ConversationSettingModal = ({
 
   const filterUsers = (input, option) => {
     input = input?.toLowerCase() ?? "";
-
-    if (conversationMembers?.find(member => member.memberId === option.key))
-      return false;
-
     return option.title?.toLowerCase()?.includes(input);
   }
 
@@ -110,11 +116,17 @@ const ConversationSettingModal = ({
       members: conversationMembers,
     };
 
-    if (conversationData.type === "group")
+    if (conversationData.type === "group") {
+      if (!conversationData.name) {
+        message.error({ content: "A group conversation must have a name.", })
+        return;
+      }
+
       if (!conversationData.members.some(member => member.role === "admin")) {
         message.error({ content: "A group must have at least one admin.", })
         return;
       }
+    }
 
     onSubmit?.(conversationData, Boolean(!conversation));
   };
@@ -167,8 +179,8 @@ const ConversationSettingModal = ({
           <ConversationMemberSettingRow
             member={member}
             key={i}
-            conversationType={conversation?.type}
-            currentUserRole={currentMemberInfo?.role}
+            conversationType={conversation ? conversation.type : "group"}
+            currentUserRole={conversation ? currentMemberInfo?.role : "admin"}
             onRemoveMember={handleRemoveMember}
             onSetRole={handleSetMemberRole}
           />
@@ -188,7 +200,12 @@ const ConversationSettingModal = ({
       onOk={handleOk}
     >
       {BasicInformationSection()}
-      {conversation?.type === "group" && currentMemberInfo.role === "admin" && AddMemberSection()}
+      {(
+        (conversation?.type === "group" && currentMemberInfo.role === "admin") || // is admin
+        !conversation                                                             // is creating new conversation
+      ) &&
+        AddMemberSection()
+      }
       {MemberListSection(conversation)}
     </Modal>
   );

@@ -112,6 +112,11 @@ const ChatPage = () => {
   //#endregion
 
   //#region Modal conversation setting
+  const showAddConversationModal = () => {
+    setConversationToEdit(null);
+    setConversationSettingModalVisible(true);
+  }
+
   const showConversationSettingToUpdate = () => {
     setConversationToEdit(currentConversation);
     setConversationSettingModalVisible(true);
@@ -123,8 +128,12 @@ const ChatPage = () => {
   }
 
   const handleConversationModalSettingSubmit = (data, isCreating) => {
-    if (isCreating);
-    // TODO: Create a conversation
+    if (isCreating) {
+      data.type = "group";
+
+      conversationApis.createConversationThenSetRoles(data)
+        .catch(() => { message.error({ content: "Something went wrong." }) })
+    }
     else {
       conversationApis.updateConversation(data._id, data)
         .catch(() => { message.error({ content: "Something went wrong." }) })
@@ -156,7 +165,9 @@ const ChatPage = () => {
 
   return <div className="chat-wrapper">
     <Navbar />
-    <DivManageConversations />
+    <DivManageConversations
+      onCreateConversationClick={showAddConversationModal}
+    />
     <ListConversations
       conversations={conversations}
       onConversationClick={handleConversationClick}
