@@ -1,14 +1,19 @@
 // libs
 import React from "react";
 import { Typography, Image, Button, Input } from "antd";
+import AudioPlayer from "react-h5-audio-player";
+//component
+import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
+import demo from "../../../../assets/1.1.mp3";
 //others
 import "./style.css";
-import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
+import "react-h5-audio-player/lib/styles.css";
 
 const { Text } = Typography;
 const QuestionComponent = () => {
   const handleAddAudio = () => {};
   const handleAddPicture = () => {};
+
   return (
     <div className="question-component-wrapper">
       <p className="title-question">Question</p>
@@ -22,6 +27,15 @@ const QuestionComponent = () => {
           display: "block",
         }}
       ></Image>
+      <div style={{ marginTop: 30 }}>
+        <AudioPlayer
+          src={demo}
+          showJumpControls={false}
+          autoPlay={false}
+          onPlay={(e) => console.log("onPlay")}
+          // other props here
+        />
+      </div>
       <div className="add-button">
         <Button
           className="orange-button"

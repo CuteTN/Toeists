@@ -16,6 +16,7 @@ import CreateContestPart5 from "./CreateContestPage/Part5/CreateContestPart5";
 import CreateContestPart6 from "./CreateContestPage/Part6/CreateContestPart6";
 import CreateContestPart7 from "./CreateContestPage/Part7/CreateContestPart7";
 import SpecificForumPage from "./SpecificForumPage/SpecificForumPage";
+import SpecificContestPage from "./SpecificContestPage/SpecificContestPage";
 import FeedPage from "./FeedPage/FeedPage";
 
 export {
@@ -55,4 +56,5 @@ export {
   // GroupAdminManagement,
   SettingsPage,
   SpecificForumPage,
+  SpecificContestPage,
 };
