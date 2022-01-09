@@ -9,7 +9,7 @@ import ListConversations from "./ListConversations/ListConversations";
 import { Navbar } from "../../components";
 import * as conversationApis from "../../services/api/conversation";
 import { useHistory, useParams } from "react-router";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import DivManageConversations from "./DivManageConversations/DivManageConversations";
 import { useMessage } from '../../hooks/useMessage'
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
@@ -75,6 +75,12 @@ const ChatPage = () => {
       }
     })
 
+    msgIO.onFailed((msg) => {
+      message.error({
+        content: "Oops! We can't deliver this message at the moment. Please try again later."
+      })
+    })
+
     msgIO.onConversationsUpdated((msg) => {
       fetchConversations();
       fetchConversationById(conversationId);
@@ -107,6 +113,24 @@ const ChatPage = () => {
   const toggleCurrentConversationBlockedState = () => {
     if (currentConversationMemberInfo && conversationId) {
       conversationApis.updateConversationMyBlockedState(conversationId, !currentConversationMemberInfo.hasBlocked);
+    }
+  }
+
+  const leaveGroupConversation = () => {
+    if (currentConversationMemberInfo && conversationId) {
+      if (currentConversation?.members?.some(member => member.role === "admin" && member.memberId !== signedInUser?._id))
+        Modal.confirm({
+          title: "Leave group",
+          content: "Are you sure to leave this group?",
+          onOk: () => {
+            conversationApis.leaveConversation(conversationId)
+              .catch(() => {
+                history.replace('/chat')
+              })
+          }
+        })
+      else
+        message.error("Please assign another person as admin before leaving.");
     }
   }
   //#endregion
@@ -177,6 +201,7 @@ const ChatPage = () => {
       toggleSeenState={toggleCurrentConversationSeenState}
       toggleMutedState={toggleCurrentConversationMutedState}
       toggleBlockedState={toggleCurrentConversationBlockedState}
+      leaveGroupConversation={leaveGroupConversation}
       showConversationSetting={showConversationSettingToUpdate}
     />
     <MessagesView

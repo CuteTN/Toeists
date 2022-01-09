@@ -15,12 +15,14 @@ import "./style.css";
 import COLOR from "../../../constants/colors";
 import { useAuth } from "../../../contexts/authenticationContext";
 import ConversationAvatar from "../ConversationAvatar/ConversationAvatar";
+import { ImExit } from "react-icons/all";
 
 const MessageHeader = ({
   conversation,
   toggleSeenState,
   toggleMutedState,
   toggleBlockedState,
+  leaveGroupConversation,
   showConversationSetting,
 }) => {
   const { signedInUser } = useAuth();
@@ -67,6 +69,15 @@ const MessageHeader = ({
             </Row>
           </Menu.Item>
         )}
+
+        {conversation?.type === "group" && (
+          <Menu.Item key="leave" onClick={leaveGroupConversation}>
+            <Row align="middle">
+              <ImExit />
+              <Text className="ml-2">Leave</Text>
+            </Row>
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
@@ -74,7 +85,7 @@ const MessageHeader = ({
   return (
     <div className="message-header-wrapper">
       <Row className="message-title mt-4">
-        <ConversationAvatar conversation={conversation} avatarSize={40} maxAvatarCount={3}/>
+        <ConversationAvatar conversation={conversation} avatarSize={40} maxAvatarCount={3} />
         <h2 className="ml-2">
           <font color="orange"> {conversationDisplayName} </font>{" "}
         </h2>
