@@ -3,6 +3,7 @@ import React from "react";
 import { Typography, Image, Button, Input } from "antd";
 //others
 import "./style.css";
+import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
 
 const { Text } = Typography;
 const QuestionComponent = () => {
@@ -38,11 +39,12 @@ const QuestionComponent = () => {
         </Button>
       </div>
       <div>
-        <Input
+        <CorrectAnswerRadio amount={4} />
+        {/* <Input
           name="answer1"
           style={{ width: 480 }}
           placeholder="Correct Answer"
-        />
+        /> */}
       </div>
     </div>
   );

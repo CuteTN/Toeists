@@ -1,6 +1,8 @@
 // libs
 import React from "react";
 import { Typography, Input } from "antd";
+//components
+import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
 //others
 import "./style.css";
 
@@ -19,7 +21,7 @@ const QuestionComponent = () => {
         <Input name="answer2" placeholder="Answer 2" />
         <Input name="answer3" placeholder="Answer 3" />
         <Input name="answer4" placeholder="Answer 4" />
-        <Input name="answer1" placeholder="Correct Answer" />
+        <CorrectAnswerRadio amount={4} />
       </div>
     </div>
   );

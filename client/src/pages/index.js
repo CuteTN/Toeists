@@ -5,6 +5,7 @@ import ErrorPage from "./ErrorPage/ErrorPage";
 import SettingsPage from "./SettingPage/SettingPage";
 import HomePage from "./HomePage/HomePage";
 import ChatPage from "./ChatPage/ChatPage";
+import ContestPage from "./ContestPage/ContestPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
 import CreateContestPage from "./CreateContestPage/CreateContestPage";
 import CreatContestPart1 from "./CreateContestPage/Part1/CreatContestPart1";
@@ -22,6 +23,7 @@ export {
   // AboutPage,
   // AuthPage,
   CreatePostPage,
+  ContestPage,
   CreateContestPage,
   CreatContestPart1,
   CreatContestPart2,
