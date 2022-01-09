@@ -1,17 +1,17 @@
 // libs
 import React, { useState } from "react";
-import { Card, Typography, Button, Input } from "antd";
+import { Card, Typography, Button } from "antd";
 // components
 import { Navbar } from "../../../components";
 import QuestionComponent from "./QuestionComponent/QuestionComponent";
-import TitleContest from "../Title/TitleContest";
 import FunctionalButton from "../FunctionalButton/FunctionalButton";
 //others
 import styles from "../styles";
 import "../style.css";
+import TitleContest from "../Title/TitleContest";
 
 const { Text } = Typography;
-const CreatContestPart5 = () => {
+const CreatContestPart3 = () => {
   const [listQuestion, setListQuestion] = useState([
     <QuestionComponent key={0} />,
   ]);
@@ -26,11 +26,10 @@ const CreatContestPart5 = () => {
         <div className="col-md-8 mb-4">
           <div>
             <Card>
-              <TitleContest part={"Part 5"} />
+              <TitleContest part={"Part 3"} />
               {listQuestion.map((component, i) => (
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}
-
               <FunctionalButton />
             </Card>
           </div>
@@ -39,4 +38,4 @@ const CreatContestPart5 = () => {
     </div>
   );
 };
-export default CreatContestPart5;
+export default CreatContestPart3;

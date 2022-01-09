@@ -61,13 +61,15 @@ const ListConversations = ({ conversations, onConversationClick }) => {
           defaultValue={""}
         />
       </div>
-      {shownConversations?.map((c, i) => (
-        <ConversationCard
-          key={i}
-          conversation={c}
-          onClick={handleConversationClick}
-        />
-      ))}
+      <div className="list-conversation">
+        {shownConversations?.map((c, i) => (
+          <ConversationCard
+            key={i}
+            conversation={c}
+            onClick={handleConversationClick}
+          />
+        ))}
+      </div>
     </div>
   );
 };

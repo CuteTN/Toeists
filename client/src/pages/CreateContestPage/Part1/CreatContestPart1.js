@@ -4,12 +4,14 @@ import { Card, Typography, Button } from "antd";
 // components
 import { Navbar } from "../../../components";
 import QuestionComponent from "./QuestionComponent/QuestionComponent";
+import FunctionalButton from "../FunctionalButton/FunctionalButton";
 //others
 import styles from "../styles";
 import "../style.css";
+import TitleContest from "../Title/TitleContest";
 
 const { Text } = Typography;
-const CreatContestPart1 = () => {
+const CreatContestPart2 = () => {
   const [listQuestion, setListQuestion] = useState([
     <QuestionComponent key={0} />,
   ]);
@@ -24,38 +26,11 @@ const CreatContestPart1 = () => {
         <div className="col-md-8 mb-4">
           <div>
             <Card>
-              <div className="row">
-                <div
-                  style={{
-                    paddingLeft: 24,
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: 36, fontWeight: 700 }}>Part 1</Text>
-                </div>
-              </div>
-              <hr />
+              <TitleContest part={"Part 1"} />
               {listQuestion.map((component, i) => (
                 <React.Fragment key={i}>{component}</React.Fragment>
               ))}
-
-              <div className="functional-button">
-                <Button
-                  className="orange-button"
-                  style={{ fontWeight: "bold", marginRight: 10 }}
-                  onClick={handleClick}
-                >
-                  ADD QUESTION
-                </Button>
-                <Button
-                  className="orange-button"
-                  style={{ fontWeight: "bold" }}
-                  onClick={handleCreate}
-                >
-                  CREATE
-                </Button>
-              </div>
+              <FunctionalButton />
             </Card>
           </div>
         </div>
@@ -63,4 +38,4 @@ const CreatContestPart1 = () => {
     </div>
   );
 };
-export default CreatContestPart1;
+export default CreatContestPart2;

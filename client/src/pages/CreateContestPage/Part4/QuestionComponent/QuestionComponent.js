@@ -1,11 +1,14 @@
 // libs
 import React, { useState } from "react";
-import { Typography, Input, Button, Image } from "antd";
+import { Typography, Image, Button, Input } from "antd";
 //others
 import "./style.css";
 
 const { Text } = Typography;
 const QuestionComponent = () => {
+  const handleAddAudio = () => {};
+  const handleAddPicture = () => {};
+
   const Question = () => {
     return (
       <div>
@@ -25,51 +28,21 @@ const QuestionComponent = () => {
       </div>
     );
   };
-
   const [listQuestion, setListQuestion] = useState([<Question key={0} />]);
 
   const handleClick = () => {};
-
-  const UpdateImageButton = () => {
-    return (
-      <div className="button-add-image">
-        <Button
-          className="orange-button"
-          style={{ fontWeight: "bold", margin: 15 }}
-          onClick={handleClick}
-        >
-          Add Image
-        </Button>
-        <Button className="orange-button" style={{ fontWeight: "bold" }}>
-          Delete Image
-        </Button>
-      </div>
-    );
-  };
-
   return (
     <div className="question-component-wrapper">
-      <p className="title-question">Paragraph</p>
-      <div className="paragraph-image">
-        <Image
-          src="https://shophoavip.com/uploads/noidung/images/shophoavip12/hoa-oai-huong-lavender/lavender.jpg"
-          style={{
-            maxHeight: "40vh",
-            width: "100%",
-            objectFit: "revert",
-            height: "auto",
-            display: "block",
-          }}
-        ></Image>
-        <Input.TextArea
-          name="question"
-          placeholder="Question"
-          style={{ height: 300 }}
-        />
-
-        <UpdateImageButton />
+      <p className="title-question">Conversations</p>
+      <div className="add-button">
+        <Button
+          className="orange-button"
+          style={{ fontWeight: "bold", margin: 10 }}
+          onClick={handleAddAudio}
+        >
+          ADD AUDIO
+        </Button>
       </div>
-
       <div className="answer">
         {listQuestion.map((component, i) => (
           <React.Fragment key={i}>{component}</React.Fragment>
