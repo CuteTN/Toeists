@@ -1,6 +1,8 @@
 // libs
 import React, { useEffect } from "react";
 import { Typography, Input } from "antd";
+//components
+import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
 //others
 import "./style.css";
 import { useSetField } from "../../../../hooks/useSetField";
@@ -14,7 +16,7 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
   });
 
   useEffect(() => {
-    console.log(question);
+    onQuestionChange?.(questionId, question)
   }, [question])
 
   const handleInputChange = (e, pathList) => {
@@ -35,7 +37,7 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
         <Input name="optionB" placeholder="Option B" onChange={e => handleInputChange(e, ["options", 1])}/>
         <Input name="optionC" placeholder="Option C" onChange={e => handleInputChange(e, ["options", 2])}/>
         <Input name="optionD" placeholder="Option D" onChange={e => handleInputChange(e, ["options", 3])}/>
-        <Input name="answer" placeholder="Correct Answer" onChange={e => handleInputChange(e, ["answer"])} />
+        <CorrectAnswerRadio amount={4} onChange={v => setQuestionField(["answer"], v)}/>
       </div>
     </div>
   );

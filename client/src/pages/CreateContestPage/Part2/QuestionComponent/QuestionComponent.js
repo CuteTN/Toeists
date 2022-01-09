@@ -1,6 +1,8 @@
 // libs
 import React from "react";
 import { Typography, Image, Button, Input } from "antd";
+//components
+import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
 //others
 import "./style.css";
 
@@ -21,12 +23,7 @@ const QuestionComponent = () => {
         </Button>
       </div>
       <div>
-        <p className="title-question">Correct Answer</p>
-        <Input
-          name="answer1"
-          style={{ width: 480 }}
-          placeholder="Correct Answer ( A, B or C )"
-        />
+        <CorrectAnswerRadio amount={3} />
       </div>
     </div>
   );

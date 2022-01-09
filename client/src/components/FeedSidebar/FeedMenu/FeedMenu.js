@@ -1,6 +1,10 @@
 import React from "react";
 import { Menu } from "antd";
-import { UserOutlined, TeamOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  TeamOutlined,
+  CheckSquareOutlined,
+} from "@ant-design/icons";
 import styles from "../styles.js";
 import { Link } from "react-router-dom";
 
@@ -29,6 +33,13 @@ function FeedMenu({ user }) {
         icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
       >
         <Link to="/friends">Following</Link>
+      </Menu.Item>
+      <Menu.Item
+        key="contests"
+        style={styles.item}
+        icon={<CheckSquareOutlined style={{ fontSize: "1.4rem" }} />}
+      >
+        <Link to="/contests">Contests</Link>
       </Menu.Item>
     </Menu>
   );

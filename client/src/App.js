@@ -13,6 +13,7 @@ import {
   CreatePostPage,
   SpecificForumPage,
   FeedPage,
+  ContestPage,
   CreateContestPage,
   CreatContestPart5,
   CreatContestPart6,
@@ -64,10 +65,8 @@ function App() {
             <Route exact path="/signup">
               <SignUpPage />
             </Route>
-            {/* <Route exact path="/userinfo">
-          <UserInfoPage />
-        </Route> */}
             <Route exact path="/feed" component={FeedPage} />
+            <Route exact path="/contests" component={ContestPage} />
             <PrivateRoute
               exact
               path="/forum/create"
@@ -120,63 +119,8 @@ function App() {
               path="/email-confirmation/:token"
               component={EmailConfirmationPage}
             />
-            {/*   <Route
-              path="/post/:id/:focusedCommentId"
-              component={SpecificPostPage}
-            /> */}
-            {/* <Route exact path="/search" component={UserResultSearchPage} /> */}
-            {/* <PrivateRoute
-              exact
-              path="/group/:id/requests"
-              component={GroupPage}
-            /> */}
-            {/* <Route path="/userinfo/:id/about" component={AboutPage} /> */}
-            {/* <PrivateRoute
-              exact
-              path="/friends"
-              component={FriendManagementPage}
-            /> */}
-            {/* <PrivateRoute
-              exact
-              path="/mutualFriends/:id"
-              component={MutualFriendPage}
-            /> */}
-            {/* <Route exact path="/groups" component={GroupManagementPage} /> */}
-            {/* <PrivateRoute
-              exact
-              path="/group/create"
-              component={CreateGroupPage}
-            /> */}
-            {/* <Route exact path="/group/:id/:menu" component={GroupPage} /> */}
-            {/* <Route exact path="/group/:id">
-            <Redirect to="/group/:id/main" />
-          </Route> */}
             <PrivateRoute exact path="/settings" component={SettingsPage} />
             <PrivateRoute path="/chat/:conversationId?" component={ChatPage} />
-            {/* <Route exact path="/activate/:token" component={ActivationPage} /> */}
-            {/* <PrivateRoute exact path="/message" component={MessagePage} /> */}
-            {/* <Route path="/group/:id/about" component={GroupPage} />
-            <Route path="/group/:id/members" component={GroupPage} /> */}
-            {/* <PrivateRoute exact path="/admin">
-            <Redirect to="/admin/dashboard" />
-          </PrivateRoute> */}
-            {/* <PrivateRoute
-            exact
-            path="/admin/:menu"
-            component={AdminDashboardPage}
-          /> */}
-            {/* <PrivateRoute
-              exact
-              path="/admin/user"
-              component={UserAdminManagement}
-            />
-            <PrivateRoute
-              exact
-              path="/admin/group"
-              component={GroupAdminManagement}
-            /> */}
-            {/* <PrivateRoute exact path="/statistics" component={StatisticsPage} /> */}
-            {/* <Route path="/demoSocketIO" component={DemoSocket} /> */}
             <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>
