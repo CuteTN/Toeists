@@ -11,7 +11,6 @@ const { Text } = Typography;
 
 const QuestionComponent = ({ questionId, onQuestionChange }) => {
   const [question, setQuestion, patchQuestion] = usePatch({
-    question: "",
     options: ["", "", "", ""],
     answer: "",
   });
