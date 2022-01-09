@@ -20,8 +20,8 @@ const TitleContest = ({ part }) => {
       </div>
       <hr />
       <div className="title">
-        <p className="title-question">Title Contest</p>
-        <Input name="title" placeholder="Title Contest" />
+        <p className="title-question">Contest title</p>
+        <Input name="title" placeholder="Contest title" />
       </div>
     </div>
   );

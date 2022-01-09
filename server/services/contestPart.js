@@ -1,3 +1,39 @@
+export const scanAndMoveContestAnswers = (contestPart) => {
+  const part = parseInt(contestPart.part)
+  contestPart.part = part;
+  if (part < 1 || part > 7)
+    throw "The part must be an integer between 1 and 7.";
+
+  const answers = [];
+  if ([3, 4, 6, 7].includes(part))
+    contestPart?.resource?.paragraphs?.forEach?.(p => {
+      p?.questions?.forEach?.(q => {
+        const answer = q?.answer?.toUpperCase?.();
+        if (answer) {
+          q.id = answers.length;
+          answers.push(answer);
+          delete q.answer
+        }
+        else
+          throw "Each question must contain the 'answer' field."
+      })
+    })
+  else
+    contestPart?.resource?.questions?.forEach?.(q => {
+      const answer = q?.answer?.toUpperCase?.();
+      if (answer) {
+        q.id = answers.length;
+        answers.push(answer);
+        delete q.answer
+      }
+      else
+        throw "Each question must contain the 'answer' field."
+    })
+
+  contestPart.answers = answers;
+}
+
+
 export const validateContestPart = (contestPart) => {
   if (!(contestPart?.part && contestPart?.resource && contestPart?.answers && contestPart?.title))
     throw "The 'part', 'resource', 'answers', 'title' fields are required.";

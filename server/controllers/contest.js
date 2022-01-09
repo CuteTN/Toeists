@@ -1,6 +1,6 @@
 import express from 'express'
 import { ContestPart } from '../models/contestPart.js';
-import { validateContestPart } from '../services/contestPart.js';
+import { scanAndMoveContestAnswers, validateContestPart } from '../services/contestPart.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
 
 /** @type {express.RequestHandler} */
@@ -13,6 +13,7 @@ export const createContestPart = async (req, res) => {
 
   contestPartDto.creatorId = creatorId;
   try {
+    scanAndMoveContestAnswers(contestPartDto); 
     validateContestPart(contestPartDto);
   }
   catch (error) {
