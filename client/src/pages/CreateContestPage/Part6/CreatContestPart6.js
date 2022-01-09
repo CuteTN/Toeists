@@ -43,10 +43,10 @@ const CreatContestPart6 = () => {
               <div className="functional-button">
                 <Button
                   className="orange-button"
-                  style={{ fontWeight: "bold", marginRight: 10 }}
+                  style={{ fontWeight: "bold", margin: 15 }}
                   onClick={handleClick}
                 >
-                  ADD QUESTION
+                  ADD PARAGRAPH
                 </Button>
                 <Button
                   className="orange-button"
