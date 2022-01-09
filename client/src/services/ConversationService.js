@@ -3,7 +3,11 @@ import { TokenService } from "./TokenService";
 export class ConversationService {
   static getOtherMembers(conversation) {
     const { userId } = TokenService.decodeAccessToken() ?? {};
-    return conversation.members.filter(member => member?.memberId !== userId);
+    return conversation?.members?.filter(member => member?.memberId !== userId);
+  }
+
+  static getSeeners(conversation) {
+    return conversation?.members?.filter(member => member.hasSeen);
   }
 
   static getName(conversation) {
@@ -17,7 +21,7 @@ export class ConversationService {
   static getLastMessage(conversation) {
     if (!conversation?.messages?.length)
       return null;
-    return conversation.messages[0];
+    return conversation.messages[conversation?.messages?.length-1];
   }
 
   static getMemberInfo(conversation, userId) {

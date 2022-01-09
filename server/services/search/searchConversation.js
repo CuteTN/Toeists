@@ -1,8 +1,9 @@
 import { getMatchPoint } from "../../utils/matchString.js";
 import { getUserMatchPoint } from "./searchUser.js";
 
-const NAME_FACTOR = 10;
+const NAME_FACTOR = 15;
 const USER_FACTOR = 1;
+const PRIVATE_CONVERSATION_FACTOR = 2;
 
 export const getConversationMatchPoint = (query, conversation) => {
   /** @type {string} */
@@ -17,6 +18,9 @@ export const getConversationMatchPoint = (query, conversation) => {
       result += getUserMatchPoint(query, member) * USER_FACTOR;
     })
   }
+
+  if (conversation?.type === "private")
+    result *= PRIVATE_CONVERSATION_FACTOR;
 
   return result;
 }

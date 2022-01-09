@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 import { Conversation } from "../models/conversation.js";
 import { Message } from "../models/message.js";
+import { UserConnection } from "../models/userConnection.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { cuteIO } from './../index.js'
+import { checkUserHasConnectionWith } from "./userConnection.js";
 
 /**
  * @param {*} user1Id 
@@ -137,7 +139,7 @@ export const addMessageToConversation = async (userId, conversationId, message) 
     };
   }
 
-  const conversation = conversationId ? await Conversation.findById(conversationId) : null;
+  const conversation = conversationId ? await Conversation.findById(conversationId).select("+members.hasBlocked") : null;
 
   if (!conversation) {
     // return res.status(httpStatusCodes.notFound).send();
@@ -162,6 +164,18 @@ export const addMessageToConversation = async (userId, conversationId, message) 
 
   message.senderId = userId;
   message.conversationId = conversationId;
+
+  if (conversation.type === "private") {
+    if (!await checkCanSendPrivateMessage(conversation)) {
+      return {
+        status: {
+          code: httpStatusCodes.forbidden,
+          msg: "Can't send private message at the moment."
+        },
+        res
+      }
+    }
+  }
 
   try {
     var createdMessage = await Message.create(message);
@@ -192,6 +206,30 @@ export const addMessageToConversation = async (userId, conversationId, message) 
     },
   };
 };
+
+
+export const checkCanSendPrivateMessage = async (conversation) => {
+  if (conversation.type !== "private")
+    return false;
+
+    const member1 = conversation.members?.[0];
+    const member2 = conversation.members?.[1];
+
+  if (!(member1 && member2))
+    return false;
+
+  if (member1.hasBlocked || member2.hasBlocked)
+    return false;
+
+  const blockingConnections = await UserConnection.find({ status: "blocking", });
+  if (
+    checkUserHasConnectionWith(member1.memberId, member2.memberId, blockingConnections, "blocking") ||
+    checkUserHasConnectionWith(member2.memberId, member1.memberId, blockingConnections, "blocking")
+  )
+    return false
+
+  return true
+}
 
 
 /**

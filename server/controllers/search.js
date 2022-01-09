@@ -131,7 +131,7 @@ export const searchForConversations = async (req, res, next) => {
     const allConversations = await Conversation.find()
       .select("+members.hasMuted +members.hasBlocked")
       .sort({ messageUpdatedAt: 'desc' })
-      .populate({ path: "messages", options: { perDocumentLimit: 1 } })
+      .populate({ path: "messages", })
       .populate({ path: "members.member" });
 
     let visibleConversations = allConversations

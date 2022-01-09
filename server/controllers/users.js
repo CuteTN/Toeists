@@ -5,7 +5,7 @@ import express from "express";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import mongoose from "mongoose";
 import { UserConnection } from "../models/userConnection.js";
-import { getAllConnectionsOfUser } from "../services/userConnection.js";
+import { checkUserHasConnectionWith, getAllConnectionsOfUser } from "../services/userConnection.js";
 import { findUserByIdentifier, generateEmailConfirmationUrl, generateUserTokens } from "../services/users.js";
 import { verifyJwt } from "../services/jwtHelper.js";
 import { smtpTransport } from "../index.js";
@@ -268,7 +268,17 @@ export const requestPasswordReset = async (req, res, next) => {
 /** @type {express.RequestHandler} */
 export const getAllUsers = async (req, res, next) => {
   const users = await User.find().populate(USER_VIRTUAL_FIELDS);
-  return res.status(httpStatusCodes.ok).send(users);
+  const signedInUserId = req.attached.decodedToken.userId;
+
+  const blockingConnections = await UserConnection.find({ status: "blocking", });
+  let visibleUsers = users.filter(u =>
+    !(
+      checkUserHasConnectionWith(signedInUserId, u._id, blockingConnections, "blocking") ||
+      checkUserHasConnectionWith(u._id, signedInUserId, blockingConnections, "blocking")
+    )
+  );
+
+  return res.status(httpStatusCodes.ok).json(visibleUsers);
 };
 
 
@@ -277,7 +287,7 @@ export const getUserById = async (req, res, next) => {
   const user = req?.attached?.targetedData;
   await user.populate(USER_VIRTUAL_FIELDS);
 
-  return res.status(httpStatusCodes.ok).send(user);
+  return res.status(httpStatusCodes.ok).json(user);
 };
 
 

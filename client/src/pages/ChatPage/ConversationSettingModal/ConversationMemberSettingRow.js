@@ -22,10 +22,11 @@ const ConversationMemberSettingRow = ({
   /** @type {"none"|"admin"} */
   const role = React.useMemo(
     () => (conversationType === "group" ? member?.role : "none"),
-    [member]
+    [member, conversationType]
   );
   const isCurrentUser = React.useMemo(
-    () => member?.memberId === signedInUser._id
+    () => member?.memberId === signedInUser._id,
+    [member, signedInUser]
   );
 
   const isGroupAdmin = React.useMemo(
@@ -37,7 +38,7 @@ const ConversationMemberSettingRow = ({
     return (
       <Menu disabled={member == null}>
         {isGroupAdmin && !isCurrentUser && (
-          <Menu.Item key="remove" onClick={() => onRemoveMember?.(member?.id)}>
+          <Menu.Item key="remove" onClick={() => onRemoveMember(member?.memberId)}>
             <Row align="middle">
               <Text className="ml-2">Remove member</Text>
             </Row>
@@ -48,12 +49,12 @@ const ConversationMemberSettingRow = ({
           <Menu.Item
             key="set-role"
             onClick={() =>
-              onSetRole?.(member?.id, role === "admin" ? "none" : "admin")
+              onSetRole(member?.memberId, role === "admin" ? "none" : "admin")
             }
           >
             <Row align="middle">
               <Text className="ml-2">
-                {role === "admin" ? "Remove from admins." : "Promote to admin."}
+                {role === "admin" ? "Remove from admins" : "Promote to admin"}
               </Text>
             </Row>
           </Menu.Item>

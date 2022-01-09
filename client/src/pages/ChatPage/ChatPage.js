@@ -9,7 +9,7 @@ import ListConversations from "./ListConversations/ListConversations";
 import { Navbar } from "../../components";
 import * as conversationApis from "../../services/api/conversation";
 import { useHistory, useParams } from "react-router";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import DivManageConversations from "./DivManageConversations/DivManageConversations";
 import { useMessage } from '../../hooks/useMessage'
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
@@ -75,6 +75,12 @@ const ChatPage = () => {
       }
     })
 
+    msgIO.onFailed((msg) => {
+      message.error({
+        content: "Oops! We can't deliver this message at the moment. Please try again later."
+      })
+    })
+
     msgIO.onConversationsUpdated((msg) => {
       fetchConversations();
       fetchConversationById(conversationId);
@@ -109,9 +115,32 @@ const ChatPage = () => {
       conversationApis.updateConversationMyBlockedState(conversationId, !currentConversationMemberInfo.hasBlocked);
     }
   }
+
+  const leaveGroupConversation = () => {
+    if (currentConversationMemberInfo && conversationId) {
+      if (currentConversation?.members?.some(member => member.role === "admin" && member.memberId !== signedInUser?._id))
+        Modal.confirm({
+          title: "Leave group",
+          content: "Are you sure to leave this group?",
+          onOk: () => {
+            conversationApis.leaveConversation(conversationId)
+              .catch(() => {
+                history.replace('/chat')
+              })
+          }
+        })
+      else
+        message.error("Please assign another person as admin before leaving.");
+    }
+  }
   //#endregion
 
   //#region Modal conversation setting
+  const showAddConversationModal = () => {
+    setConversationToEdit(null);
+    setConversationSettingModalVisible(true);
+  }
+
   const showConversationSettingToUpdate = () => {
     setConversationToEdit(currentConversation);
     setConversationSettingModalVisible(true);
@@ -123,16 +152,19 @@ const ChatPage = () => {
   }
 
   const handleConversationModalSettingSubmit = (data, isCreating) => {
-    const toastKey = "update-conversation-" + Date.now();
+    if (isCreating) {
+      data.type = "group";
 
-    if (isCreating);
-    // TODO: Create a conversation
-    else {
-      message.loading({ key: toastKey, content: "Updating conversation..." })
-      conversationApis.updateConversation(data._id, data)
-        .then(() => { message.success({ content: "The conversation was successfully updated." }) })
+      conversationApis.createConversationThenSetRoles(data)
         .catch(() => { message.error({ content: "Something went wrong." }) })
-        .finally(() => { message.destroy(toastKey); })
+    }
+    else {
+      conversationApis.updateConversation(data._id, data)
+        .catch(() => { message.error({ content: "Something went wrong." }) })
+
+      if (data.type === "group")
+        conversationApis.setMembersThenRoleInConversation(data._id, data.members)
+          .catch(() => { message.error({ content: "Something went wrong." }) })
     }
 
     hideConversationSetting();
@@ -157,7 +189,9 @@ const ChatPage = () => {
 
   return <div className="chat-wrapper">
     <Navbar />
-    <DivManageConversations />
+    <DivManageConversations
+      onCreateConversationClick={showAddConversationModal}
+    />
     <ListConversations
       conversations={conversations}
       onConversationClick={handleConversationClick}
@@ -167,6 +201,7 @@ const ChatPage = () => {
       toggleSeenState={toggleCurrentConversationSeenState}
       toggleMutedState={toggleCurrentConversationMutedState}
       toggleBlockedState={toggleCurrentConversationBlockedState}
+      leaveGroupConversation={leaveGroupConversation}
       showConversationSetting={showConversationSettingToUpdate}
     />
     <MessagesView

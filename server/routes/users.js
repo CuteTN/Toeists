@@ -1,7 +1,7 @@
 import express from "express";
 import * as controllers from "../controllers/users.js";
 import { autoTransformToUserIdsMdwFn } from "../middlewares/autoTransformToUserIds.js";
-import { authorizeMdw } from "../middlewares/authorization.js";
+import { authorizeMdw, extractUserTokenMdw } from "../middlewares/authorization.js";
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
 import { findByIdMdwFn } from "../middlewares/findById.js";
 import { User } from "../models/user.js";
@@ -13,7 +13,7 @@ const reqParamsToUserId = autoTransformToUserIdsMdwFn([
   "id",
 ]);
 
-usersRouter.get("/", controllers.getAllUsers);
+usersRouter.get("/", extractUserTokenMdw, controllers.getAllUsers);
 usersRouter.post("/", controllers.createUser);
 
 usersRouter.post("/sign-in", controllers.signIn);

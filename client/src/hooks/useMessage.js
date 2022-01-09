@@ -28,6 +28,7 @@ export const useMessage = () => {
   const onSent = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-ok", handler);
     cleanUpCallbacks.current.push(cleanUp);
+    return cleanUp;
   }
 
 
@@ -38,6 +39,7 @@ export const useMessage = () => {
   const onFailed = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-error", handler);
     cleanUpCallbacks.current.push(cleanUp);
+    return cleanUp;
   }
 
   /**
@@ -47,6 +49,7 @@ export const useMessage = () => {
   const onReceive = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-receive", handler);
     cleanUpCallbacks.current.push(cleanUp);
+    return cleanUp;
   }
 
 
@@ -57,6 +60,7 @@ export const useMessage = () => {
   const onSeen = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-seen", handler);
     cleanUpCallbacks.current.push(cleanUp);
+    return cleanUp;
   }
 
 
@@ -67,10 +71,9 @@ export const useMessage = () => {
   const onRemove = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-remove", handler);
     cleanUpCallbacks.current.push(cleanUp);
+    return cleanUp;
   }
 
-
-  
   
   /**
    * add handler to handle when a conversation is updated 
@@ -79,6 +82,7 @@ export const useMessage = () => {
   const onConversationsUpdated = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-conversationsUpdated", handler);
     cleanUpCallbacks.current.push(cleanUp);
+    return cleanUp;
   }
   
   // LEGACY:

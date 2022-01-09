@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { Modal, Input, Select } from "antd";
+import React, { useMemo, useState } from "react";
+import { Modal, Input, Select, message } from "antd";
 import ConversationMemberSettingRow from "./ConversationMemberSettingRow";
 import "./style.css";
 import { ConversationService } from "../../../services/ConversationService";
 import { useAuth } from "../../../contexts/authenticationContext";
+import { getAllUsers } from "../../../services/api/user";
 
 /**
  *
@@ -20,54 +21,117 @@ const ConversationSettingModal = ({
   onSubmit,
 }) => {
   const { signedInUser } = useAuth();
+
   const [conversationName, setConversationName] = React.useState("");
-  const [conversationMembers, setConversationMembers] = React.useState("");
-  const [listMembers, setListMembers] = useState([]);
-  const [listFollowingFriends, setListFollowingFriends] = useState([]);
+  const [conversationMembers, setConversationMembers] = React.useState([]);
+
+  const [listUsers, setListUsers] = useState([]);
+
   const currentMemberInfo = React.useMemo(
     () => ConversationService.getMemberInfo(conversation, signedInUser?._id),
     [conversation, signedInUser?._id]
   );
 
-  React.useEffect(() => {
-    setConversationData(visible ? conversation : null);
-  }, [visible, conversation]);
+  const notMemberUsers = useMemo(() => {
+    if (!(listUsers && conversationMembers))
+      return [];
+    return listUsers.filter(user => !conversationMembers.find(member => member.memberId === user._id));
+  }, [listUsers, conversationMembers])
 
   React.useEffect(() => {
-    // TODO: fetch list following fr hay gì đó -> setListFollowingFriends
+    setConversationData(visible ? conversation : null);
+  }, [visible, conversation?._id], signedInUser?._id);
+
+  React.useEffect(() => {
+    getAllUsers().then(res => {
+      const users = res.data;
+      setListUsers(users);
+    });
   }, []);
 
   const setConversationData = (conversation) => {
     setConversationName(conversation?.name);
+
+    if (conversation)
+      setConversationMembers(deepCloneConversationMembers(conversation?.members) ?? [])
+    else
+      setConversationMembers([
+        {
+          memberId: signedInUser?._id,
+          member: signedInUser,
+          role: 'admin',
+        }
+      ])
   };
 
-  const deepCloneConversationMembers = (conversationMembers) => {
-    // TODO:
+  const deepCloneConversationMembers = (original) => {
+    return original?.map(member => ({
+      memberId: member.memberId,
+      member: member.member,
+      role: member.role,
+    }))
   };
 
   const handleRemoveMember = (memberId) => {
-    // TODO:
+    setConversationMembers(prev => prev.filter(member => member.memberId !== memberId))
   };
 
   const handleSetMemberRole = (memberId, newRole) => {
-    // TODO:
+    setConversationMembers(prev => prev.map(member => {
+      const result = { ...member };
+      if (memberId === member.memberId)
+        result.role = newRole;
+      return result;
+    }))
   };
 
-  const handleChangeUserToAdd = (value, options) => {
-    setListMembers(options?.map((item) => item.key));
+  const filterUsers = (input, option) => {
+    input = input?.toLowerCase() ?? "";
+    return option.title?.toLowerCase()?.includes(input);
+  }
+
+  const handleSelectNewMember = (value, options) => {
+    if (!value)
+      return;
+
+    setConversationMembers(prev => {
+      if (!prev.find(member => member.memberId === value)) {
+        const newMember = {
+          memberId: value,
+          member: listUsers.find(user => user._id === value),
+          role: "none"
+        }
+        return [...prev, newMember]
+      }
+      else
+        return [...prev]
+    })
   };
 
   const handleOk = () => {
     const conversationData = {
-      _id: conversation._id,
+      _id: conversation?._id,
       name: conversationName,
       type: conversation ? conversation.type : "group",
+      members: conversationMembers,
     };
+
+    if (conversationData.type === "group") {
+      if (!conversationData.name) {
+        message.error({ content: "A group conversation must have a name.", })
+        return;
+      }
+
+      if (!conversationData.members.some(member => member.role === "admin")) {
+        message.error({ content: "A group must have at least one admin.", })
+        return;
+      }
+    }
 
     onSubmit?.(conversationData, Boolean(!conversation));
   };
 
-  const basicInformationSection = () => {
+  const BasicInformationSection = () => {
     return (
       <div>
         <h1 className="ml-1 form-label">Basic information:</h1>
@@ -83,39 +147,40 @@ const ConversationSettingModal = ({
     );
   };
 
-  const addMember = () => {
+  const AddMemberSection = () => {
     return (
       <div>
         <hr className="mt-4" />
         <h1 className="ml-1 form-label">Add Member</h1>
         <Select
-          mode="multiple"
+          showSearch
           placeholder="Add member"
           allowClear
-          value={listMembers}
-          onChange={handleChangeUserToAdd}
+          value={null}
           style={{ width: "100%" }}
+          filterOption={filterUsers}
+          onSelect={handleSelectNewMember}
         >
-          {listFollowingFriends?.map((item) => (
-            <Option key={item._id}>{item.name}</Option>
+          {notMemberUsers?.map((item) => (
+            <Option key={item._id} value={item._id} title={`${item.name} (${item.username})`}>{`${item.name} (${item.username})`}</Option>
           ))}
         </Select>
       </div>
     );
   };
 
-  const memberListSection = () => {
+  const MemberListSection = () => {
     return (
       <div>
         <hr className="mt-4" />
 
         <h1 className="ml-1 form-label">Members list:</h1>
-        {conversation?.members.map((member, i) => (
+        {conversationMembers?.map((member, i) => (
           <ConversationMemberSettingRow
             member={member}
             key={i}
-            conversationType={conversation?.type}
-            currentUserRole={currentMemberInfo?.role}
+            conversationType={conversation ? conversation.type : "group"}
+            currentUserRole={conversation ? currentMemberInfo?.role : "admin"}
             onRemoveMember={handleRemoveMember}
             onSetRole={handleSetMemberRole}
           />
@@ -134,9 +199,14 @@ const ConversationSettingModal = ({
       onCancel={onCancel}
       onOk={handleOk}
     >
-      {basicInformationSection()}
-      {addMember()}
-      {memberListSection(conversation)}
+      {BasicInformationSection()}
+      {(
+        (conversation?.type === "group" && currentMemberInfo.role === "admin") || // is admin
+        !conversation                                                             // is creating new conversation
+      ) &&
+        AddMemberSection()
+      }
+      {MemberListSection(conversation)}
     </Modal>
   );
 };

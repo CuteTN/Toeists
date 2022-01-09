@@ -15,6 +15,6 @@ export const uploadFile = (fileType, file) => {
  * @param {string} url 
  */
 export const deleteFile = async (url) => {
-  if (url.startsWith(BACKEND_URL))
+  if (url?.startsWith(BACKEND_URL))
     await apiService.delete(url?.replace(BACKEND_URL, ""));
 }

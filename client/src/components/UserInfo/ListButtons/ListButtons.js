@@ -9,6 +9,7 @@ import { followUser } from "../../../redux/actions/user";
 import * as apiConnection from "./../../../services/api/userConnection";
 import { useAuth } from "../../../contexts/authenticationContext.js";
 import styles from "./styles.js";
+import { getPrivateConversationByPartnerId } from "../../../services/api/conversation.js";
 
 const { TextArea } = Input;
 const { confirm } = Modal;
@@ -27,8 +28,6 @@ const ListButtons = () => {
     await apiConnection.follow(user?._id).then(() => window.location.reload());
     // dispatch(followUser(user?.username));
   };
-
-  useEffect;
 
   const handleUnfollowUser = async () => {
     console.error(user);
@@ -59,9 +58,17 @@ const ListButtons = () => {
       .catch(() => message.error({ content: "Something went wrong." }));
   };
 
-  const handleClick = () => {
+  const handleBlockClick = () => {
     showConfirm();
   };
+
+  const handleMessageClick = () => {
+    getPrivateConversationByPartnerId(user._id)
+      .then(res => {
+        history.push('/chat/' + res.data._id)
+      })
+      .catch(() => message.error({ content: "Something went wrong." }));
+  }
 
   const FollowButton = () => {
     if (!isMyProfile) {
@@ -73,7 +80,7 @@ const ListButtons = () => {
             onClick={handleUnfollowUser}
             // loading={loadingFollow}
           >
-            UnFollow
+            Unfollow
           </Button>
         );
       else
@@ -97,9 +104,24 @@ const ListButtons = () => {
         <Button
           className="orange-button"
           style={{ ...styles.button, backgroundColor: "red", color: "white" }}
-          onClick={handleClick}
+          onClick={handleBlockClick}
         >
           Block
+        </Button>
+      );
+    }
+    return <></>;
+  };
+
+  const MesageButton = () => {
+    if (!isMyProfile) {
+      return (
+        <Button
+          className="orange-button"
+          style={{ ...styles.button, color: "white" }}
+          onClick={handleMessageClick}
+        >
+          Message
         </Button>
       );
     }
@@ -140,6 +162,7 @@ const ListButtons = () => {
         <ModalReport></ModalReport>
         <div style={{ marginBottom: 62, maxWidth: "60vw" }} />
         <Row style={{ marginTop: 16 }}>
+          <MesageButton></MesageButton>
           <FollowButton></FollowButton>
           <BlockButton></BlockButton>
         </Row>

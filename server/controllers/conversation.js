@@ -11,7 +11,7 @@ export const getConversationsOfUser = async (req, res, next) => {
   const allConversations = await Conversation.find()
     .select("+members.hasMuted +members.hasBlocked")
     .sort({ messageUpdatedAt: 'desc' })
-    .populate({ path: "messages", options: { perDocumentLimit: 1 } })
+    .populate({ path: "messages", options: { }})
     .populate({ path: "members.member" });
 
   const { userId } = req.attached.decodedToken;
@@ -188,14 +188,14 @@ export const setMembersOfGroupConversation = async (req, res, next) => {
 
   const newMemberIds = [...req.body.memberIds, userId];
   const allMemberIds = removeDuplication([...oldMemberIds, ...newMemberIds]);
-  
+
   allMemberIds.forEach(memberId => {
     const isInOld = oldMemberIds.includes(memberId);
     const isInNew = newMemberIds.includes(memberId);
 
-    if(isInOld && !isInNew)
+    if (isInOld && !isInNew)
       removeMemberOfConversation(conversation, memberId);
-    if(isInNew && !isInOld)
+    if (isInNew && !isInOld)
       upsertMemberOfConversation(conversation, memberId);
   });
 
@@ -235,7 +235,7 @@ export const setMemberRolesOfGroupConversation = async (req, res, next) => {
     if (memberInfo)
       memberInfo.role = role;
     else
-      return res.status(httpStatusCodes.badRequest).json({ message: `User ${userIdentifier} is not a member of this conversation.`})
+      return res.status(httpStatusCodes.badRequest).json({ message: `User ${userIdentifier} is not a member of this conversation.` })
   }
 
   try {

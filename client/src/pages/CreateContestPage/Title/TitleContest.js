@@ -5,7 +5,11 @@ import { Input, Typography } from "antd";
 import "../style.css";
 
 const { Text } = Typography;
-const TitleContest = ({ part }) => {
+const TitleContest = ({ part, onTitleChange }) => {
+  const handleTitleChange = (e) => {
+    onTitleChange?.(e.target.value);
+  }
+
   return (
     <div>
       <div className="row">
@@ -21,8 +25,8 @@ const TitleContest = ({ part }) => {
       </div>
       <hr />
       <div className="title">
-        <p className="title-question">Title Contest</p>
-        <Input name="title" placeholder="Title Contest" />
+        <p className="title-question">Contest title</p>
+        <Input name="title" placeholder="Contest title" onChange={handleTitleChange}/>
       </div>
     </div>
   );
