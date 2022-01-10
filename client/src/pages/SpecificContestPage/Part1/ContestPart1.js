@@ -1,7 +1,12 @@
+//libs
 import React, { useEffect } from "react";
-import { Radio, Typography } from "antd";
+import { Radio, Typography, Image } from "antd";
+import AudioPlayer from "react-h5-audio-player";
+//others
+import "react-h5-audio-player/lib/styles.css";
 
 const ContestPart1 = ({ contest, onChange }) => {
+  const listAnswer = ["A", "B", "C", "D"];
   const [value, setValue] = React.useState(null);
 
   React.useEffect(() => {
@@ -11,35 +16,53 @@ const ContestPart1 = ({ contest, onChange }) => {
   const handleRadioChange = (e) => {
     setValue(e.target.value);
   };
-  console.log("abc", contest?.resource.paragraphs);
 
   return (
     <div>
-      {contest?.resource.paragraphs.map((paragraph, i) => (
-        <div key={i} style={{ margin: 30 }}>
-          <h5 style={{ marginLeft: -20 }}> Paragraph {i + 1}:</h5>
-          <p style={{ lineHeight: 2 }}>{paragraph?.paragraph}</p>
-          {paragraph?.questions.map((qs, i) => (
-            <div key={i}>
-              <h6 style={{ lineHeight: 2 }}>
-                Question {i + 1} : {qs.question}
-              </h6>
-              <Radio.Group
-                onChange={handleRadioChange}
-                style={{ marginBottom: 20 }}
+      {contest?.resource.questions.map((qs, i) => (
+        <div key={i} style={{ margin: 30, textAlign: "center" }}>
+          <h5 style={{ lineHeight: 2, textAlign: "start" }}>
+            Question {i + 1} :
+          </h5>
+          {qs?.image && (
+            <Image
+              src={qs?.image}
+              preview={!!qs?.image}
+              style={{
+                maxHeight: "40vh",
+                width: "100%",
+                objectFit: "revert",
+                height: "auto",
+                display: "block",
+                marginBottom: 20,
+              }}
+            ></Image>
+          )}
+          <div style={{ margin: 30 }}>
+            <AudioPlayer
+              src={qs?.audio}
+              showJumpControls={false}
+              autoPlay={false}
+              autoPlayAfterSrcChange={false}
+            />
+          </div>
+          <h6 style={{ lineHeight: 2, textAlign: "start", marginLeft: 30 }}>
+            Choose Answer:
+          </h6>
+          <Radio.Group
+            onChange={handleRadioChange}
+            style={{ marginBottom: 20 }}
+          >
+            {listAnswer.map((item, i) => (
+              <Radio
+                key={i}
+                value={item}
+                style={{ marginRight: 70, fontSize: 16 }}
               >
-                {qs?.options.map((item, i) => (
-                  <Radio
-                    key={i}
-                    value={item}
-                    style={{ marginRight: 50, fontSize: 16 }}
-                  >
-                    {item}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </div>
-          ))}
+                {item}
+              </Radio>
+            ))}
+          </Radio.Group>
         </div>
       ))}
     </div>

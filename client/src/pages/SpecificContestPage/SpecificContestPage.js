@@ -44,7 +44,7 @@ const SpecificForumPage = (props) => {
       });
   };
 
-  console.log("thy", contest);
+  // console.log("thy", contest);
   return (
     <>
       <Layout>

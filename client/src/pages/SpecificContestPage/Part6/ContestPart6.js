@@ -11,7 +11,6 @@ const ContestPart6 = ({ contest, onChange }) => {
   const handleRadioChange = (e) => {
     setValue(e.target.value);
   };
-  console.log("abc", contest?.resource.paragraphs);
 
   return (
     <div>
