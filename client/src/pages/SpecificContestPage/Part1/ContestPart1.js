@@ -2,27 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { Radio, Typography, Image } from "antd";
 import AudioPlayer from "react-h5-audio-player";
+import { usePatch } from "../../../hooks/usePatch";
 //others
 import "react-h5-audio-player/lib/styles.css";
 
 const ContestPart1 = ({ contest, onChange }) => {
+  const [value, setValue, patchValue] = usePatch([]);
   const listAnswer = ["A", "B", "C", "D"];
-  const list = [
-    handleRadioChange,
-    handleRadioChange,
-    handleRadioChange,
-    handleRadioChange,
-  ];
-  const [value, setValue] = React.useState(null);
-
   React.useEffect(() => {
-    onChange?.(value);
+    onChange?.(Object.values(value));
   }, [value]);
 
-  const handleRadioChange = (e) => {
-    setValue(e.target.value);
+  const changeList = (i, value) => {
+    patchValue([i], listAnswer[value]);
   };
-  const onSelect = (i, v) => {};
 
   return (
     <div>
@@ -57,14 +50,13 @@ const ContestPart1 = ({ contest, onChange }) => {
             Choose Answer:
           </h6>
           <Radio.Group
-            onChange={handleRadioChange}
+            onChange={(e) => changeList(i, e.target.value)}
             style={{ marginBottom: 20 }}
-            value={value}
           >
             {listAnswer.map((item, i) => (
               <Radio
                 key={i}
-                value={item}
+                value={i}
                 style={{ marginRight: 70, fontSize: 16 }}
               >
                 {item}

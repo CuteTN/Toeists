@@ -10,7 +10,7 @@ import {
   Tooltip,
   Modal,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   EllipsisOutlined,
   DeleteFilled,
@@ -28,6 +28,7 @@ const { confirm } = Modal;
 
 const TitleContest = ({ contest }) => {
   const { signedInUser } = useAuth();
+  const history = useHistory();
 
   const handleMore = () => {};
 
@@ -38,7 +39,6 @@ const TitleContest = ({ contest }) => {
       .then((res) => {
         message.success("Contest has been deleted");
         history.push("/contests");
-        window.location.reload(); // load feed to have new items
       })
       .catch((error) => message.success(error.message));
   };
