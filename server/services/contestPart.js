@@ -4,10 +4,18 @@ export const scanAndMoveContestAnswers = (contestPart) => {
   if (part < 1 || part > 7)
     throw "The part must be an integer between 1 and 7.";
 
+  let countQuestions = 0;
   const answers = [];
-  if ([3, 4, 6, 7].includes(part))
+  if ([3, 4, 6, 7].includes(part)) {
+    if (contestPart?.resource?.paragraphs)
+      contestPart.resource.paragraphs = contestPart.resource.paragraphs.filter(p => !p.isDeleted);
+
     contestPart?.resource?.paragraphs?.forEach?.(p => {
+      if (p?.questions)
+        p.questions = p.questions.filter(q => !q.isDeleted);
+
       p?.questions?.forEach?.(q => {
+        countQuestions++;
         const answer = q?.answer?.toUpperCase?.();
         if (answer) {
           q.id = answers.length;
@@ -18,8 +26,13 @@ export const scanAndMoveContestAnswers = (contestPart) => {
           throw "There are unanswered questions."
       })
     })
-  else
+  }
+  else {
+    if (contestPart?.resource?.questions)
+      contestPart.resource.questions = contestPart.resource.questions.filter(q => !q.isDeleted);
+
     contestPart?.resource?.questions?.forEach?.(q => {
+      countQuestions++;
       const answer = q?.answer?.toUpperCase?.();
       if (answer) {
         q.id = answers.length;
@@ -29,6 +42,10 @@ export const scanAndMoveContestAnswers = (contestPart) => {
       else
         throw "There are unanswered questions."
     })
+  }
+
+  if(!countQuestions)
+    throw "Please add at least one question."
 
   contestPart.answers = answers;
 }

@@ -1,6 +1,6 @@
 // libs
 import React from "react";
-import { Typography, Image, Button, Input } from "antd";
+import { Typography, Image, Button, Input, Row } from "antd";
 import AudioPlayer from "react-h5-audio-player";
 //component
 import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
@@ -81,9 +81,24 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
   }
   //#endregion
 
+  const handleQuestionRemove = () => {
+    patchQuestion(["isDeleted"], true);
+    deleteFile(question?.audio);
+    deleteFile(question?.image);
+  }
+
   return (
     <div className="question-component-wrapper">
-      <p className="title-question">Question</p>
+      <Row className="d-flex justify-content-between">
+        <p className="title-question">Question</p>
+        <Button
+          style={{ fontWeight: "bold", }}
+          className="orange-button"
+          onClick={handleQuestionRemove}
+        >
+          REMOVE QUESTION
+        </Button>
+      </Row>
       <Image
         src={question?.image || noImage}
         preview={!!question?.image}
@@ -109,7 +124,7 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
           style={{ fontWeight: "bold", margin: 10 }}
           onClick={handleOpenAddAudio}
         >
-          {question?.audio? "CHANGE AUDIO" : "ADD AUDIO"}
+          {question?.audio ? "CHANGE AUDIO" : "ADD AUDIO"}
         </Button>
         <Button
           className="orange-button"
@@ -124,7 +139,7 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
           style={{ fontWeight: "bold" }}
           onClick={handleOpenAddImage}
         >
-          {question?.image? "CHANGE IMAGE" : "ADD IMAGE"}
+          {question?.image ? "CHANGE IMAGE" : "ADD IMAGE"}
         </Button>
         <Button
           className="orange-button"
@@ -136,7 +151,7 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
         </Button>
       </div>
       <div>
-        <CorrectAnswerRadio amount={4} onChange={v => patchQuestion(["answer"], v)}/>
+        <CorrectAnswerRadio amount={4} onChange={v => patchQuestion(["answer"], v)} />
       </div>
 
       <input
