@@ -1,5 +1,5 @@
 //libs
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Radio, Typography, Image } from "antd";
 import AudioPlayer from "react-h5-audio-player";
 //others
@@ -7,6 +7,12 @@ import "react-h5-audio-player/lib/styles.css";
 
 const ContestPart1 = ({ contest, onChange }) => {
   const listAnswer = ["A", "B", "C", "D"];
+  const list = [
+    handleRadioChange,
+    handleRadioChange,
+    handleRadioChange,
+    handleRadioChange,
+  ];
   const [value, setValue] = React.useState(null);
 
   React.useEffect(() => {
@@ -16,6 +22,7 @@ const ContestPart1 = ({ contest, onChange }) => {
   const handleRadioChange = (e) => {
     setValue(e.target.value);
   };
+  const onSelect = (i, v) => {};
 
   return (
     <div>
@@ -52,6 +59,7 @@ const ContestPart1 = ({ contest, onChange }) => {
           <Radio.Group
             onChange={handleRadioChange}
             style={{ marginBottom: 20 }}
+            value={value}
           >
             {listAnswer.map((item, i) => (
               <Radio

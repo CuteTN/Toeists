@@ -17,7 +17,7 @@ import {
   BellOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { IoCheckbox, IoStatsChartSharp, BsCheckLg } from "react-icons/all";
+import { IoCheckbox } from "react-icons/io5";
 // api
 import { deleteContest } from "../../../services/api/contest";
 //context
@@ -29,9 +29,9 @@ const { confirm } = Modal;
 const TitleContest = ({ contest }) => {
   const { signedInUser } = useAuth();
 
-  const handleMore = () => { };
+  const handleMore = () => {};
 
-  const handleFollowContest = (id) => { };
+  const handleFollowContest = (id) => {};
 
   const handleDelete = (id) => {
     deleteContest(id)
@@ -98,35 +98,17 @@ const TitleContest = ({ contest }) => {
         style={{ justifyContent: "space-between", alignItems: "center" }}
       >
         <Row className="align-items-center">
-          {contest?.submissions?.personal &&
-            <BsCheckLg className="mr-2 mt-n2 orange" size={40} />
-          }
           <Title level={2}>
             [Part{contest?.part}] {contest?.title}
           </Title>
         </Row>
         <Row className="justify-content-end align-items-center pb-3">
           <IoCheckbox className="gray mr-1 icon" />
-          <Tooltip title="Total number of submissions">
+          <Tooltip title="submits">
             <div className="mr-4">
-              <Text type="secondary">Submissions: {contest?.submissions?.overall?.submissionsCount}</Text>
+              <Text type="secondary">100 Submissions</Text>
             </div>
           </Tooltip>
-
-          <IoStatsChartSharp className="gray mr-1 ml-2 icon" />
-          <Tooltip title="Average score">
-            <div className="mr-4">
-              <Text type="secondary">Average: {contest?.submissions?.overall?.averageScore}/{contest?.submissions?.overall?.maxScore}</Text>
-            </div>
-          </Tooltip>
-
-          {/* <div className="mr-4">
-            <Tooltip title={`Created ${moment(contest?.createdAt).fromNow()}`}>
-              <Text className="clickable" underline type="secondary">
-                {`Last edited ${moment(contest?.contentUpdatedAt).fromNow()}`}
-              </Text>
-            </Tooltip>
-          </div> */}
           <Dropdown
             overlay={menuMore}
             trigger={["click"]}
@@ -155,10 +137,9 @@ const TitleContest = ({ contest }) => {
           <Avatar
             className="ml-1 clickable"
             size={35}
+            // src={contest?.creator?.avatarUrl}
             src={contest?.creator?.avatarUrl}
-          >
-            {contest?.creator?.username}
-          </Avatar>
+          ></Avatar>
           <div className="d-inline-flex flex-column ml-3 break-word">
             <Row style={{ alignItems: "center" }}>
               <Space size={4}>

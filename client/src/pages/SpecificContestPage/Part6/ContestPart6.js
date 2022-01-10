@@ -2,14 +2,21 @@ import React, { useEffect } from "react";
 import { Radio, Typography } from "antd";
 
 const ContestPart6 = ({ contest, onChange }) => {
-  const [value, setValue] = React.useState(null);
-
+  const [value, setValue] = React.useState([""]);
   React.useEffect(() => {
     onChange?.(value);
   }, [value]);
 
   const handleRadioChange = (e) => {
     setValue(e.target.value);
+  };
+
+  const changeList = (i, va) => {
+    let newArr = [...value];
+    newArr[i] = va;
+    console.log("ualasao", newArr);
+    setValue(newArr);
+    console.log("honghieu", value);
   };
 
   return (
@@ -24,7 +31,7 @@ const ContestPart6 = ({ contest, onChange }) => {
                 Question {i + 1} : {qs.question}
               </h6>
               <Radio.Group
-                onChange={handleRadioChange}
+                onChange={(e) => changeList(i, e.target.value)}
                 style={{ marginBottom: 20 }}
               >
                 {qs?.options.map((item, i) => (
