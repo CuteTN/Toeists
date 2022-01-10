@@ -14,13 +14,13 @@ const ContestPart5 = ({ contest, onChange }) => {
 
   return (
     <div>
-      {contest.listQS.map((qs, i) => (
+      {contest.resource.questions.map((qs, i) => (
         <div key={i} style={{ margin: 30 }}>
           <h5 style={{ lineHeight: 2 }}>
             Question {i + 1} : {qs.question}
           </h5>
           <Radio.Group onChange={handleRadioChange}>
-            {qs.answer.map((item, i) => (
+            {qs.options.map((item, i) => (
               <Radio
                 key={i}
                 value={item}

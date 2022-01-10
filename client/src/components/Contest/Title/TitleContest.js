@@ -89,7 +89,7 @@ const TitleContest = ({ contest }) => {
       >
         <Row className="align-items-center">
           <Title level={2}>
-            [{contest?.part}] {contest?.title}
+            [Part{contest?.part}] {contest?.title}
           </Title>
         </Row>
         <Row className="justify-content-end align-items-center pb-3">
