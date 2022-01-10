@@ -14,7 +14,7 @@ import {
   Button,
 } from "antd";
 import styles from "./styles";
-import logo from "../../assets/lightlogo.png";
+import logo from "../../assets/logo3.png";
 import {
   SearchOutlined,
   BellFilled,
