@@ -4,7 +4,6 @@ import { Typography, Image, Button, Input, Row } from "antd";
 import AudioPlayer from "react-h5-audio-player";
 //component
 import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
-import demo from "../../../../assets/1.1.mp3";
 import noImage from "../../../../assets/no-image.png"
 //others
 import "./style.css";
