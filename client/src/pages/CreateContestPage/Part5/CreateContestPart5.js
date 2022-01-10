@@ -38,9 +38,9 @@ const CreatContestPart5 = () => {
             <Card>
               <TitleContest part={"Part 5"} onTitleChange={v => patchContest(["title"], v)}/>
               {contest?.resource?.questions.map((question, i) => (
-                <React.Fragment key={i}>
+                <div key={i} hidden={!!question?.isDeleted}>
                   <QuestionComponent questionId={i} onQuestionChange={handleQuestionChange} />,
-                </React.Fragment>
+                </div>
               ))}
 
               <FunctionalButton 
