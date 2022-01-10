@@ -2,19 +2,19 @@
 import React, { useEffect } from "react";
 import { Radio, Typography, Image } from "antd";
 import AudioPlayer from "react-h5-audio-player";
+import { usePatch } from "../../../hooks/usePatch";
 //others
 import "react-h5-audio-player/lib/styles.css";
 
 const ContestPart2 = ({ contest, onChange }) => {
+  const [value, setValue, patchValue] = usePatch([]);
   const listAnswer = ["A", "B", "C"];
-  const [value, setValue] = React.useState(null);
-
   React.useEffect(() => {
-    onChange?.(value);
+    onChange?.(Object.values(value));
   }, [value]);
 
-  const handleRadioChange = (e) => {
-    setValue(e.target.value);
+  const changeList = (i, value) => {
+    patchValue([i], listAnswer[value]);
   };
 
   return (
@@ -36,13 +36,13 @@ const ContestPart2 = ({ contest, onChange }) => {
             Choose Answer:
           </h6>
           <Radio.Group
-            onChange={handleRadioChange}
+            onChange={(e) => changeList(i, e.target.value)}
             style={{ marginBottom: 20 }}
           >
             {listAnswer.map((item, i) => (
               <Radio
                 key={i}
-                value={item}
+                value={i}
                 style={{ marginRight: 70, fontSize: 16 }}
               >
                 {item}

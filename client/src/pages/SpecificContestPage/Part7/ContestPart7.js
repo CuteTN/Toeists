@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
 import { Radio, Image } from "antd";
+import { usePatch } from "../../../hooks/usePatch";
 
 const ContestPart7 = ({ contest, onChange }) => {
-  const [value, setValue] = React.useState(null);
-
+  const [value, setValue, patchValue] = usePatch([]);
+  const listAnswer = ["A", "B", "C", "D"];
   React.useEffect(() => {
-    onChange?.(value);
+    onChange?.(Object.values(value));
   }, [value]);
 
-  const handleRadioChange = (e) => {
-    setValue(e.target.value);
+  const changeList = (i, value) => {
+    patchValue([i], listAnswer[value]);
   };
 
   return (
@@ -38,15 +39,12 @@ const ContestPart7 = ({ contest, onChange }) => {
                 Question {i + 1} : {qs.question}
               </h6>
               <Radio.Group
-                onChange={handleRadioChange}
+                onChange={(e) => changeList(i, e.target.value)}
                 style={{ marginBottom: 20 }}
               >
                 {qs?.options.map((item, i) => (
                   <div key={i} style={{ marginBottom: 20 }}>
-                    <Radio
-                      value={item}
-                      style={{ marginRight: 50, fontSize: 16 }}
-                    >
+                    <Radio value={i} style={{ marginRight: 50, fontSize: 16 }}>
                       {item}
                     </Radio>
                   </div>

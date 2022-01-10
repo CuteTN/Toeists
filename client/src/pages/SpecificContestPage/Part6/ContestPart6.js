@@ -9,7 +9,7 @@ const ContestPart6 = ({ contest, onChange }) => {
     onChange?.(Object.values(value));
   }, [value]);
 
-  const changeList = (i, value, e) => {
+  const changeList = (i, value) => {
     patchValue([i], listAnswer[value]);
   };
 
@@ -25,7 +25,7 @@ const ContestPart6 = ({ contest, onChange }) => {
                 Question {i + 1} : {qs.question}
               </h6>
               <Radio.Group
-                onChange={(e) => changeList(i, e.target.value, e)}
+                onChange={(e) => changeList(i, e.target.value)}
                 style={{ marginBottom: 20 }}
               >
                 {qs?.options.map((item, i) => (

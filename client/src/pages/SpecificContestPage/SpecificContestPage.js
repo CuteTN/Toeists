@@ -67,18 +67,48 @@ const SpecificContestPage = (props) => {
                 <div style={styles.item}>
                   <TitleContest contest={contest} />
                   <hr />
-                  {contest?.part === 1 && <ContestPart1 contest={contest} />}
-                  {contest?.part === 2 && <ContestPart2 contest={contest} />}
-                  {contest?.part === 3 && <ContestPart3 contest={contest} />}
-                  {contest?.part === 4 && <ContestPart4 contest={contest} />}
-                  {contest?.part === 5 && <ContestPart5 contest={contest} />}
+                  {contest?.part === 1 && (
+                    <ContestPart1
+                      contest={contest}
+                      onChange={handleAnswersChange}
+                    />
+                  )}
+                  {contest?.part === 2 && (
+                    <ContestPart2
+                      contest={contest}
+                      onChange={handleAnswersChange}
+                    />
+                  )}
+                  {contest?.part === 3 && (
+                    <ContestPart3
+                      contest={contest}
+                      onChange={handleAnswersChange}
+                    />
+                  )}
+                  {contest?.part === 4 && (
+                    <ContestPart4
+                      contest={contest}
+                      onChange={handleAnswersChange}
+                    />
+                  )}
+                  {contest?.part === 5 && (
+                    <ContestPart5
+                      contest={contest}
+                      onChange={handleAnswersChange}
+                    />
+                  )}
                   {contest?.part === 6 && (
                     <ContestPart6
                       contest={contest}
                       onChange={handleAnswersChange}
                     />
                   )}
-                  {contest?.part === 7 && <ContestPart7 contest={contest} />}
+                  {contest?.part === 7 && (
+                    <ContestPart7
+                      contest={contest}
+                      onChange={handleAnswersChange}
+                    />
+                  )}
                   <div style={{ textAlign: "center", marginTop: 50 }}>
                     <Button
                       className="orange-button"
