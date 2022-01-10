@@ -59,7 +59,7 @@ function App() {
         <CuteClientIOProvider serverUri={BACKEND_URL} token={accessToken}>
           {/*<FriendsStatusProvider userId={user?.result?._id}> */}
           <Switch>
-            <Route exact path="/" component={HomePage} />
+            <Route exact path="/" component={HomePage}><Redirect to={"/feed"}/></Route>
             <Route exact path="/signin">
               <SignInPage />
             </Route>

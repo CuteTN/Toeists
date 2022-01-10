@@ -47,6 +47,7 @@ import { ConversationService } from "../../services/ConversationService";
 import NotificationList from "./NotificationList/NotificationList";
 import { GiArchiveResearch } from "react-icons/gi";
 import { useDictionary } from "../DictionaryProvider/DictionaryProvider";
+import { useQuery } from "../../hooks/useQuery";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -184,6 +185,16 @@ function Navbar() {
       },
     });
   };
+
+  //#region Search
+  const query = useQuery();
+  const [searchText, setSearchText] = React.useState(query.get("search"));
+
+  const handleSearch = (searchText) => {
+    query.set("search", searchText);
+    history.push(`/feed?search=${searchText}`)
+  }
+  //#endregion
 
   const MainMenuItems = () => {
     return (
@@ -375,15 +386,24 @@ function Navbar() {
               </Link>
             </div>
             <Input
-              // onPressEnter={handleSearch}
+              onPressEnter={() => handleSearch(searchText)}
+              value={searchText}
+              onChange={e => setSearchText(e.target.value)}
               allowClear
               suffix={
-                <SearchOutlined style={{ fontSize: 24, color: COLOR.white }} />
+                <Tooltip title="Search for forums" placement="bottom">
+                  <SearchOutlined 
+                    style={{ 
+                      fontSize: 24, 
+                      color: COLOR.white, 
+                      cursor: "pointer" 
+                    }} 
+                    onClick={() => handleSearch(searchText)}
+                  />
+                </Tooltip>
               }
-              // ref={inputRef}
               bordered={false}
               style={{ backgroundColor: COLOR.lightOrange }}
-              // defaultValue={txtInitSearch}
             />
           </div>
 

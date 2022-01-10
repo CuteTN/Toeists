@@ -5,3 +5,6 @@ export const searchForConversations = (text, limit) =>
 
 export const searchForUser = (text, limit, page = 0, noSave = true) => 
   apiService.post(`api/search/users/data?no-save=${noSave}`, { text, pageSize: limit, page });
+
+export const searchForForum = (text, limit, page = 0, noSave = true) => 
+  apiService.post(`api/search/forums/data?no-save=${noSave}`, { text, pageSize: limit, page });
