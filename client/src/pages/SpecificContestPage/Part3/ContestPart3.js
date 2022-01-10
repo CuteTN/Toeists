@@ -1,7 +1,11 @@
+//libs
 import React, { useEffect } from "react";
-import { Radio, Typography } from "antd";
+import { Radio } from "antd";
+import AudioPlayer from "react-h5-audio-player";
+//others
+import "react-h5-audio-player/lib/styles.css";
 
-const ContestPart2 = ({ contest, onChange }) => {
+const ContestPart3 = ({ contest, onChange }) => {
   const [value, setValue] = React.useState(null);
 
   React.useEffect(() => {
@@ -11,16 +15,24 @@ const ContestPart2 = ({ contest, onChange }) => {
   const handleRadioChange = (e) => {
     setValue(e.target.value);
   };
-  console.log("abc", contest?.resource.paragraphs);
 
   return (
     <div>
-      {contest?.resource.paragraphs.map((paragraph, i) => (
-        <div key={i} style={{ margin: 30 }}>
-          <h5 style={{ marginLeft: -20 }}> Paragraph {i + 1}:</h5>
-          <p style={{ lineHeight: 2 }}>{paragraph?.paragraph}</p>
+      {contest?.resource?.paragraphs.map((paragraph, i) => (
+        <div key={i} style={{ margin: 30, textAlign: "center" }}>
+          <h5 style={{ lineHeight: 2, textAlign: "start" }}>
+            Conversation {i + 1} :
+          </h5>
+          <div style={{ margin: 30 }}>
+            <AudioPlayer
+              src={paragraph?.audio}
+              showJumpControls={false}
+              autoPlay={false}
+              autoPlayAfterSrcChange={false}
+            />
+          </div>
           {paragraph?.questions.map((qs, i) => (
-            <div key={i}>
+            <div key={i} style={{ textAlign: "start" }}>
               <h6 style={{ lineHeight: 2 }}>
                 Question {i + 1} : {qs.question}
               </h6>
@@ -29,13 +41,14 @@ const ContestPart2 = ({ contest, onChange }) => {
                 style={{ marginBottom: 20 }}
               >
                 {qs?.options.map((item, i) => (
-                  <Radio
-                    key={i}
-                    value={item}
-                    style={{ marginRight: 50, fontSize: 16 }}
-                  >
-                    {item}
-                  </Radio>
+                  <div key={i} style={{ marginBottom: 20 }}>
+                    <Radio
+                      value={item}
+                      style={{ marginRight: 50, fontSize: 16 }}
+                    >
+                      {item}
+                    </Radio>
+                  </div>
                 ))}
               </Radio.Group>
             </div>
@@ -46,4 +59,4 @@ const ContestPart2 = ({ contest, onChange }) => {
   );
 };
 
-export default ContestPart2;
+export default ContestPart3;
