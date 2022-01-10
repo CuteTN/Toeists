@@ -5,10 +5,13 @@ import FeedSidebar from "../../components/FeedSidebar/FeedSidebar";
 import ListPosts from "./ListPosts/ListPosts";
 import styles from "./styles.js";
 import "./styles.css";
+import { useQuery } from "../../hooks/useQuery";
 
 const { Content } = Layout;
 
 const FeedPage = () => {
+  const query = useQuery();
+
   return (
     <Layout>
       <Navbar selectedMenu="feed" />
@@ -20,7 +23,7 @@ const FeedPage = () => {
             id="scrollableDiv"
             style={{ minWidth: "86vw" }}
           >
-            <ListPosts space="news_feed" hasMarginLeft />
+            <ListPosts space="news_feed" hasMarginLeft isSearchMode={query.get("search")}/>
           </div>
         </div>
       </Layout>
