@@ -8,3 +8,4 @@ export const fetchAContest = (contestID) =>
 export const deleteContest = (contestID) =>
   apiService.delete(`api/contest-parts/${contestID}`);
 export const fetchAllContests = () => apiService.get(`api/contest-parts?`);
+export const submitToAContest = (contestID, answers) => apiService.post(`api/contest-parts/${contestID}/submit`, { answers })
