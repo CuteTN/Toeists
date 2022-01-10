@@ -15,7 +15,7 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
     answer: "",
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     onQuestionChange?.(questionId, question)
   }, [question])
 
