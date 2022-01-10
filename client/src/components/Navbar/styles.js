@@ -8,6 +8,8 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     marginRight: 24,
+    marginTop: -5,
+    marginLeft: -10,
   },
   title: {
     fontSize: "2rem",
@@ -28,7 +30,6 @@ const styles = {
   orangeBackground: {
     background: COLOR.orange,
   },
-
 };
 
 export default styles;

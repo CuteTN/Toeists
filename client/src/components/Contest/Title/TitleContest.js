@@ -37,7 +37,7 @@ const TitleContest = ({ contest }) => {
     deleteContest(id)
       .then((res) => {
         message.success("Contest has been deleted");
-        history.push("/feed");
+        history.push("/contests");
         window.location.reload(); // load feed to have new items
       })
       .catch((error) => message.success(error.message));
@@ -106,7 +106,7 @@ const TitleContest = ({ contest }) => {
           <IoCheckbox className="gray mr-1 icon" />
           <Tooltip title="submits">
             <div className="mr-4">
-              <Text type="secondary">100 Submits</Text>
+              <Text type="secondary">100 Submissions</Text>
             </div>
           </Tooltip>
           {/* <div className="mr-4">
