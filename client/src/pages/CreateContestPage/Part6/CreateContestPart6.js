@@ -26,7 +26,8 @@ const CreatContestPart6 = () => {
   }
 
   const handleAddParagraph = () => {
-    patchContest(["resource", "paragraphs"], prev => [...prev, {}])
+    const newId = contest?.resource?.paragraphs?.length;
+    patchContest(["resource", "paragraphs", newId], {});
   }
 
   return (
@@ -39,9 +40,9 @@ const CreatContestPart6 = () => {
               <TitleContest part={"Part 6"} onTitleChange={v => patchContest(["title"], v)}/>
 
               {contest?.resource?.paragraphs?.map((paragraph, i) => (
-                <React.Fragment key={i}>{
+                <div key={i} hidden={!!paragraph?.isDeleted}>{
                   <ParagraphComponent paragraphId={i} onParagraphChange={handleParagraphChange}/>
-                }</React.Fragment>
+                }</div>
               ))}
 
               <FunctionalButton hasParagraphs contest={contest} onAddContentClick={handleAddParagraph}/>

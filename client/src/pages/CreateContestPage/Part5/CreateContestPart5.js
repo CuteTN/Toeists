@@ -19,14 +19,15 @@ const CreatContestPart5 = () => {
     resource: {
       questions: [{}]
     }
-  }) 
+  })
 
   const handleQuestionChange = (id, question) => {
     patchContest(["resource", "questions", id], question);
   }
 
-  const handleAddQuestion = () => { 
-    patchContest(["resource", "questions"], prev => [...prev??[], {}])
+  const handleAddQuestion = () => {
+    const newId = contest?.resource?.questions?.length;
+    patchContest(["resource", "questions", newId], {});
   };
 
   return (
@@ -36,14 +37,14 @@ const CreatContestPart5 = () => {
         <div className="col-md-8 mb-4">
           <div>
             <Card>
-              <TitleContest part={"Part 5"} onTitleChange={v => patchContest(["title"], v)}/>
+              <TitleContest part={"Part 5"} onTitleChange={v => patchContest(["title"], v)} />
               {contest?.resource?.questions.map((question, i) => (
-                <React.Fragment key={i}>
+                <div key={i} hidden={!!question?.isDeleted}>
                   <QuestionComponent questionId={i} onQuestionChange={handleQuestionChange} />,
-                </React.Fragment>
+                </div>
               ))}
 
-              <FunctionalButton 
+              <FunctionalButton
                 onAddContentClick={handleAddQuestion}
                 contest={contest}
               />

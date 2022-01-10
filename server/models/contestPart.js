@@ -43,9 +43,3 @@ contestPartSchema.set("toObject", { virtuals: true });
 contestPartSchema.set("toJSON", { virtuals: true });
 
 export var ContestPart = mongoose.model("contest_parts", contestPartSchema);
-
-// EACH PART MODEL //////////////////////////////////////////////////////////////////////////////////////////////////// 
-/*
-part1:
-
-*/

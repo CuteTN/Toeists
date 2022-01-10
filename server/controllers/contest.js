@@ -1,5 +1,5 @@
 import express from 'express'
-import { ContestPart } from '../models/contestPart.js';
+import { ContestPart, CONTEST_PART_VIRTUAL_FIELDS } from '../models/contestPart.js';
 import { scanAndMoveContestAnswers, validateContestPart } from '../services/contestPart.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
 
@@ -32,7 +32,7 @@ export const createContestPart = async (req, res) => {
 
 /** @type {express.RequestHandler} */
 export const getAllContestParts = async (req, res) => {
-  const contestParts = await ContestPart.find();
+  const contestParts = await ContestPart.find().populate(CONTEST_PART_VIRTUAL_FIELDS);
   return res.status(httpStatusCodes.ok).json(contestParts);
 }
 
@@ -40,6 +40,7 @@ export const getAllContestParts = async (req, res) => {
 /** @type {express.RequestHandler} */
 export const getContestPartById = async (req, res) => {
   const contestPart = req.attached.targetedData;
+  await contestPart?.populate(CONTEST_PART_VIRTUAL_FIELDS);
   return res.status(httpStatusCodes.ok).json(contestPart);
 }
 

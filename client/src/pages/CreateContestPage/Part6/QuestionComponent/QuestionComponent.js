@@ -1,6 +1,6 @@
 // libs
 import React, { useState } from "react";
-import { Typography, Input, Button } from "antd";
+import { Typography, Input, Button, Row } from "antd";
 // components
 import CorrectAnswerRadio from "../../CorrectAnswerRadio/CorrectAnswerRadio";
 //others
@@ -24,9 +24,22 @@ const QuestionComponent = ({ questionId, onQuestionChange }) => {
     patchQuestion(targetPathList, value);
   }
 
+  const handleQuestionRemove = () => {
+    patchQuestion(["isDeleted"], true);
+  }
+
   return (
     <div>
-      <p className="title-question">Question</p>
+      <Row className="d-flex justify-content-between">
+        <p className="title-question">Question</p>
+        <Button
+          style={{ fontWeight: "bold", }}
+          className="orange-button"
+          onClick={handleQuestionRemove}
+        >
+          REMOVE QUESTION
+        </Button>
+      </Row>
       <div className="answer">
         <Input name="optionA" placeholder="Option A" onChange={e => handleInputChange(e, ["options", 0])} />
         <Input name="optionB" placeholder="Option B" onChange={e => handleInputChange(e, ["options", 1])} />
@@ -58,13 +71,27 @@ const ParagraphComponent = ({ paragraphId, onParagraphChange }) => {
     patchParagraph(["questions", questionId], question);
   }
 
-  const handleAddQuestionClick = () => { 
-    patchParagraph(["questions"], prev => [...prev, {}])
+  const handleAddQuestionClick = () => {
+    const newId = paragraph?.questions?.length;
+    patchParagraph(["questions", newId], {});
   };
+
+  const handleParagraphRemove = () => {
+    patchParagraph(["isDeleted"], true);
+  }
 
   return (
     <div className="question-component-wrapper">
-      <p className="title-question">Paragraph</p>
+      <Row className="d-flex justify-content-between">
+        <p className="title-question">Paragraph</p>
+        <Button
+          style={{ fontWeight: "bold", }}
+          className="orange-button"
+          onClick={handleParagraphRemove}
+        >
+          REMOVE PARAGRAPH
+        </Button>
+      </Row>
       <Input.TextArea
         name="paragraph"
         placeholder="Paragraph"
@@ -73,9 +100,9 @@ const ParagraphComponent = ({ paragraphId, onParagraphChange }) => {
       />
       <div className="answer">
         {paragraph?.questions?.map((question, i) => (
-          <React.Fragment key={i}>{
-            <QuestionComponent questionId={i} onQuestionChange={handleQuestionChange}/>
-          }</React.Fragment>
+          <div key={i} hidden={!!question?.isDeleted}>{
+            <QuestionComponent questionId={i} onQuestionChange={handleQuestionChange} />
+          }</div>
         ))}
       </div>
       <Button

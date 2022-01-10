@@ -18,6 +18,7 @@ function setPath(obj, pathList, value) {
   }
 
   const oldValue = schema[pathList[len - 1]];
+  if(typeof value === "function") console.error("There's a FUNCTION")
   schema[pathList[len - 1]] = typeof value === "function" ? value(oldValue) : value
   return { ...obj };
 }
