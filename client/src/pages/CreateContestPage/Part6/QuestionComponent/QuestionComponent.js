@@ -83,7 +83,7 @@ const ParagraphComponent = ({ paragraphId, onParagraphChange }) => {
   return (
     <div className="question-component-wrapper">
       <Row className="d-flex justify-content-between">
-      <p className="title-question">Paragraph</p>
+        <p className="title-question">Paragraph</p>
         <Button
           style={{ fontWeight: "bold", }}
           className="orange-button"
