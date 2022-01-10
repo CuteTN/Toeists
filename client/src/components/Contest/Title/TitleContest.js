@@ -10,6 +10,7 @@ import {
   Tooltip,
   Modal,
 } from "antd";
+import { Link } from "react-router-dom";
 import {
   EllipsisOutlined,
   DeleteFilled,
@@ -18,7 +19,8 @@ import {
 } from "@ant-design/icons";
 import { IoCheckbox } from "react-icons/io5";
 // api
-import { Link } from "react-router-dom";
+import { deleteContest } from "../../../services/api/contest";
+//context
 import { useAuth } from "../../../contexts/authenticationContext";
 
 const { Title, Text } = Typography;
@@ -31,18 +33,26 @@ const TitleContest = ({ contest }) => {
 
   const handleFollowContest = (id) => {};
 
-  const handleDeleteForum = (id) => {};
+  const handleDelete = (id) => {
+    deleteContest(id)
+      .then((res) => {
+        message.success("Contest has been deleted");
+        history.push("/feed");
+        window.location.reload(); // load feed to have new items
+      })
+      .catch((error) => message.success(error.message));
+  };
 
   const showConfirmDeleteContest = (id) => {
     confirm({
-      title: "Do you want to delete this forum?",
+      title: "Do you want to delete this Contest?",
       icon: <ExclamationCircleOutlined />,
       content: "You cannot undo this action",
       onOk() {
-        handleDeleteForum(id);
+        handleDelete(id);
       },
       onCancel() {
-        message.info("Forum is not deleted");
+        message.info("Contest is not deleted");
       },
     });
   };
@@ -89,7 +99,7 @@ const TitleContest = ({ contest }) => {
       >
         <Row className="align-items-center">
           <Title level={2}>
-            [{contest?.part}] {contest?.title}
+            [Part{contest?.part}] {contest?.title}
           </Title>
         </Row>
         <Row className="justify-content-end align-items-center pb-3">
@@ -135,7 +145,7 @@ const TitleContest = ({ contest }) => {
             className="ml-1 clickable"
             size={35}
             // src={contest?.creator?.avatarUrl}
-            src="https://shophoavip.com/uploads/noidung/images/shophoavip12/hoa-oai-huong-lavender/lavender.jpg"
+            src={contest?.creator?.avatarUrl}
           ></Avatar>
           <div className="d-inline-flex flex-column ml-3 break-word">
             <Row style={{ alignItems: "center" }}>
@@ -146,7 +156,7 @@ const TitleContest = ({ contest }) => {
                     strong
                     style={{ fontSize: "1.2rem" }}
                   >
-                    Thy Thy
+                    {contest?.creator?.name}
                   </Text>
                 </Link>
               </Space>

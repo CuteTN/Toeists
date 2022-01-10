@@ -1,30 +1,31 @@
+//libs
 import React, { useState, useEffect, useCallback } from "react";
 import { Row, Typography } from "antd";
-import styles from "./styles";
+//components
 import Contest from "../../../components/Contest/Contest";
-
+//api
+import { fetchAllContests } from "../../../services/api/contest";
+//others
+import styles from "./styles";
 const { Text } = Typography;
 
-function ListContests({ creatorId, hasMarginLeft }) {
+function ListContests({ hasMarginLeft }) {
   const [listContests, setListContests] = useState([]);
   /** @type {[]} */
-  const qs = {
-    part: "Part 5",
-    title: "Một cái title gì đó không biết nữa",
-    listQS: [
-      {
-        question: "đahạdhsdddddddddddddddddddđ",
-        answer: ["aaaaaaa", "bbbbbbb", "ccccccc", "dddddd"],
-        correct: "aaaaaaa",
-      },
-      {
-        question: "đahạdhsdddddddddddddddddddđ",
-        answer: ["aaaaaaa", "bbbbbbb", "ccccccc", "dddddd"],
-        correct: "aaaaaaa",
-      },
-    ],
-  };
-  useEffect(() => {}, [creatorId]);
+
+  useEffect(() => {
+    fetchAllContests()
+      .then((res) => {
+        if (res.data instanceof Array) setListContests(res.data);
+        else setListContests([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+  /** @type {[]} */
+
+  // useEffect(() => {}, [creatorId]);
 
   return (
     <div>
@@ -35,7 +36,10 @@ function ListContests({ creatorId, hasMarginLeft }) {
             : styles.postsBox
         }
       >
-        <Contest contest={qs} />
+        {listContests?.map((contest) => (
+          <Contest key={contest._id} contest={contest} />
+        ))}
+        {/* <Contest contest={qs} /> */}
       </Row>
     </div>
   );

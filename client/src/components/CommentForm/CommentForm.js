@@ -81,7 +81,7 @@ function CommentForm({ onSubmit, label, onDiscard, editor }) {
                 Reset
               </Button>
               <Button
-                className="green-button"
+                className="orange-button"
                 size="large"
                 htmlType="submit"
                 disabled={!editorState}

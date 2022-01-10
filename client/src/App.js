@@ -115,7 +115,7 @@ function App() {
             />
             <Route path="/userinfo/:id" exact component={UserInfoPage} />
             <Route exact path="/forums/:id" component={SpecificForumPage} />
-            <Route exact path="/contests/:id" component={SpecificContestPage} />
+            <Route exact path="/contest/:id" component={SpecificContestPage} />
             <Route
               exact
               path="/email-confirmation/:token"

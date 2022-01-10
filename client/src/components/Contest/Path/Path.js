@@ -12,7 +12,7 @@ const Path = ({ contest }) => {
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`http://localhost:3000/contests/${id}`) // change to deployment link later
+      .writeText(`http://localhost:3000/contest/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
@@ -27,7 +27,7 @@ const Path = ({ contest }) => {
           <Space size="large">
             <Space>
               <IoCaretForwardSharp className="red mr-2" />
-              <Link to={`/contests/${contest?._id}`} target="_blank">
+              <Link to={`/contest/${contest?._id}`} target="_blank">
                 <Text
                   style={{ fontSize: "1.2rem" }}
                   className=" clickable bold mx-2"
