@@ -1,22 +1,16 @@
 import React, { useEffect } from "react";
 import { Radio, Typography } from "antd";
+import { usePatch } from "../../../hooks/usePatch";
 
 const ContestPart6 = ({ contest, onChange }) => {
-  const [value, setValue] = React.useState([""]);
+  const [value, setValue, patchValue] = usePatch([]);
+  const listAnswer = ["A", "B", "C", "D"];
   React.useEffect(() => {
-    onChange?.(value);
+    onChange?.(Object.values(value));
   }, [value]);
 
-  const handleRadioChange = (e) => {
-    setValue(e.target.value);
-  };
-
-  const changeList = (i, va) => {
-    let newArr = [...value];
-    newArr[i] = va;
-    console.log("ualasao", newArr);
-    setValue(newArr);
-    console.log("honghieu", value);
+  const changeList = (i, value, e) => {
+    patchValue([i], listAnswer[value]);
   };
 
   return (
@@ -31,13 +25,13 @@ const ContestPart6 = ({ contest, onChange }) => {
                 Question {i + 1} : {qs.question}
               </h6>
               <Radio.Group
-                onChange={(e) => changeList(i, e.target.value)}
+                onChange={(e) => changeList(i, e.target.value, e)}
                 style={{ marginBottom: 20 }}
               >
                 {qs?.options.map((item, i) => (
                   <Radio
                     key={i}
-                    value={item}
+                    value={i}
                     style={{ marginRight: 50, fontSize: 16 }}
                   >
                     {item}

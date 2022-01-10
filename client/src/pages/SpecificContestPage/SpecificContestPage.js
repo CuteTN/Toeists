@@ -13,13 +13,15 @@ import ContestPart6 from "./Part6/ContestPart6";
 import ContestPart7 from "./Part7/ContestPart7";
 //api
 import { fetchAContest } from "../../services/api/contest";
+import { submitToAContest } from "../../services/api/contest";
 //other
 import styles from "./styles.js";
 
-const SpecificForumPage = (props) => {
+const SpecificContestPage = (props) => {
   const history = useHistory();
   const { id } = props.match.params;
   const [contest, setContest] = useState(null);
+  const [answers, setAnswers] = useState([]);
 
   useEffect(() => {
     fetchContest();
@@ -44,6 +46,16 @@ const SpecificForumPage = (props) => {
       });
   };
 
+  const handleSubmit = () => {
+    submitToAContest(contest?._id, answers).then((res) => {
+      console.log(res.data);
+    });
+  };
+
+  const handleAnswersChange = (ans) => {
+    setAnswers(ans);
+  };
+
   return (
     <>
       <Layout>
@@ -60,13 +72,19 @@ const SpecificForumPage = (props) => {
                   {contest?.part === 3 && <ContestPart3 contest={contest} />}
                   {contest?.part === 4 && <ContestPart4 contest={contest} />}
                   {contest?.part === 5 && <ContestPart5 contest={contest} />}
-                  {contest?.part === 6 && <ContestPart6 contest={contest} />}
+                  {contest?.part === 6 && (
+                    <ContestPart6
+                      contest={contest}
+                      onChange={handleAnswersChange}
+                    />
+                  )}
                   {contest?.part === 7 && <ContestPart7 contest={contest} />}
                   <div style={{ textAlign: "center", marginTop: 50 }}>
                     <Button
                       className="orange-button"
                       size="large"
                       htmlType="submit"
+                      onClick={handleSubmit}
                     >
                       Submit
                     </Button>
@@ -81,4 +99,4 @@ const SpecificForumPage = (props) => {
   );
 };
 
-export default SpecificForumPage;
+export default SpecificContestPage;
