@@ -1,7 +1,7 @@
 import express from "express";
 import * as controllers from "../controllers/contest.js";
 import { createSwaggerPath, SwaggerTypes } from "../utils/swagger.js";
-import { authorizeMdw } from '../middlewares/authorization.js'
+import { authorizeMdw, extractUserTokenMdw } from '../middlewares/authorization.js'
 import { findByIdMdwFn } from "../middlewares/findById.js";
 import { ContestPart } from "../models/contestPart.js";
 
@@ -12,11 +12,13 @@ const checkIsContestPartCreator = (contestPart, req) => {
     return "Only the contest part creator can access this data."
 }
 
-contestPartRouter.get("/", controllers.getAllContestParts);
-contestPartRouter.get("/:id", findByIdMdwFn({ model: ContestPart }), controllers.getContestPartById);
+contestPartRouter.get("/", extractUserTokenMdw, controllers.getAllContestParts);
+contestPartRouter.get("/:id", extractUserTokenMdw, findByIdMdwFn({ model: ContestPart }), controllers.getContestPartById);
 
 contestPartRouter.post("/", authorizeMdw, controllers.createContestPart);
 contestPartRouter.delete("/:id", authorizeMdw, findByIdMdwFn({ model: ContestPart, forbiddenChecker: checkIsContestPartCreator }), controllers.deleteContestPart);
+
+contestPartRouter.post("/:id/submit", authorizeMdw, controllers.addContestSubmission);
 
 const controllerName = "contest-parts";
 export const contestPartsSwaggerPaths = {
@@ -70,4 +72,23 @@ export const contestPartsSwaggerPaths = {
       null,
     )
   },
+
+  [`/${controllerName}/{id}/submit`]: {
+    post: createSwaggerPath(
+      "Add a submission to a contest.",
+      [controllerName],
+      [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: SwaggerTypes.string(),
+        }
+      ],
+      SwaggerTypes.object({
+        answers: SwaggerTypes.array(SwaggerTypes.enum(["A", "B", "C", "D"]))
+      }),
+      null,
+    ),
+  }
 }
