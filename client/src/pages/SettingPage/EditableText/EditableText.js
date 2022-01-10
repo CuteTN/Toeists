@@ -75,7 +75,7 @@ function EditableText({
               Cancel
             </Button>
             <Button
-              className="green-button"
+              className="orange-button"
               style={styles.button}
               onClick={handleSaving}
             >

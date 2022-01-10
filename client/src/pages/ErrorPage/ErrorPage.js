@@ -68,7 +68,7 @@ function ErrorPage({ code }) {
         </a>
         <Link to="/feed">
           <Button
-            className="green-button"
+            className="orange-button"
             size="large"
             style={{ width: buttonSize }}
           >

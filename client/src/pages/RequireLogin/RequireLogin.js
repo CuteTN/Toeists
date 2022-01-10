@@ -8,7 +8,6 @@ const buttonWidth = 100;
 function RequireLogin({ restrictedAction }) {
   const { pathname } = useLocation();
 
-
   return (
     <Card className="white-button mb-4">
       <Row align="middle" justify="space-between">
@@ -19,7 +18,7 @@ function RequireLogin({ restrictedAction }) {
           <Link to={`/signin?url=${encodeURIComponent(pathname)}`}>
             <Button
               style={{ width: buttonWidth }}
-              className="greensmoke-button mr-3"
+              className="orangesmoke-button mr-3"
               size="large"
             >
               Login
@@ -28,7 +27,7 @@ function RequireLogin({ restrictedAction }) {
           <Link to="/register">
             <Button
               style={{ width: buttonWidth }}
-              className="green-button"
+              className="orange-button"
               size="large"
             >
               Register
