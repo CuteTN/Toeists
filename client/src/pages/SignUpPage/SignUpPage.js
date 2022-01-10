@@ -17,7 +17,7 @@ import {
 import addUserImage from "../../assets/signup.jpg";
 
 import styles from "./styles";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { signup } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
 import moment from "moment";
@@ -47,6 +47,7 @@ function SignUpPage() {
   const [form, setForm] = useState(initialState);
   const [resend, setResend] = useState(false);
   const disableReg = useRef(false);
+  const history = useHistory();
 
   // DIRTY: refresh token test
   // React.useEffect(() => {
@@ -90,8 +91,14 @@ function SignUpPage() {
       setDisableReg(true);
       apiSignUp(userData)
         .then(data => {
-          requestAccountActivation(data.data._id);
-          message.success(`User ${userData.username} has successfully registered. Please check your email to verify this account.`);
+          // requestAccountActivation(data.data._id);
+          // message.success(`User ${userData.username} has successfully registered. Please check your email to verify this account.`);
+          message.success({
+            content: `User ${userData.username} has successfully registered.`,
+            onClose: () => {
+              history.push('/signin')
+            }
+          })
         })
         .catch((err) => {
           const errors = [];

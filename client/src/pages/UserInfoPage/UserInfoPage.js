@@ -42,7 +42,7 @@ function UserInfoPage() {
               }}
             >
               <AvatarView />
-              <ListButtons />
+              {signedInUser? <ListButtons />:<div style={{ height: 70 }}/>}
             </Content>
           </Layout>
           <Layout style={styles.mainArea}>
