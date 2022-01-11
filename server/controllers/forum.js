@@ -63,7 +63,7 @@ export const getForums = async (req, res, next) => {
   const filter = {};
   if (req.query.creatorId) filter.creatorId = req.query.creatorId;
 
-  const forums = await Forum.find(filter).populate(FORUM_VIRTUAL_FIELDS);
+  const forums = await Forum.find(filter).sort({ contentUpdatedAt: "desc" }).populate(FORUM_VIRTUAL_FIELDS);
 
   // NOTE: Can be null-ish
   const userId = req.attached?.decodedToken?.userId
