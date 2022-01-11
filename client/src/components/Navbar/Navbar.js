@@ -237,11 +237,11 @@ function Navbar() {
 
         {signedInUser && (
           <Menu.Item
-            key="content"
+            key="contest"
             className="navitem pickitem text-center"
             onClick={handleContentClick}
           >
-            <Tooltip title="Create a content" placement="bottom">
+            <Tooltip title="Create a contest" placement="bottom">
               <FormOutlined style={{ fontSize: 24, color: COLOR.white }} />
             </Tooltip>
           </Menu.Item>
