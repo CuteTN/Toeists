@@ -42,10 +42,12 @@ const IntroCard = () => {
       </Row>
       <Divider style={{ justifySelf: "start" }}></Divider>
       <div className="row" style={styles.lineinfo}>
-        <OverviewRow
-          firstIcon={<FaPhoneSquareAlt style={styles.icon} />}
-          text={phoneNumber}
-        />
+        {phoneNumber && (
+          <OverviewRow
+            firstIcon={<FaPhoneSquareAlt style={styles.icon} />}
+            text={phoneNumber}
+          />
+        )}
 
         <OverviewRow firstIcon={<MdEmail style={styles.icon} />} text={email} />
 
