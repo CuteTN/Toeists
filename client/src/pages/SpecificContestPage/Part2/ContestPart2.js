@@ -10,7 +10,7 @@ const ContestPart2 = ({ contest, onChange }) => {
   const [value, setValue, patchValue] = usePatch([]);
   const listAnswer = ["A", "B", "C"];
   React.useEffect(() => {
-    onChange?.(Object.values(value));
+    onChange?.(value);
   }, [value]);
 
   const changeList = (i, value) => {
@@ -36,7 +36,7 @@ const ContestPart2 = ({ contest, onChange }) => {
             Choose Answer:
           </h6>
           <Radio.Group
-            onChange={(e) => changeList(i, e.target.value)}
+            onChange={(e) => changeList(qs?.id, e.target.value)}
             style={{ marginBottom: 20 }}
           >
             {listAnswer.map((item, i) => (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Card, Button } from "antd";
+import { Layout, Card, Button, Tooltip } from "antd";
 import { useHistory } from "react-router-dom";
 //components
 import Navbar from "../../components/Navbar/Navbar";
@@ -16,12 +16,15 @@ import { fetchAContest } from "../../services/api/contest";
 import { submitToAContest } from "../../services/api/contest";
 //other
 import styles from "./styles.js";
+import PersonalResultComponent from "./PersonalResult";
 
 const SpecificContestPage = (props) => {
   const history = useHistory();
   const { id } = props.match.params;
   const [contest, setContest] = useState(null);
   const [answers, setAnswers] = useState([]);
+
+  const personalResult = React.useMemo(() => contest?.submissions?.personal, [contest]);
 
   useEffect(() => {
     fetchContest();
@@ -48,13 +51,19 @@ const SpecificContestPage = (props) => {
 
   const handleSubmit = () => {
     submitToAContest(contest?._id, answers).then((res) => {
-      console.log(res.data);
+      window.location.reload();
     });
   };
 
   const handleAnswersChange = (ans) => {
-    setAnswers(ans);
+    let refinedAns = [];
+    Object.entries(ans ?? {}).forEach(([key, value]) => { console.log(key, value); refinedAns[key] = value })
+    setAnswers(refinedAns);
   };
+
+  const handleGoToContestList = () => {
+    history.push("/contests")
+  }
 
   return (
     <>
@@ -109,14 +118,38 @@ const SpecificContestPage = (props) => {
                       onChange={handleAnswersChange}
                     />
                   )}
+                  <div>
+                    <PersonalResultComponent contest={contest} />
+                  </div>
                   <div style={{ textAlign: "center", marginTop: 50 }}>
                     <Button
-                      className="orange-button"
+                      className="orange-button mr-4"
                       size="large"
-                      htmlType="submit"
-                      onClick={handleSubmit}
+                      onClick={handleGoToContestList}
+                      hidden={!!personalResult}
                     >
-                      Submit
+                      Quit
+                    </Button>
+
+                    <Tooltip title={personalResult ? "You've already submitted to this contest." : "Submit your answers"}>
+                      <Button
+                        className="orange-button ml-4 mr-4"
+                        size="large"
+                        htmlType="submit"
+                        onClick={handleSubmit}
+                        disabled={!!personalResult}
+                      >
+                        Submit
+                      </Button>
+                    </Tooltip>
+
+                    <Button
+                      className="orange-button ml-4"
+                      size="large"
+                      onClick={handleGoToContestList}
+                      hidden={!personalResult}
+                    >
+                      More contests
                     </Button>
                   </div>
                 </div>

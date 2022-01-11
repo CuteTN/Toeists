@@ -96,8 +96,6 @@ export const addContestSubmission = async (req, res) => {
       return res.status(httpStatusCodes.notFound).json({ message: "Couldn't find the contest part." });
     if (!Array.isArray(userAnswers))
       return res.status(httpStatusCodes.badRequest).json({ message: "'answers' field is required and must be an array." });
-    if (contestPart.creatorId === userId)
-      return res.status(httpStatusCodes.unprocessableEntity).json({ message: "A creator cannot submit answers to their own contest." })
 
     let score = 0;
     contestPart.answers?.forEach((ans, i) => score += userAnswers[i]?.toUpperCase?.() === ans?.toUpperCase?.() ? 1 : 0);
