@@ -1,17 +1,29 @@
 import express from "express";
 import { usersRouter } from "./users.js";
-import { authenticationRouter} from './authentication.js'
+import { authorizationRouter } from "./authorization.js";
+import { userConnectionsRouter } from "./userConnection.js";
+import { filesRouter } from "./files.js";
+import { forumsRouter } from "./forum.js";
+import { commentsRouter } from "./comment.js";
+import { certificatesRouter } from "./certificate.js";
+import { hashtagsRouter } from "./hashtag.js";
+import { conversationsRouter } from "./conversation.js";
+import { searchRouter } from "./search.js";
+import { notificationsRouter } from "./notification.js";
+import { contestPartRouter } from "./contestPart.js";
 
 export const apiRouter = express.Router();
 
-/**
- * documentations
- */
-apiRouter.get("/", function (req, res, next) {
-  res.send(`
-    <code>API documentation coming soon...</code>
-  `)
-});
+apiRouter.use("/authorization", authorizationRouter);
+apiRouter.use("/users", usersRouter);
+apiRouter.use("/user-connections", userConnectionsRouter);
+apiRouter.use("/forums", forumsRouter);
+apiRouter.use("/comments", commentsRouter);
+apiRouter.use("/certificates", certificatesRouter);
+apiRouter.use("/hashtags", hashtagsRouter);
+apiRouter.use("/conversations", conversationsRouter);
+apiRouter.use("/search", searchRouter);
+apiRouter.use("/notifications", notificationsRouter);
+apiRouter.use("/contest-parts", contestPartRouter);
 
-apiRouter.use('/auth', authenticationRouter);
-apiRouter.use('/users', usersRouter);
+apiRouter.use("/files", filesRouter);

@@ -1,0 +1,35 @@
+.list-conversations-wrapper{
+  display: grid;
+  grid-template-rows: 50px auto;
+  grid-area: list-friend;
+}
+
+.search-conversation{
+  background-color:#FAC380;
+}
+.list-conversation{
+  overflow-y: scroll;
+}
+.conversation-card {
+  display:flex;
+  width: 100%;
+}
+.message-card {
+  padding-left: 20px;
+  width: 88%;
+}
+.message-card-name{
+  text-align: left;
+  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+   text-overflow: ellipsis;
+}
+.message-card-last-message{
+  color: rgb(78, 78, 78);
+  text-align: left;
+  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

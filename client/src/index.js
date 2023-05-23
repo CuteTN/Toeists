@@ -10,10 +10,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
-// import { TokenProvider } from "./context/TokenContext";
-// import { CurrentUserProvider } from "./context/CurrentUserContext";
-// import { GroupsOfUserProvider } from "./context/GroupsOfUserContext";
-// import ScrollToTop from "./utils/ScrollTopAuto";
+import { AuthenticationProvider } from './contexts/authenticationContext'
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
@@ -21,16 +18,11 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        {/* <TokenProvider> */}
-        {/* <CurrentUserProvider> */}
-        {/* <GroupsOfUserProvider> */}
-        {/* <ScrollToTop /> */}
-        <App />
-        {/* </GroupsOfUserProvider> */}
-        {/* </CurrentUserProvider> */}
-        {/* </TokenProvider> */}
+        <AuthenticationProvider>
+          <App />
+        </AuthenticationProvider>
       </Provider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode >,
   document.getElementById("root")
 );

@@ -1,4 +1,6 @@
 import io, { Socket } from "socket.io-client";
+import jwtDecode from 'jwt-decode'
+import events from 'events'
 
 /**
  * [Full documentation](https://www.google.com)
@@ -8,6 +10,10 @@ export default class CuteClientIO {
    * @type Socket<DefaultEventsMap, DefaultEventsMap>?
    */
   #socket = null;
+  #onRejectedDueToTokenExpiredEvent = new events.EventEmitter();
+
+  /** @type {[{event: string, msg: any}]} */
+  #rejectedDueToTokenExpiredMesages = []
 
   /**
    * @deprecated Just in case you really need to access the real socket.io's API, I provide this to you. But try to use the supported methods or contact CuteTN first, thank you.
@@ -24,6 +30,7 @@ export default class CuteClientIO {
   }
 
   #uri = null;
+  #oldToken = null;
   #token = null;
   #browserId = null;
 
@@ -38,20 +45,23 @@ export default class CuteClientIO {
    * set socket with new serverUri and token and connect to server
    * @param {string} serverUri The address of the server.
    * @param {string} token
+   * @param {(socket: Socket<DefaultEventsMap, DefaultEventsMap>) => void} onConnected
    * @returns {CuteClientIO}
    */
-  connect = (serverUri, token) => {
+  connect = (serverUri, token, onConnected) => {
     if (serverUri === this.#uri && token === this.#token) return this;
 
     this.#uri = serverUri;
+    this.#oldToken = this.#token;
     this.#token = token;
     this.#browserId = JSON.parse(localStorage.getItem("browser"))?.id;
 
     this.close();
 
-    const query = {
-      token: this.#token
-    };
+    const query = {};
+    if (this.#token)
+      query.token = this.#token;
+
     if (this.#browserId)
       query.browserId = this.#browserId;
 
@@ -59,9 +69,7 @@ export default class CuteClientIO {
 
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
-      console.info(
-        `[IO] Connected to ${this.#socketId} at ${this.#uri}`
-      );
+      onConnected?.(this.#socket);
 
       this.socket.once("System-AcceptBrowserId", (msg) => {
         // DANGER: async accross tabs here
@@ -83,17 +91,25 @@ export default class CuteClientIO {
         }
       })
 
+      this.#resendAfterTokenRefreshed(this.#oldToken, this.#token);
+
+      this.socket.on("System-TokenExpired", ({ rejectedEvent }) => {
+        this.#onRejectedDueToTokenExpiredEvent.emit("");
+        if (rejectedEvent?.event !== null && rejectedEvent?.event !== "connection")
+          this.#rejectedDueToTokenExpiredMesages.push(rejectedEvent);
+      })
+
       this.onReceiveMulti(this.#queueEventHandlersOnConnection);
       this.#queueEventHandlersOnConnection = [];
 
       this.#queueAnyEventHandlersOnConnection.forEach(h => this.onReceiveAny(h));
       this.#queueAnyEventHandlersOnConnection = [];
 
-      this.#socket.on("disconnect", (reason) => {
-        console.info(
-          `[IO] Disconnected from ${this.#socketId}. Reason: ${reason}`
-        );
-      });
+      // this.#socket.on("disconnect", (reason) => {
+      //   console.info(
+      //     `[IO] Disconnected from ${this.#socketId}. Reason: ${reason}`
+      //   );
+      // });
     });
 
     return this;
@@ -146,6 +162,14 @@ export default class CuteClientIO {
   };
 
   /**
+   * @param {() => void} listener 
+   */
+  onRejectedDueToTokenExpired = (listener) => {
+    this.#onRejectedDueToTokenExpiredEvent.on("", listener);
+    return () => this.#onRejectedDueToTokenExpiredEvent.off("", listener);
+  }
+
+  /**
    * @param {string} event
    * @param {OnReceiveDelegate} handleFunction
    */
@@ -169,6 +193,34 @@ export default class CuteClientIO {
   stopReceiveMulti = (eventHandlers) => {
     eventHandlers.forEach((e) => this.stopReceive(e.event, e.handleFunction));
   };
+
+  /**
+   * DIRTY: should be decoupled 
+   * @param {string} oldToken 
+   * @param {string} newToken 
+   */
+  #checkAccessTokensOfSameUser = (oldToken, newToken) => {
+    if (!(oldToken && newToken))
+      return true;
+
+    const oldPayload = jwtDecode(oldToken);
+    const newPayload = jwtDecode(newToken);
+
+    if (oldPayload.type !== 'a')
+      return false;
+    if (newPayload.type !== 'a')
+      return false;
+
+    return newPayload.userId === oldPayload.userId;
+  }
+
+  #resendAfterTokenRefreshed = (oldToken, newToken) => {
+    this.#rejectedDueToTokenExpiredMesages.forEach(message => {
+      this.send(message.event, message.msg);
+    })
+
+    this.#rejectedDueToTokenExpiredMesages = [];
+  }
 }
 
 //#region typedefs

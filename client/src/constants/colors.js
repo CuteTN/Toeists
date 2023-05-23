@@ -10,6 +10,11 @@ const COLOR = {
   blue: "#2F80ED",
   red: "#EB5757",
   yellow: "#F2C94C",
+  orange: "#F89823",
+  lightOrange: "#FAC380",
+  darkOrange: "#C56F06",
+  orangeSmoke: "#F4E2C9",
+  pastelOrange: "#ffe5cc"
 };
 
 export default COLOR;

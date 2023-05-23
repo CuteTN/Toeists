@@ -1,0 +1,16 @@
+.question-component-wrapper{
+    display: block; 
+    margin-bottom: 50px;
+}
+.answer{
+    display: grid;
+    margin-top: 20px;
+    gap: 15px;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto auto;
+}
+.title-question{
+    text-align: start;
+    font-size: 18px;
+    font-weight: 500;
+}

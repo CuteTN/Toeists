@@ -1,36 +1,48 @@
-// import React, { useContext, useEffect, useState } from 'react'
-// import CuteClientIO from './CuteClientIO'
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthenticationService } from '../services/AuthenticationService';
+import CuteClientIO from './CuteClientIO'
 
-// const CuteClientIOContext = React.createContext();
+const CuteClientIOContext = React.createContext();
 
-// /**
-//  * provide a context variable to work with CuteClientIO
-//  * @returns {CuteClientIO}
-//  */
-// export const useCuteClientIO = () => {
-//   return useContext(CuteClientIOContext)
-// }
+/**
+ * provide a context variable to work with CuteClientIO
+ * @returns {CuteClientIO}
+ */
+export const useCuteClientIO = () => {
+  return useContext(CuteClientIOContext)
+}
 
-// export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnection }) => {
-//   /** @type [CuteClientIO, any] */
-//   const [cuteIO, setCuteIO] = useState(() => new CuteClientIO());
+const CuteClientIOInstance = new CuteClientIO();
+CuteClientIOInstance.onRejectedDueToTokenExpired(
+  () => AuthenticationService.refreshToken()
+);
 
-//   useEffect(() => {
-//     setCuteIO(
-//       /**
-//        * @param {CuteClientIO} cuteIO
-//        */
-//       cuteIO => {
-//         cuteIO.connect(serverUri, token)
-//         onNewConnection(cuteIO);
-//         return cuteIO;
-//       }
-//     );
-//   }, [token, serverUri])
+export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnection }) => {
+  /** @type [CuteClientIO, any] */
+  const [cuteIO, setCuteIO] = useState(() => CuteClientIOInstance);
+  const [socketId, setSocketId] = React.useState(null);
 
-//   return (
-//     <CuteClientIOContext.Provider value={cuteIO}>
-//       {children}
-//     </CuteClientIOContext.Provider>
-//   )
-// }
+  useEffect(() => {
+    setCuteIO(
+      /**
+       * @param {CuteClientIO} cuteIO
+       */
+      cuteIO => {
+        cuteIO.connect(serverUri, token,
+          socket => { setSocketId(socket.id); }
+        );
+
+        cuteIO.onReceive("System-RequestReload", () => window.location.reload());
+
+        onNewConnection?.(cuteIO);
+        return cuteIO;
+      }
+    );
+  }, [token, serverUri])
+
+  return (
+    <CuteClientIOContext.Provider value={cuteIO}>
+      {children}
+    </CuteClientIOContext.Provider>
+  )
+}

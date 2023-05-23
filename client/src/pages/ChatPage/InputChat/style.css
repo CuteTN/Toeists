@@ -1,0 +1,13 @@
+.input-chat-wrapper{
+  grid-area: input-chat;
+  display: flex;
+  padding: 15px;
+  position: fixed;
+  width: 70%;
+  height: 70px;
+  background-color: white;
+  border-left: 1px solid rgb(235, 233, 233);
+  border-top: 1px solid rgb(235, 233, 233);
+  bottom: 0;
+  right: 0;
+}

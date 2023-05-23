@@ -1,0 +1,12 @@
+
+.create-contest-page-wrapper{
+    display: grid;
+    text-align:center;
+}
+.functional-button{
+    text-align:end;
+    margin-top: 20px;
+}
+.title{
+    margin-bottom: 20px;
+}

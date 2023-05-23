@@ -13,6 +13,12 @@ body {
   --black: #333333;
   --gray: #828282;
   --red: #eb5757;
+  --orange: #F89823;
+  --dark-orange: #C56F06;
+  --orange-smoke: #F4E2C9;
+  --light-orange: #FAC380;
+  --pastel-orange: #ffe5cc
+  
 
   /* overflow: auto; */
   /* height: 100vh;
@@ -21,14 +27,14 @@ body {
 
 .clickable:hover {
   text-decoration: underline;
-  color: var(--green);
+  color: var(--orange);
   cursor: pointer;
 }
 
 .boldhover:hover {
   font-weight: bold;
   cursor: pointer;
-  color: #219653;
+  color: #C56F06;
 }
 
 .bold {
@@ -39,24 +45,28 @@ body {
   font-style: italic;
 }
 
-.green {
-  color: var(--green);
+.orange {
+  color: var(--orange);
 }
 
-.dark-green {
-  color: var(--dark-green);
+.dark-orange {
+  color: var(--dark-orange);
 }
 
 .bg-green-smoke {
-  background-color: var(--green-smoke);
+  background-color: var(--orange-smoke);
+}
+
+.bg-orange-smoke {
+  background-color: var(--orange-smoke);
 }
 
 .bg-white {
   background-color: white;
 }
 
-.bg-green {
-  background-color: var(--green);
+.bg-orange {
+  background-color: var(--orange);
 }
 
 .black {
@@ -81,9 +91,9 @@ body {
 
 .tag {
   font-size: 1rem;
-  color: var(--dark-green);
-  background-color: var(--green-smoke);
-  border-color: var(--green-smoke);
+  color: var(--dark-orange);
+  background-color: var(--orange-smoke);
+  border-color: var(--orange-smoke);
   justify-content: center;
   padding-bottom: 3px;
   padding-left: 12px;
@@ -91,45 +101,45 @@ body {
 }
 
 .tag:hover {
-  background-color: var(--dark-green);
+  background-color: var(--dark-orange);
   color: white;
   cursor: pointer;
 }
 
-.green-button {
-  background-color: var(--green);
-  border-color: var(--green);
+.orange-button {
+  background-color: var(--orange);
+  border-color: var(--orange);
   color: white;
 }
 
-.green-button:hover {
-  background-color: var(--green-smoke);
-  border-color: var(--green);
-  color: var(--green);
+.orange-button:hover {
+  background-color: var(--orange-smoke);
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
-.green-button:focus {
-  background-color: var(--green-smoke);
-  border-color: var(--green);
-  color: var(--green);
+.orange-button:focus {
+  background-color: var(--orange-smoke);
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
-.greensmoke-button {
-  background-color: var(--green-smoke);
-  border-color: var(--green-smoke);
-  color: var(--dark-green);
+.orangesmoke-button {
+  background-color: var(--orange-smoke);
+  border-color: var(--orange-smoke);
+  color: var(--dark-orange);
 }
 
-.greensmoke-button:hover {
+.orangesmoke-button:hover {
   background-color: white;
-  border-color: var(--green);
-  color: var(--dark-green);
+  border-color: var(--orange);
+  color: var(--dark-orange);
 }
 
-.greensmoke-button:focus {
+.orangesmoke-button:focus {
   background-color: white;
-  border-color: var(--green);
-  color: var(--dark-green);
+  border-color: var(--orange);
+  color: var(--dark-orange);
 }
 
 .white-button {
@@ -139,31 +149,31 @@ body {
 }
 
 .white-button:hover {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
 .white-button:focus {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
-.whitegreen-button {
+.whiteorange-button {
   background-color: white;
   border-color: grey;
   color: var(--black);
 }
 
-.whitegreen-button:hover {
-  background-color: var(--green-smoke);
-  border-color: var(--green-smoke);
-  color: var(--dark-green);
+.whiteorange-button:hover {
+  background-color: var(--orange-smoke);
+  border-color: var(--orange-smoke);
+  color: var(--dark-orange);
 }
 
-.whitegreen-button:focus {
-  background-color: var(--green-smoke);
-  border-color: var(--green-smoke);
-  color: var(--dark-green);
+.whiteorangen-button:focus {
+  background-color: var(--orange-smoke);
+  border-color: var(--orange-smoke);
+  color: var(--dark-orange);
 }
 
 .full {
@@ -185,8 +195,8 @@ input:-webkit-autofill:active {
 
 /* Ant Design modification */
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--green);
-  border-color: var(--green);
+  background-color: var(--orange);
+  border-color: var(--orange);
 }
 
 .facebook-container {
@@ -289,12 +299,12 @@ input:-webkit-autofill:active {
 }
 
 .ant-menu.ant-menu-dark .ant-menu-item:hover.navitem {
-  background-color: var(--dark-green); /*Overriden property*/
+  background-color: var(--dark-orange); /*Overriden property*/
 }
 
 .ant-menu.ant-menu-dark > .ant-menu-item-active.pickitem,
 .ant-menu.ant-menu-dark > .ant-menu-item-selected.pickitem {
-  background-color: var(--green-smoke); /*Overriden property*/
+  background-color: var(--orange-smoke); /*Overriden property*/
 }
 
 .ant-menu.ant-menu-dark > .ant-menu-item-active.notpickitem,
@@ -316,4 +326,18 @@ input:-webkit-autofill:active {
 
 .box-shadow {
   box-shadow: 20px 40px #888888;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }

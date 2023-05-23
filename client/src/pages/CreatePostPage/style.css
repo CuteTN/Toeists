@@ -1,0 +1,11 @@
+
+.create-post-page-wrapper{
+    display: grid;
+    text-align:center;
+    margin: 0 auto;
+    background-color:#F2F2F2;
+    grid-template-rows: 64px auto;
+    grid-template-areas: 
+    "header"
+    "editor";
+}

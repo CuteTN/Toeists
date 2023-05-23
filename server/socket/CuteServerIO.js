@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
-import { verifyJwt } from "../utils/verfifyAuth.js";
+import { verifyJwt } from "../services/jwtHelper.js";
 import event from 'events'
+import jwt from "jsonwebtoken";
 
 /**
  * [Full documentation](https://www.google.com)
@@ -41,15 +42,22 @@ export default class CuteServerIO {
   /**
    * extract token and userId from a socket.
    * @param {Socket} socket
-   * @returns {{socket: string, token: string, userId: string, browserId: string}}
+   * @returns {{socket: string, token: string, userId: string, username: string, browserId: string}}
    */
   #extractInfoSocket = (socket) => {
     // user must provide a token in order to connect to this server.
     const token = socket.handshake.query.token;
-    const browserId = socket.handshake.query.browserId;
-    const userId = verifyJwt(token)?.id;
+    let tokenPayload = verifyJwt(token).payload ?? {};
 
-    return { socket, token, userId, browserId };
+    // DIRTY: should decouple the jwt payload here
+    if (tokenPayload.type !== 'a')
+      tokenPayload = {}
+
+    const { userId, username } = tokenPayload;
+
+    const browserId = socket.handshake.query.browserId;
+
+    return { socket, token, userId, username, browserId };
   };
 
   /** @param {string} id */
@@ -68,16 +76,38 @@ export default class CuteServerIO {
    */
   #createCuteParameter = (socket, msg) => {
     if (typeof socket === "string") socket = this.#getSocket(socket);
-    const { userId, token, browserId } = this.#extractInfoSocket(socket);
+    const { userId, token, browserId, username } = this.#extractInfoSocket(socket);
 
     return {
       userId,
+      username,
       token,
       socket,
       browserId,
       msg,
       cuteServerIo: this,
     }
+  }
+
+  /**
+   * @param {Socket} socket 
+   * @param {string} event 
+   * @param {any} msg 
+   * @returns {boolean} is rejected for token expiration
+   */
+  #checkTokenExpiredThenReject = (socket, eventName, msg) => {
+    const token = socket.handshake.query.token;
+
+    if (!token)
+      return false;
+
+    const { error } = verifyJwt(token);
+
+    if (!(error instanceof jwt.TokenExpiredError))
+      return false;
+
+    this.sendToSocket(socket, "System-TokenExpired", { rejectedEvent: { event: eventName, msg } })
+    return true;
   }
 
   /**
@@ -88,7 +118,10 @@ export default class CuteServerIO {
    */
   onReceive = (socket, eventName, handleFunction) => {
     socket.on(eventName, (msg) => {
-      handleFunction(this.#createCuteParameter(socket, msg));
+      const tokenExpired = this.#checkTokenExpiredThenReject(socket, eventName, msg);
+
+      if (!tokenExpired)
+        handleFunction(this.#createCuteParameter(socket, msg));
     });
   };
 
@@ -109,24 +142,23 @@ export default class CuteServerIO {
    */
   start = () => {
     this.#io.on("connection", async (socket) => {
-      let { token, userId, browserId } = this.#extractInfoSocket(socket);
-      let logOutTask;
+      let { token, userId, browserId, username } = this.#extractInfoSocket(socket);
 
       if (!browserId) {
         browserId = socket.id + "-" + Date.now().toString();
       }
 
       this.sendToSocket(socket, "System-AcceptBrowserId", { browserId });
+      this.#checkTokenExpiredThenReject(socket, "connection");
 
       // force user to log out if the token is not valid
-      if (token && token !== "undefined" && token !== "null")
+      if (token)
         this.verifyUser?.(userId).then(res => {
           if (!res)
             this.sendToSocket(socket, "System-InvalidToken", {
               enableAlert: true,
             })
         })
-
       try {
         if (!token || !userId) {
           // signed in anonymously
@@ -134,6 +166,7 @@ export default class CuteServerIO {
             this.#ANONYMOUS_ROOM_PREFIX,
             this.#BROWSER_ROOM_PREFIX + browserId,
           ]);
+
         } else {
           // Add this socket to a room with id User. every socket here belongs to this user only.
           socket.join([
@@ -142,15 +175,7 @@ export default class CuteServerIO {
             this.#BROWSER_ROOM_PREFIX + browserId,
           ]);
 
-          const { exp } = verifyJwt(token);
-          // auto logout on expiration
-          if (exp) {
-            logOutTask = setTimeout(() => {
-              this.sendToSocket(socket, "System-InvalidToken", {
-                enableAlert: true,
-              });
-            }, exp * 1000 - Date.now());
-          }
+
         }
 
         // add handlers to call whenever this client send something to the server
@@ -161,8 +186,6 @@ export default class CuteServerIO {
         }
 
         socket.on("disconnect", (reason) => {
-          if (logOutTask) clearTimeout(logOutTask);
-
           console.info(
             `[IO] Disconnected from ${socket.id}. Reason: ${reason}`
           );
@@ -170,9 +193,9 @@ export default class CuteServerIO {
           this.#connectionEventEmitter.emit("disconnection", this.#createCuteParameter(socket, {}));
         });
 
-        if (userId)
-          console.info(`[IO] Connected to ${socket.id}: User ${userId}.`);
-        else console.info(`[IO] Connected to ${socket.id}: Anonymous`);
+        if (username)
+          console.info(`[IO] Connected to ${socket.id}: User ${username}.`);
+        else console.info(`[IO] Connected to ${socket.id}: Anonymous.`);
 
         this.#connectionEventEmitter.emit("connection", this.#createCuteParameter(socket, {}));
       } catch (error) {
@@ -297,6 +320,7 @@ export default class CuteServerIO {
 /**
  * @typedef {object} OnReceiveParams
  * @property {string?} userId
+ * @property {string?} username
  * @property {string?} token
  * @property {string?} browserId
  * @property {Socket?} socket

@@ -6,8 +6,6 @@ import { signin } from "../../../redux/actions/auth";
 import { useHistory } from "react-router-dom";
 // import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
-import { GoogleLogIn } from "react-google-login";
-
 const { Title } = Typography;
 
 const initialState = {
@@ -18,7 +16,7 @@ const initialState = {
   // confirmPassword: "",
 };
 
-function SignInForm({ setIsSignIn }) {
+function SignInForm() {
   const [form, setForm] = useState(initialState);
   // const [user, setUser] = useLocalStorage("user");
 
@@ -27,9 +25,9 @@ function SignInForm({ setIsSignIn }) {
 
   useEffect(() => {}, []);
 
-  const switchSignup = () => {
-    setIsSignIn(false);
-  };
+  // const switchSignup = () => {
+  //   setIsSignIn(false);
+  // };
 
   // const googleSuccess = async (res) => {
   //   const result = res?.userObj;
@@ -100,27 +98,9 @@ function SignInForm({ setIsSignIn }) {
           <Button type="primary" htmlType="submit">
             Login
           </Button>
-          <Button htmlType="button" onClick={switchSignup}>
-            Go to signup
-          </Button>
+          <Button htmlType="button">Go to signup</Button>
         </Form.Item>
 
-        {/* <Form.Item {...styles.tailLayout}>
-          <GoogleLogIn
-            clientId="GOOGLE id"
-            render={(renderProps) => (
-              <Button
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                Google Sign In
-              </Button>
-            )}
-            onSuccess={googleSuccess}
-            onFailure={googleError}
-            cookiePolicy="single_host_origin"
-          />
-        </Form.Item> */}
       </Form>
     </>
   );

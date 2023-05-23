@@ -1,0 +1,16 @@
+.div-manage-conversations-wrapper {
+  width: 100%;
+  place-self: center ;
+  display:grid;
+  grid-template-columns: 15% 65% 15%;
+  /* grid-template-columns: 20% 50% auto; */
+  grid-area: manage-conversations;
+}
+.title-chat{
+  justify-self:center;
+ margin-top: 5px;
+ margin-left: 40px;
+ }
+.button-add {
+   margin-top: 10px;
+}

@@ -3,167 +3,136 @@ import styles from "./styles.js";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import {
-  CreatePostPage,
-  // FeedPage,
-  // UserInfoPage,
-  // SpecificPostPage,
-  UserResultSearchPage,
-  // AboutPage,
-  // GroupPage,
-  // CreateGroupPage,
-  LoginPage,
-  RegisterPage,
-  // ErrorPage,
+  UserInfoPage,
+  SignInPage,
+  SignUpPage,
+  ErrorPage,
   HomePage,
-  // MessagePage,
-  FriendManagementPage,
-  // MutualFriendPage,
-  GroupManagementPage,
-  // AuthAdminPage,
-  // StatisticsPage,
-  // UserAdminManagement,
-  // GroupAdminManagement,
+  SettingsPage,
+  ChatPage,
+  CreatePostPage,
+  SpecificForumPage,
+  SpecificContestPage,
+  FeedPage,
+  ContestPage,
+  CreateContestPage,
+  CreateContestPart5,
+  CreateContestPart6,
+  CreateContestPart7,
+  CreateContestPart1,
+  CreateContestPart2,
+  CreateContestPart3,
+  CreateContestPart4,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
-// import { useLocalStorage } from "./hooks/useLocalStorage.js";
+import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 // import { useToken } from "./context/TokenContext.js";
-// import PrivateRoute from "./utils/PrivateRoute.js";
-// import { handleNewIOConnection } from "./notifications/index.js";
-// import SettingsPage from "./pages/SettingsPage/SettingsPage.js";
+import PrivateRoute from "./utils/PrivateRoute.js";
 // import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 // import AdminDashboardPage from "./pages/SystemAdmin/AdminDashboardPage/AdminDashboardPage.js";
 // import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
-import * as apiAuth from "./api/auth";
+import { useAuth } from "./contexts/authenticationContext.js";
+import EmailConfirmationPage from "./pages/EmailConfirmationPage/EmailConfirmationPage.js";
+import DictionaryProvider from "./components/DictionaryProvider/DictionaryProvider.js";
+
+// import * as apiAuth from "./api/auth";
+
+// import UserInfoPage from "./pages/UserInfoPage/UserInfoPage.js";
+
 // import * as apiUser from "./api/user_info";
 // import * as apiGroup from "./api/group";
 
 // import { useCurrentUser } from "./context/CurrentUserContext.js";
 // import { useGroupsOfUser } from "./context/GroupsOfUserContext.js";
 
-// const loggedIn = () => {
-//   const user = JSON.parse(localStorage.getItem("user"));
-//   return user;
-// };
-
 function App() {
-  // const [token, setToken] = useToken();
-  // const [user] = useLocalStorage("user");
-  // const [currentUser, setCurrentUser] = useCurrentUser();
-  // const groupsOfUser = useGroupsOfUser();
-  // const { updateListGroups } = groupsOfUser;
-
-  // useEffect(() => {
-  //   if (user) {
-  //     apiUser.fetchUserInfo(user?.result?._id).then((res) => {
-  //       setCurrentUser(res.data);
-  //     });
-  //     apiGroup
-  //       .fetchUserJoinedGroups()
-  //       .then((res) => updateListGroups(res.data));
-  //   }
-  //   // console.log("user", currentUser);
-  // }, [user]);
+  const { accessToken } = useAuth();
 
   return (
     <div className={styles.App}>
-      {/* <CuteClientIOProvider
-        serverUri={BACKEND_URL} //TODO: change all localhost to deploy link
-        // token={token}
-        // onNewConnection={handleNewIOConnection}
-      >
-        <FriendsStatusProvider userId={user?.result?._id}> */}
-      <Switch>
-        {/* <Route exact path="/" component={HomePage} />
-        <Route exact path="/login">
-          {loggedIn() ? <Redirect to="/" /> : <LoginPage />}
-        </Route>
-        <Route exact path="/register">
-          {loggedIn() ? <Redirect to="/" /> : <RegisterPage />}
-        </Route> */}
-        <Route exact path="/register">
-          <RegisterPage />
-        </Route>
-        {/* <PrivateRoute exact path="/feed" component={FeedPage} /> */}
-        {/* <PrivateRoute
-            exact
-            path="/post/create"
-            // component={CreatePostPage}
-          />
-          <PrivateRoute path="/userinfo/my">
-            <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
-          </PrivateRoute> */}
-        {/* <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} /> */}
-        {/* <Route exact path="/post/:id" component={SpecificPostPage} />
-            <Route
-              path="/post/:id/:focusedCommentId"
-              component={SpecificPostPage}
-            /> */}
-        {/* <Route exact path="/search" component={UserResultSearchPage} /> */}
-        {/* <PrivateRoute
+      <DictionaryProvider>
+        <CuteClientIOProvider serverUri={BACKEND_URL} token={accessToken}>
+          {/*<FriendsStatusProvider userId={user?.result?._id}> */}
+          <Switch>
+            <Route exact path="/" component={HomePage}><Redirect to={"/feed"}/></Route>
+            <Route exact path="/signin">
+              <SignInPage />
+            </Route>
+            <Route exact path="/signup">
+              <SignUpPage />
+            </Route>
+            <Route exact path="/feed" component={FeedPage} />
+            <Route exact path="/contests" component={ContestPage} />
+            <PrivateRoute
               exact
-              path="/group/:id/requests"
-              component={GroupPage}
-            /> */}
-        {/* <Route path="/userinfo/:id/about" component={AboutPage} /> */}
-        {/* <PrivateRoute
-              exact
-              path="/friends"
-              component={FriendManagementPage}
-            /> */}
-        {/* <PrivateRoute
-              exact
-              path="/mutualFriends/:id"
-              component={MutualFriendPage}
-            /> */}
-        {/* <Route exact path="/groups" component={GroupManagementPage} /> */}
-        {/* <PrivateRoute
-              exact
-              path="/group/create"
-              component={CreateGroupPage}
-            /> */}
-        {/* <Route exact path="/group/:id/:menu" component={GroupPage} /> */}
-        {/* <Route exact path="/group/:id">
-            <Redirect to="/group/:id/main" />
-          </Route> */}
-        {/* <PrivateRoute exact path="/settings" component={SettingsPage} /> */}
-        {/* <Route exact path="/activate/:token" component={ActivationPage} /> */}
-        {/* <PrivateRoute exact path="/message" component={MessagePage} /> */}
-        {/* <Route path="/group/:id/about" component={GroupPage} />
-            <Route path="/group/:id/members" component={GroupPage} /> */}
-        {/* <PrivateRoute exact path="/admin">
-            <Redirect to="/admin/dashboard" />
-          </PrivateRoute> */}
-        {/* <PrivateRoute
-            exact
-            path="/admin/:menu"
-            component={AdminDashboardPage}
-          /> */}
-        {/* <PrivateRoute
-              exact
-              path="/admin/user"
-              component={UserAdminManagement}
+              path="/forum/create"
+              component={CreatePostPage}
             />
             <PrivateRoute
               exact
-              path="/admin/group"
-              component={GroupAdminManagement}
-            /> */}
-        {/* <PrivateRoute exact path="/statistics" component={StatisticsPage} /> */}
-        {/* <Route path="/demoSocketIO" component={DemoSocket} /> */}
-        {/* <Route exact path="/error403">
+              path="/contest/create"
+              component={CreateContestPage}
+            />
+            <PrivateRoute
+              exact
+              path="/contest/create/part1"
+              component={CreateContestPart1}
+            />
+            <PrivateRoute
+              exact
+              path="/contest/create/part2"
+              component={CreateContestPart2}
+            />
+            <PrivateRoute
+              exact
+              path="/contest/create/part3"
+              component={CreateContestPart3}
+            />
+            <PrivateRoute
+              exact
+              path="/contest/create/part4"
+              component={CreateContestPart4}
+            />
+            <PrivateRoute
+              exact
+              path="/contest/create/part5"
+              component={CreateContestPart5}
+            />
+            <PrivateRoute
+              exact
+              path="/contest/create/part6"
+              component={CreateContestPart6}
+            />
+            <PrivateRoute
+              exact
+              path="/contest/create/part7"
+              component={CreateContestPart7}
+            />
+            <Route path="/userinfo/:id" exact component={UserInfoPage} />
+            <Route exact path="/forums/:id" component={SpecificForumPage} />
+            <Route exact path="/contest/:id" component={SpecificContestPage} />
+            <Route
+              exact
+              path="/email-confirmation/:token"
+              component={EmailConfirmationPage}
+            />
+            <PrivateRoute exact path="/settings" component={SettingsPage} />
+            <PrivateRoute path="/chat/:conversationId?" component={ChatPage} />
+            <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>
-            <Route>
+            <Route exact path="/error404">
               <ErrorPage code="404" />
-            </Route> */}
-      </Switch>
-      {/* </FriendsStatusProvider> */}
-      {/* </CuteClientIOProvider> */}
+            </Route>
+          </Switch>
+          {/* </FriendsStatusProvider> */}
+        </CuteClientIOProvider>
+      </DictionaryProvider>
     </div>
   );
 }

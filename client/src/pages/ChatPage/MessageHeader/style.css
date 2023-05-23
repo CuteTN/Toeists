@@ -1,0 +1,15 @@
+.message-header-wrapper{
+  display: grid;
+  grid-template-columns: 95% 5%;
+  border-left: 1px solid rgb(235, 233, 233);
+  border-bottom: 1px solid rgb(235, 233, 233);
+  grid-area: message-header;
+}
+.message-title{
+  align-self: center;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+.message-setting{
+  margin-top: 10px;
+}
